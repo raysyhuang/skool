@@ -15,7 +15,10 @@ def create_app() -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        Base.metadata.create_all(bind=engine)
+        try:
+            Base.metadata.create_all(bind=engine, checkfirst=True)
+        except Exception:
+            pass  # Tables already exist (created by seed script)
         yield
 
     app = FastAPI(title="Skool - Chinese Character Learning", lifespan=lifespan)
