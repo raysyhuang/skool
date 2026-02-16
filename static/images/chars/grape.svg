@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Stem -->
+  <path d="M100 30 Q105 15 110 10" stroke="#8D6E63" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Leaf -->
+  <path d="M108 15 Q125 5 135 15 Q130 25 115 22 Q108 20 108 15Z" fill="#4CAF50"/>
+  <!-- Grapes - top row -->
+  <circle cx="85" cy="55" r="18" fill="#7B1FA2"/>
+  <circle cx="115" cy="55" r="18" fill="#7B1FA2"/>
+  <!-- Second row -->
+  <circle cx="70" cy="85" r="18" fill="#8E24AA"/>
+  <circle cx="100" cy="80" r="18" fill="#8E24AA"/>
+  <circle cx="130" cy="85" r="18" fill="#8E24AA"/>
+  <!-- Third row -->
+  <circle cx="80" cy="115" r="18" fill="#9C27B0"/>
+  <circle cx="115" cy="115" r="18" fill="#9C27B0"/>
+  <!-- Bottom -->
+  <circle cx="100" cy="145" r="18" fill="#AB47BC"/>
+  <!-- Shine highlights -->
+  <circle cx="80" cy="50" r="5" fill="white" opacity="0.3"/>
+  <circle cx="65" cy="80" r="5" fill="white" opacity="0.3"/>
+  <circle cx="95" cy="75" r="5" fill="white" opacity="0.3"/>
+  <circle cx="125" cy="80" r="5" fill="white" opacity="0.3"/>
+  <circle cx="75" cy="110" r="5" fill="white" opacity="0.3"/>
+  <circle cx="110" cy="110" r="5" fill="white" opacity="0.3"/>
+  <circle cx="95" cy="140" r="5" fill="white" opacity="0.3"/>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Broccoli -->
+  <rect x="58" y="130" width="10" height="40" rx="3" fill="#689F38"/>
+  <circle cx="50" cy="110" r="18" fill="#4CAF50"/>
+  <circle cx="70" cy="105" r="18" fill="#66BB6A"/>
+  <circle cx="60" cy="90" r="16" fill="#43A047"/>
+  <circle cx="45" cy="100" r="14" fill="#388E3C"/>
+  <circle cx="75" cy="95" r="14" fill="#2E7D32"/>
+  <!-- Carrot -->
+  <path d="M120 55 L145 170 L155 170 L140 55Z" fill="#FF9800"/>
+  <path d="M120 55 Q130 45 140 55" fill="#FF9800"/>
+  <!-- Carrot stripes -->
+  <line x1="125" y1="90" x2="148" y2="90" stroke="#F57C00" stroke-width="1.5"/>
+  <line x1="128" y1="110" x2="150" y2="110" stroke="#F57C00" stroke-width="1.5"/>
+  <line x1="131" y1="130" x2="152" y2="130" stroke="#F57C00" stroke-width="1.5"/>
+  <line x1="135" y1="150" x2="153" y2="150" stroke="#F57C00" stroke-width="1.5"/>
+  <!-- Carrot leaves -->
+  <path d="M130 55 Q120 30 115 20" stroke="#4CAF50" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M133 55 Q135 28 138 18" stroke="#66BB6A" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M136 55 Q148 32 155 22" stroke="#4CAF50" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

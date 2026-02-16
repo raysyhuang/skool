@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Water -->
+  <path d="M0 110 Q25 100 50 110 Q75 120 100 110 Q125 100 150 110 Q175 120 200 110 L200 200 L0 200Z" fill="#42A5F5"/>
+  <path d="M0 130 Q25 120 50 130 Q75 140 100 130 Q125 120 150 130 Q175 140 200 130 L200 200 L0 200Z" fill="#1E88E5"/>
+  <path d="M0 155 Q25 145 50 155 Q75 165 100 155 Q125 145 150 155 Q175 165 200 155 L200 200 L0 200Z" fill="#1565C0"/>
+  <!-- Swimmer head -->
+  <circle cx="90" cy="95" r="18" fill="#FFCC80"/>
+  <!-- Swim cap -->
+  <path d="M72 90 Q72 72 90 72 Q108 72 108 90" fill="#E53935"/>
+  <!-- Goggles -->
+  <ellipse cx="82" cy="92" rx="8" ry="6" fill="#B3E5FC" stroke="#424242" stroke-width="2"/>
+  <ellipse cx="98" cy="92" rx="8" ry="6" fill="#B3E5FC" stroke="#424242" stroke-width="2"/>
+  <line x1="90" y1="92" x2="90" y2="92" stroke="#424242" stroke-width="3"/>
+  <line x1="74" y1="90" x2="72" y2="85" stroke="#424242" stroke-width="2"/>
+  <line x1="106" y1="90" x2="108" y2="85" stroke="#424242" stroke-width="2"/>
+  <!-- Mouth -->
+  <path d="M85 102 Q90 105 95 102" stroke="#E91E63" stroke-width="1.5" fill="none"/>
+  <!-- Arm out of water -->
+  <path d="M108 100 Q130 70 150 55" stroke="#FFCC80" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <!-- Hand -->
+  <path d="M148 55 Q155 48 158 52 Q160 56 152 60 Q148 62 145 58" fill="#FFCC80"/>
+  <!-- Splash -->
+  <circle cx="120" cy="105" r="3" fill="white" opacity="0.7"/>
+  <circle cx="130" cy="100" r="4" fill="white" opacity="0.6"/>
+  <circle cx="140" cy="108" r="3" fill="white" opacity="0.5"/>
+  <circle cx="110" cy="108" r="2" fill="white" opacity="0.7"/>
+</svg>

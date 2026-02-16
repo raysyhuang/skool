@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Sun with sweating face -->
+  <!-- Sun rays -->
+  <line x1="100" y1="10" x2="100" y2="35" stroke="#FFB300" stroke-width="8" stroke-linecap="round"/>
+  <line x1="100" y1="165" x2="100" y2="190" stroke="#FFB300" stroke-width="8" stroke-linecap="round"/>
+  <line x1="10" y1="100" x2="35" y2="100" stroke="#FFB300" stroke-width="8" stroke-linecap="round"/>
+  <line x1="165" y1="100" x2="190" y2="100" stroke="#FFB300" stroke-width="8" stroke-linecap="round"/>
+  <line x1="30" y1="30" x2="50" y2="50" stroke="#FFB300" stroke-width="7" stroke-linecap="round"/>
+  <line x1="150" y1="150" x2="170" y2="170" stroke="#FFB300" stroke-width="7" stroke-linecap="round"/>
+  <line x1="170" y1="30" x2="150" y2="50" stroke="#FFB300" stroke-width="7" stroke-linecap="round"/>
+  <line x1="30" y1="170" x2="50" y2="150" stroke="#FFB300" stroke-width="7" stroke-linecap="round"/>
+  <!-- Sun body -->
+  <circle cx="100" cy="100" r="55" fill="#FFEB3B"/>
+  <!-- Face -->
+  <!-- Eyes (squinting from heat) -->
+  <path d="M75 90 Q82 85 89 90" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+  <path d="M111 90 Q118 85 125 90" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+  <!-- Open mouth (panting) -->
+  <ellipse cx="100" cy="118" rx="15" ry="10" fill="#333"/>
+  <ellipse cx="100" cy="122" rx="10" ry="5" fill="#E91E63"/>
+  <!-- Sweat drops -->
+  <path d="M140 75 Q145 65 148 80 Q148 88 140 88 Q132 88 132 80 Q135 65 140 75" fill="#42A5F5"/>
+  <path d="M55 85 Q58 78 60 88 Q60 93 55 93 Q50 93 50 88 Q52 78 55 85" fill="#42A5F5"/>
+</svg>

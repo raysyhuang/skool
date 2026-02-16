@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Elderly man with glasses -->
+  <!-- Head -->
+  <circle cx="100" cy="55" r="35" fill="#FFCC80"/>
+  <!-- White/gray hair -->
+  <path d="M65 48 Q65 22 100 18 Q135 22 135 48" fill="#BDBDBD"/>
+  <!-- Glasses -->
+  <circle cx="85" cy="55" r="12" fill="none" stroke="#5D4037" stroke-width="3"/>
+  <circle cx="115" cy="55" r="12" fill="none" stroke="#5D4037" stroke-width="3"/>
+  <line x1="97" y1="55" x2="103" y2="55" stroke="#5D4037" stroke-width="3"/>
+  <line x1="65" y1="52" x2="73" y2="55" stroke="#5D4037" stroke-width="3"/>
+  <line x1="135" y1="52" x2="127" y2="55" stroke="#5D4037" stroke-width="3"/>
+  <!-- Eyes behind glasses -->
+  <circle cx="85" cy="55" r="4" fill="#333"/>
+  <circle cx="115" cy="55" r="4" fill="#333"/>
+  <!-- Smile -->
+  <path d="M85 72 Q100 82 115 72" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+  <!-- Mustache -->
+  <path d="M85 67 Q92 72 100 67 Q108 72 115 67" fill="#9E9E9E" stroke="#9E9E9E" stroke-width="1"/>
+  <!-- Body / Shirt -->
+  <rect x="72" y="92" width="56" height="55" rx="10" fill="#66BB6A"/>
+  <!-- Arms -->
+  <rect x="52" y="96" width="20" height="40" rx="8" fill="#FFCC80"/>
+  <rect x="128" y="96" width="20" height="40" rx="8" fill="#FFCC80"/>
+  <!-- Pants -->
+  <rect x="76" y="142" width="22" height="34" rx="6" fill="#455A64"/>
+  <rect x="102" y="142" width="22" height="34" rx="6" fill="#455A64"/>
+  <!-- Shoes -->
+  <ellipse cx="87" cy="178" rx="14" ry="7" fill="#5D4037"/>
+  <ellipse cx="113" cy="178" rx="14" ry="7" fill="#5D4037"/>
+</svg>

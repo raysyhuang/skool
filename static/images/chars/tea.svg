@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Saucer -->
+  <ellipse cx="100" cy="170" rx="70" ry="15" fill="#BDBDBD"/>
+  <ellipse cx="100" cy="166" rx="70" ry="15" fill="#E0E0E0"/>
+  <ellipse cx="100" cy="166" rx="55" ry="10" fill="#EEEEEE"/>
+  <!-- Cup body -->
+  <path d="M45 95 Q42 145 55 160 Q70 172 100 172 Q130 172 145 160 Q158 145 155 95Z" fill="#FFFDE7"/>
+  <ellipse cx="100" cy="95" rx="55" ry="15" fill="#FFF9C4"/>
+  <!-- Tea liquid -->
+  <ellipse cx="100" cy="97" rx="48" ry="11" fill="#A1887F"/>
+  <!-- Cup handle -->
+  <path d="M155 110 Q182 110 182 135 Q182 158 155 155" stroke="#FFFDE7" stroke-width="8" fill="none"/>
+  <path d="M155 114 Q178 114 178 135 Q178 154 155 151" stroke="#FFF9C4" stroke-width="4" fill="none"/>
+  <!-- Steam -->
+  <path d="M80 65 Q75 45 80 28" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M100 60 Q95 40 100 23" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M120 65 Q115 45 120 28" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+</svg>

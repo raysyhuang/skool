@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Short worm -->
+  <!-- Worm body - short -->
+  <path d="M75,100 Q100,75 125,100" fill="none" stroke="#E91E63" stroke-width="18" stroke-linecap="round"/>
+  <!-- Worm head -->
+  <circle cx="125" cy="100" r="14" fill="#F06292"/>
+  <!-- Worm eyes -->
+  <circle cx="128" cy="95" r="3" fill="#333"/>
+  <!-- Worm smile -->
+  <path d="M122,106 Q128,112 134,106" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+  <!-- Arrow indicators showing short length -->
+  <line x1="75" y1="150" x2="125" y2="150" stroke="#FF9800" stroke-width="3"/>
+  <polygon points="75,150 85,143 85,157" fill="#FF9800"/>
+  <polygon points="125,150 115,143 115,157" fill="#FF9800"/>
+  <text x="72" y="178" font-size="18" font-family="Arial" font-weight="bold" fill="#FF9800">SHORT</text>
+</svg>

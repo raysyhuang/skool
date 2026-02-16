@@ -1,0 +1,71 @@
+/* ═══════════════════════════════════════════════════
+   Skool — Common Styles
+   Shared reset & base rules for all pages.
+   ═══════════════════════════════════════════════════ */
+
+/* Reset */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    min-height: 100dvh;
+    font-family:
+        -apple-system,
+        "PingFang SC",
+        "Noto Sans SC",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    /* Prevent pull-to-refresh on iOS */
+    overscroll-behavior: none;
+}
+
+/* Ensure touch targets are large enough for kids (iPad) */
+button, a, [role="button"] {
+    min-width: 60px;
+    min-height: 60px;
+    touch-action: manipulation;
+}
+
+/* Remove default focus outline, add a kid-friendly one */
+:focus {
+    outline: none;
+}
+:focus-visible {
+    outline: 4px solid rgba(108, 92, 231, 0.6);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+/* Prevent text selection on game elements */
+.no-select {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Image defaults */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Safe area insets for notched iPads */
+@supports (padding: env(safe-area-inset-top)) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}

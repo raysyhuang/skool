@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#FCE4EC"/>
+
+  <!-- Body - sparkly dress/outfit -->
+  <path d="M70,108 L60,175 L140,175 L130,108 Z" fill="#E91E63" rx="10"/>
+  <!-- Dress sparkles -->
+  <circle cx="85" cy="130" r="2" fill="#F8BBD0"/>
+  <circle cx="110" cy="140" r="2" fill="#F8BBD0"/>
+  <circle cx="95" cy="155" r="2" fill="#F8BBD0"/>
+  <circle cx="120" cy="125" r="2" fill="#F8BBD0"/>
+  <circle cx="78" cy="150" r="1.5" fill="#F8BBD0"/>
+  <circle cx="105" cy="120" r="1.5" fill="#F8BBD0"/>
+  <circle cx="125" cy="155" r="1.5" fill="#F8BBD0"/>
+
+  <!-- Belt/sash -->
+  <rect x="68" y="115" width="64" height="6" rx="3" fill="#AD1457"/>
+
+  <!-- Neck -->
+  <rect x="90" y="90" width="20" height="22" rx="5" fill="#FDBCB4"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="68" r="33" fill="#FDBCB4"/>
+
+  <!-- Long flowing hair -->
+  <ellipse cx="100" cy="50" rx="36" ry="22" fill="#5D4037"/>
+  <!-- Hair flowing down sides -->
+  <path d="M65,50 Q58,80 55,110 Q54,120 60,115" fill="#5D4037"/>
+  <path d="M135,50 Q142,80 145,110 Q146,120 140,115" fill="#5D4037"/>
+  <!-- Hair wave details -->
+  <path d="M62,70 Q58,80 60,90" fill="none" stroke="#4E342E" stroke-width="2" opacity="0.3"/>
+  <path d="M138,70 Q142,80 140,90" fill="none" stroke="#4E342E" stroke-width="2" opacity="0.3"/>
+
+  <!-- Star hair clip -->
+  <polygon points="130,45 132,40 135,44 140,43 137,47 139,52 135,50 131,53 132,48 128,46" fill="#FFD700" transform="scale(0.7) translate(60,20)"/>
+
+  <!-- Eyes - big and expressive -->
+  <circle cx="87" cy="65" r="6" fill="#FFFFFF"/>
+  <circle cx="113" cy="65" r="6" fill="#FFFFFF"/>
+  <circle cx="88" cy="66" r="3.5" fill="#3E2723"/>
+  <circle cx="114" cy="66" r="3.5" fill="#3E2723"/>
+  <circle cx="89.5" cy="64.5" r="1.5" fill="#FFFFFF"/>
+  <circle cx="115.5" cy="64.5" r="1.5" fill="#FFFFFF"/>
+  <!-- Eyelashes -->
+  <line x1="81" y1="62" x2="79" y2="59" stroke="#3E2723" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="83" y1="60" x2="82" y2="57" stroke="#3E2723" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="117" y1="60" x2="118" y2="57" stroke="#3E2723" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="119" y1="62" x2="121" y2="59" stroke="#3E2723" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Rosy cheeks -->
+  <circle cx="77" cy="75" r="6" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="123" cy="75" r="6" fill="#FFB6C1" opacity="0.5"/>
+
+  <!-- Singing mouth - open -->
+  <ellipse cx="100" cy="82" rx="8" ry="6" fill="#D84315"/>
+  <ellipse cx="100" cy="80" rx="6" ry="2" fill="#FFFFFF"/>
+
+  <!-- Left arm raised -->
+  <path d="M68,112 Q45,100 40,80" fill="none" stroke="#FDBCB4" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="40" cy="78" r="7" fill="#FDBCB4"/>
+
+  <!-- Right arm holding microphone -->
+  <path d="M132,112 Q145,95 140,75" fill="none" stroke="#FDBCB4" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="140" cy="73" r="7" fill="#FDBCB4"/>
+
+  <!-- Microphone -->
+  <rect x="137" y="48" width="6" height="28" rx="3" fill="#616161"/>
+  <ellipse cx="140" cy="45" rx="8" ry="10" fill="#424242"/>
+  <!-- Mic mesh pattern -->
+  <line x1="134" y1="42" x2="146" y2="42" stroke="#616161" stroke-width="1" opacity="0.5"/>
+  <line x1="133" y1="45" x2="147" y2="45" stroke="#616161" stroke-width="1" opacity="0.5"/>
+  <line x1="134" y1="48" x2="146" y2="48" stroke="#616161" stroke-width="1" opacity="0.5"/>
+
+  <!-- Music notes floating -->
+  <g fill="#E91E63" opacity="0.8">
+    <!-- Note 1 -->
+    <circle cx="30" cy="55" r="4"/>
+    <rect x="33" y="35" width="2.5" height="20"/>
+    <path d="M35,35 Q42,32 40,40" fill="none" stroke="#E91E63" stroke-width="2.5"/>
+
+    <!-- Note 2 -->
+    <circle cx="165" cy="40" r="3.5"/>
+    <rect x="168" y="22" width="2" height="18"/>
+    <path d="M170,22 Q176,20 174,27" fill="none" stroke="#E91E63" stroke-width="2"/>
+
+    <!-- Note 3 - small -->
+    <circle cx="50" cy="35" r="3"/>
+    <rect x="52.5" y="20" width="2" height="15"/>
+  </g>
+
+  <!-- Sparkle effects -->
+  <polygon points="25,75 27,70 29,75 34,73 29,76 31,81 27,78 23,81 25,76 20,73" fill="#FFD700" opacity="0.6" transform="scale(0.6) translate(15,45)"/>
+  <polygon points="170,60 172,55 174,60 179,58 174,61 176,66 172,63 168,66 170,61 165,58" fill="#FFD700" opacity="0.6" transform="scale(0.5) translate(165,25)"/>
+</svg>

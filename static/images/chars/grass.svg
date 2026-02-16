@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background - light green field -->
+  <rect width="200" height="200" rx="20" fill="#E8F5E9"/>
+  <!-- Ground -->
+  <rect x="0" y="150" width="200" height="50" rx="0" fill="#8D6E63" opacity="0.3"/>
+  <rect x="0" y="150" width="200" height="10" fill="#A5D6A7" opacity="0.5"/>
+  <path d="M0 180 Q50 175 100 180 Q150 185 200 180 L200 200 L0 200 Z" fill="#8D6E63" opacity="0.2"/>
+  <!-- Grass blades - back row (darker, shorter) -->
+  <path d="M15 155 Q17 110 20 100 Q22 110 25 155" fill="#388E3C" opacity="0.7"/>
+  <path d="M35 155 Q33 115 28 105 Q30 115 32 155" fill="#2E7D32" opacity="0.6"/>
+  <path d="M50 155 Q53 108 58 95 Q60 108 62 155" fill="#388E3C" opacity="0.7"/>
+  <path d="M75 155 Q72 112 68 100 Q70 112 73 155" fill="#2E7D32" opacity="0.6"/>
+  <path d="M95 155 Q97 105 100 92 Q102 105 105 155" fill="#388E3C" opacity="0.7"/>
+  <path d="M120 155 Q117 110 113 98 Q115 110 118 155" fill="#2E7D32" opacity="0.6"/>
+  <path d="M140 155 Q143 108 148 95 Q150 108 152 155" fill="#388E3C" opacity="0.7"/>
+  <path d="M165 155 Q162 112 158 102 Q160 112 163 155" fill="#2E7D32" opacity="0.6"/>
+  <path d="M180 155 Q183 108 188 98 Q190 108 190 155" fill="#388E3C" opacity="0.7"/>
+  <!-- Grass blades - front row (brighter, taller) -->
+  <path d="M8 155 Q5 90 10 60 Q15 90 18 155" fill="#4CAF50"/>
+  <path d="M25 155 Q30 85 35 55 Q38 85 40 155" fill="#66BB6A"/>
+  <path d="M42 155 Q38 95 32 70 Q36 95 40 155" fill="#43A047"/>
+  <path d="M55 155 Q58 80 65 50 Q68 80 70 155" fill="#4CAF50"/>
+  <path d="M72 155 Q68 90 62 65 Q66 90 70 155" fill="#66BB6A"/>
+  <path d="M82 155 Q85 75 90 45 Q93 75 95 155" fill="#43A047"/>
+  <path d="M100 155 Q96 85 90 60 Q94 85 98 155" fill="#4CAF50"/>
+  <path d="M110 155 Q113 78 118 48 Q121 78 123 155" fill="#66BB6A"/>
+  <path d="M125 155 Q121 88 116 62 Q120 88 123 155" fill="#43A047"/>
+  <path d="M135 155 Q138 82 143 52 Q146 82 148 155" fill="#4CAF50"/>
+  <path d="M152 155 Q148 90 143 68 Q147 90 150 155" fill="#66BB6A"/>
+  <path d="M162 155 Q165 78 170 48 Q173 78 175 155" fill="#43A047"/>
+  <path d="M178 155 Q174 88 170 65 Q173 88 176 155" fill="#4CAF50"/>
+  <path d="M188 155 Q190 82 195 55 Q197 82 198 155" fill="#66BB6A"/>
+  <!-- Small flowers -->
+  <circle cx="45" cy="110" r="5" fill="#FF7043"/>
+  <circle cx="45" cy="110" r="2" fill="#FFE082"/>
+  <circle cx="120" cy="100" r="4" fill="#FF80AB"/>
+  <circle cx="120" cy="100" r="1.5" fill="#FFE082"/>
+  <circle cx="165" cy="115" r="4.5" fill="#CE93D8"/>
+  <circle cx="165" cy="115" r="1.8" fill="#FFE082"/>
+  <!-- Butterfly -->
+  <ellipse cx="80" cy="40" rx="8" ry="6" fill="#FF80AB" opacity="0.7" transform="rotate(-20 80 40)"/>
+  <ellipse cx="92" cy="40" rx="8" ry="6" fill="#FF80AB" opacity="0.7" transform="rotate(20 92 40)"/>
+  <ellipse cx="80" cy="46" rx="6" ry="4" fill="#F48FB1" opacity="0.6" transform="rotate(-20 80 46)"/>
+  <ellipse cx="92" cy="46" rx="6" ry="4" fill="#F48FB1" opacity="0.6" transform="rotate(20 92 46)"/>
+  <rect x="85" y="36" width="2" height="14" rx="1" fill="#5D4037"/>
+</svg>

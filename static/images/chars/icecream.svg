@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Cone -->
+  <path d="M60 110 L100 190 L140 110Z" fill="#D4A24C"/>
+  <!-- Cone pattern -->
+  <line x1="68" y1="118" x2="95" y2="178" stroke="#C08B30" stroke-width="1.5"/>
+  <line x1="80" y1="112" x2="98" y2="182" stroke="#C08B30" stroke-width="1.5"/>
+  <line x1="120" y1="112" x2="102" y2="182" stroke="#C08B30" stroke-width="1.5"/>
+  <line x1="132" y1="118" x2="105" y2="178" stroke="#C08B30" stroke-width="1.5"/>
+  <!-- Bottom scoop - strawberry -->
+  <circle cx="100" cy="90" r="40" fill="#F48FB1"/>
+  <circle cx="85" cy="80" r="3" fill="#E91E63"/>
+  <circle cx="110" cy="95" r="2.5" fill="#E91E63"/>
+  <circle cx="95" cy="100" r="2" fill="#E91E63"/>
+  <!-- Top scoop - vanilla -->
+  <circle cx="100" cy="55" r="32" fill="#FFF9C4"/>
+  <circle cx="90" cy="48" r="2" fill="#FFE082"/>
+  <circle cx="108" cy="55" r="2" fill="#FFE082"/>
+  <!-- Cherry on top -->
+  <circle cx="100" cy="25" r="10" fill="#E53935"/>
+  <path d="M100 18 Q105 10 110 5" stroke="#4CAF50" stroke-width="2" fill="none"/>
+  <ellipse cx="95" cy="22" rx="4" ry="3" fill="#EF5350" opacity="0.5"/>
+</svg>

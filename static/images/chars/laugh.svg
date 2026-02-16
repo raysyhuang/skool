@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="80" fill="#FFD700" stroke="#E6B800" stroke-width="3"/>
+  <!-- Laughing eyes (squinted happy) -->
+  <path d="M55 85 Q70 75 85 85" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+  <path d="M115 85 Q130 75 145 85" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+  <!-- Raised cheek lines -->
+  <path d="M52 90 Q60 95 68 90" fill="none" stroke="#333" stroke-width="2"/>
+  <path d="M132 90 Q140 95 148 90" fill="none" stroke="#333" stroke-width="2"/>
+  <!-- Big open mouth -->
+  <path d="M60 120 Q100 170 140 120" fill="#333" stroke="#222" stroke-width="3"/>
+  <path d="M65 120 Q100 125 135 120" fill="white" stroke="none"/>
+  <!-- Cheeks -->
+  <circle cx="50" cy="105" r="12" fill="#FFB347" opacity="0.5"/>
+  <circle cx="150" cy="105" r="12" fill="#FFB347" opacity="0.5"/>
+  <!-- Laugh tears -->
+  <ellipse cx="48" cy="80" rx="4" ry="6" fill="#4488FF" opacity="0.5"/>
+  <ellipse cx="152" cy="80" rx="4" ry="6" fill="#4488FF" opacity="0.5"/>
+</svg>

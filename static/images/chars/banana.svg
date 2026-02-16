@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Banana body -->
+  <path d="M50 150 Q30 120 35 80 Q40 50 70 35 Q90 25 100 30 Q95 35 85 45 Q65 65 60 100 Q55 135 75 155 Q90 168 110 170 Q130 170 145 158 Q140 168 120 175 Q95 182 70 172 Q55 165 50 150Z" fill="#FFD54F" stroke="#F9A825" stroke-width="2"/>
+  <!-- Banana highlight -->
+  <path d="M70 40 Q80 35 88 40 Q82 48 68 65 Q55 90 55 120 Q56 140 65 155" stroke="#FFEE58" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <!-- Stem -->
+  <path d="M70 35 Q65 25 68 18 Q72 12 80 15 Q85 18 82 28 Q80 32 75 35" fill="#8D6E63"/>
+  <!-- Brown tip -->
+  <path d="M145 155 Q150 152 152 158 Q150 165 145 162" fill="#795548"/>
+</svg>

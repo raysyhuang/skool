@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Shadow -->
+  <rect x="38" y="23" width="135" height="172" rx="3" fill="#BDBDBD"/>
+  <!-- Paper sheet -->
+  <rect x="32" y="18" width="135" height="172" rx="3" fill="white" stroke="#E0E0E0" stroke-width="2"/>
+  <!-- Corner fold -->
+  <path d="M140 18 L167 45" stroke="#E0E0E0" stroke-width="2" fill="none"/>
+  <path d="M140 18 L140 45 L167 45Z" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Lines -->
+  <line x1="50" y1="55" x2="150" y2="55" stroke="#BBDEFB" stroke-width="1.5"/>
+  <line x1="50" y1="72" x2="150" y2="72" stroke="#BBDEFB" stroke-width="1.5"/>
+  <line x1="50" y1="89" x2="150" y2="89" stroke="#BBDEFB" stroke-width="1.5"/>
+  <line x1="50" y1="106" x2="150" y2="106" stroke="#BBDEFB" stroke-width="1.5"/>
+  <line x1="50" y1="123" x2="150" y2="123" stroke="#BBDEFB" stroke-width="1.5"/>
+  <line x1="50" y1="140" x2="150" y2="140" stroke="#BBDEFB" stroke-width="1.5"/>
+  <line x1="50" y1="157" x2="150" y2="157" stroke="#BBDEFB" stroke-width="1.5"/>
+  <line x1="50" y1="174" x2="150" y2="174" stroke="#BBDEFB" stroke-width="1.5"/>
+  <!-- Some writing -->
+  <path d="M55 52 Q65 48 75 52 Q85 56 95 52 Q105 48 115 52" stroke="#90CAF9" stroke-width="1.5" fill="none"/>
+  <path d="M55 69 Q65 65 75 69 Q85 73 95 69" stroke="#90CAF9" stroke-width="1.5" fill="none"/>
+</svg>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#E3F2FD"/>
+
+  <!-- Body - blue uniform -->
+  <rect x="60" y="105" width="80" height="70" rx="15" fill="#1565C0"/>
+
+  <!-- Collar -->
+  <polygon points="80,105 100,120 95,105" fill="#0D47A1"/>
+  <polygon points="120,105 100,120 105,105" fill="#0D47A1"/>
+
+  <!-- Tie -->
+  <polygon points="96,115 104,115 102,145 98,145" fill="#0D47A1"/>
+
+  <!-- Badge -->
+  <polygon points="118,120 125,125 123,133 118,136 113,133 111,125" fill="#FFD700" stroke="#FFA000" stroke-width="1"/>
+  <circle cx="118" cy="128" r="3" fill="#FFA000"/>
+
+  <!-- Buttons -->
+  <circle cx="108" cy="135" r="2.5" fill="#FFD700"/>
+  <circle cx="108" cy="150" r="2.5" fill="#FFD700"/>
+
+  <!-- Belt -->
+  <rect x="60" y="155" width="80" height="8" rx="3" fill="#212121"/>
+  <rect x="93" y="153" width="14" height="12" rx="2" fill="#FFD700"/>
+
+  <!-- Neck -->
+  <rect x="90" y="90" width="20" height="20" rx="5" fill="#FDBCB4"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="70" r="35" fill="#FDBCB4"/>
+
+  <!-- Police hat -->
+  <ellipse cx="100" cy="52" rx="40" ry="12" fill="#1565C0"/>
+  <rect x="70" y="35" width="60" height="20" rx="8" fill="#1565C0"/>
+  <rect x="78" y="30" width="44" height="10" rx="5" fill="#1976D2"/>
+  <!-- Hat brim -->
+  <ellipse cx="100" cy="52" rx="42" ry="8" fill="#0D47A1"/>
+  <!-- Hat badge -->
+  <circle cx="100" cy="40" r="7" fill="#FFD700"/>
+  <polygon points="100,33 102,38 107,38 103,42 105,47 100,44 95,47 97,42 93,38 98,38" fill="#FFA000"/>
+
+  <!-- Eyes -->
+  <circle cx="87" cy="68" r="5" fill="#FFFFFF"/>
+  <circle cx="113" cy="68" r="5" fill="#FFFFFF"/>
+  <circle cx="88" cy="69" r="3" fill="#3E2723"/>
+  <circle cx="114" cy="69" r="3" fill="#3E2723"/>
+  <circle cx="89" cy="68" r="1" fill="#FFFFFF"/>
+  <circle cx="115" cy="68" r="1" fill="#FFFFFF"/>
+
+  <!-- Rosy cheeks -->
+  <circle cx="78" cy="78" r="6" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="122" cy="78" r="6" fill="#FFB6C1" opacity="0.5"/>
+
+  <!-- Smile -->
+  <path d="M90,82 Q100,95 110,82" fill="none" stroke="#D84315" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Arms -->
+  <rect x="38" y="110" width="28" height="14" rx="7" fill="#1565C0"/>
+  <rect x="134" y="110" width="28" height="14" rx="7" fill="#1565C0"/>
+
+  <!-- Hands -->
+  <circle cx="40" cy="117" r="8" fill="#FDBCB4"/>
+  <circle cx="160" cy="117" r="8" fill="#FDBCB4"/>
+
+  <!-- Shoulder epaulets -->
+  <rect x="55" y="105" width="18" height="6" rx="3" fill="#1976D2" stroke="#FFD700" stroke-width="1"/>
+  <rect x="127" y="105" width="18" height="6" rx="3" fill="#1976D2" stroke="#FFD700" stroke-width="1"/>
+</svg>

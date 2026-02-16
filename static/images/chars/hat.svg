@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Brim -->
+  <ellipse cx="100" cy="140" rx="85" ry="20" fill="#FF6347" stroke="#CC3322" stroke-width="3"/>
+  <!-- Crown -->
+  <path d="M50 140 L55 60 C55 40 80 30 100 30 C120 30 145 40 145 60 L150 140" fill="#FF6347" stroke="#CC3322" stroke-width="3"/>
+  <!-- Band -->
+  <rect x="52" y="118" width="96" height="15" rx="2" fill="#FFD700" stroke="#CC9900" stroke-width="2"/>
+  <!-- Highlight -->
+  <path d="M70 60 Q85 45 100 50" fill="none" stroke="#FF8866" stroke-width="3" opacity="0.5"/>
+</svg>

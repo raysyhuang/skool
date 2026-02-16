@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Steak shape -->
+  <path d="M40 80 Q35 60 60 50 Q90 38 130 45 Q165 52 170 80 Q175 110 155 135 Q135 158 100 160 Q60 162 40 140 Q25 120 40 80Z" fill="#C62828"/>
+  <path d="M45 82 Q42 65 63 55 Q90 44 128 50 Q160 56 165 80 Q168 108 150 130 Q133 150 100 153 Q65 155 47 137 Q33 120 45 82Z" fill="#D32F2F"/>
+  <!-- Fat marbling -->
+  <path d="M70 70 Q85 65 95 75 Q105 85 90 90" stroke="#FFCDD2" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M110 60 Q125 65 120 80" stroke="#FFCDD2" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M60 100 Q75 95 85 105 Q90 115 80 120" stroke="#FFCDD2" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M110 100 Q130 95 135 110 Q138 125 120 130" stroke="#FFCDD2" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Bone -->
+  <ellipse cx="42" cy="145" rx="12" ry="10" fill="#FFF9C4" stroke="#E0E0E0" stroke-width="1"/>
+  <rect x="38" y="140" width="8" height="25" rx="3" fill="#FFF9C4" stroke="#E0E0E0" stroke-width="1"/>
+  <ellipse cx="42" cy="168" rx="10" ry="8" fill="#FFF9C4" stroke="#E0E0E0" stroke-width="1"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Boy figure -->
+  <!-- Head -->
+  <circle cx="100" cy="55" r="35" fill="#FFCC80"/>
+  <!-- Hair -->
+  <path d="M65 50 Q65 25 100 20 Q135 25 135 50" fill="#5D4037"/>
+  <!-- Eyes -->
+  <circle cx="87" cy="55" r="5" fill="#333"/>
+  <circle cx="113" cy="55" r="5" fill="#333"/>
+  <!-- Smile -->
+  <path d="M85 68 Q100 82 115 68" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+  <!-- Body / Shirt -->
+  <rect x="75" y="90" width="50" height="55" rx="10" fill="#42A5F5"/>
+  <!-- Arms -->
+  <rect x="55" y="95" width="20" height="40" rx="8" fill="#FFCC80"/>
+  <rect x="125" y="95" width="20" height="40" rx="8" fill="#FFCC80"/>
+  <!-- Pants -->
+  <rect x="78" y="140" width="20" height="35" rx="6" fill="#1565C0"/>
+  <rect x="102" y="140" width="20" height="35" rx="6" fill="#1565C0"/>
+  <!-- Shoes -->
+  <ellipse cx="88" cy="178" rx="14" ry="7" fill="#E53935"/>
+  <ellipse cx="112" cy="178" rx="14" ry="7" fill="#E53935"/>
+</svg>

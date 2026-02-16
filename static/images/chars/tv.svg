@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- TV body -->
+  <rect x="15" y="30" width="170" height="110" rx="8" fill="#37474F"/>
+  <!-- Screen -->
+  <rect x="22" y="37" width="156" height="96" rx="4" fill="#BBDEFB"/>
+  <!-- Screen content - mountains and sun -->
+  <circle cx="140" cy="60" r="15" fill="#FFD54F"/>
+  <path d="M22 120 L70 70 L110 100 L140 65 L178 100 L178 133 L22 133Z" fill="#4CAF50"/>
+  <path d="M22 133 L80 90 L130 120 L178 85 L178 133Z" fill="#388E3C"/>
+  <!-- Stand -->
+  <rect x="80" y="140" width="40" height="10" rx="2" fill="#546E7A"/>
+  <!-- Base -->
+  <rect x="55" y="148" width="90" height="8" rx="4" fill="#455A64"/>
+  <!-- Power indicator -->
+  <circle cx="100" cy="143" r="2" fill="#4CAF50"/>
+</svg>

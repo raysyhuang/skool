@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" rx="20" fill="#E8EAF6"/>
+  <!-- Shadow -->
+  <ellipse cx="105" cy="165" rx="70" ry="12" fill="#C5CAE9" opacity="0.4"/>
+  <!-- Pillow body - soft rounded rectangle -->
+  <rect x="25" y="60" width="150" height="95" rx="30" fill="#BBDEFB"/>
+  <rect x="25" y="60" width="150" height="95" rx="30" fill="url(#pillowGrad)" opacity="0.3"/>
+  <!-- Pillow puff - top curve -->
+  <path d="M30 80 Q100 40 170 80" fill="#BBDEFB"/>
+  <path d="M30 80 Q100 42 170 80" fill="#E3F2FD" opacity="0.5"/>
+  <!-- Pillow puff - bottom curve -->
+  <path d="M30 135 Q100 170 170 135" fill="#BBDEFB"/>
+  <!-- Pillow seam/edge -->
+  <rect x="25" y="60" width="150" height="95" rx="30" fill="none" stroke="#90CAF9" stroke-width="2"/>
+  <!-- Corner tufts -->
+  <circle cx="38" cy="75" r="5" fill="#90CAF9" opacity="0.3"/>
+  <circle cx="162" cy="75" r="5" fill="#90CAF9" opacity="0.3"/>
+  <circle cx="38" cy="140" r="5" fill="#90CAF9" opacity="0.3"/>
+  <circle cx="162" cy="140" r="5" fill="#90CAF9" opacity="0.3"/>
+  <!-- Pillow wrinkle lines -->
+  <path d="M60 85 Q65 100 60 115" fill="none" stroke="#90CAF9" stroke-width="1" opacity="0.4"/>
+  <path d="M140 85 Q135 100 140 115" fill="none" stroke="#90CAF9" stroke-width="1" opacity="0.4"/>
+  <!-- Highlight -->
+  <ellipse cx="85" cy="80" rx="30" ry="12" fill="white" opacity="0.3" transform="rotate(-5 85 80)"/>
+  <!-- Cute face -->
+  <circle cx="82" cy="100" r="5" fill="#3949AB"/>
+  <circle cx="118" cy="100" r="5" fill="#3949AB"/>
+  <circle cx="84" cy="98" r="2" fill="white"/>
+  <circle cx="120" cy="98" r="2" fill="white"/>
+  <!-- Sleepy smile -->
+  <path d="M90 118 Q100 128 110 118" fill="none" stroke="#3949AB" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Blush -->
+  <ellipse cx="72" cy="112" rx="8" ry="5" fill="#F48FB1" opacity="0.35"/>
+  <ellipse cx="128" cy="112" rx="8" ry="5" fill="#F48FB1" opacity="0.35"/>
+  <!-- Zzz sleep -->
+  <text x="150" y="48" fill="#7986CB" font-size="18" font-weight="bold" font-family="Arial" opacity="0.6">Z</text>
+  <text x="162" y="35" fill="#7986CB" font-size="14" font-weight="bold" font-family="Arial" opacity="0.45">z</text>
+  <text x="172" y="25" fill="#7986CB" font-size="10" font-weight="bold" font-family="Arial" opacity="0.3">z</text>
+  <defs>
+    <linearGradient id="pillowGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#90CAF9" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+</svg>

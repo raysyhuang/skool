@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background - blue sky -->
+  <rect width="200" height="200" rx="20" fill="#87CEEB"/>
+  <!-- Background clouds far away -->
+  <ellipse cx="40" cy="50" rx="25" ry="10" fill="white" opacity="0.3"/>
+  <ellipse cx="170" cy="40" rx="20" ry="8" fill="white" opacity="0.25"/>
+  <!-- Main cloud body -->
+  <circle cx="70" cy="115" r="35" fill="white"/>
+  <circle cx="105" cy="100" r="40" fill="white"/>
+  <circle cx="140" cy="112" r="32" fill="white"/>
+  <circle cx="85" cy="105" r="30" fill="white"/>
+  <circle cx="125" cy="105" r="35" fill="white"/>
+  <!-- Cloud bottom flat -->
+  <rect x="40" y="120" width="130" height="30" rx="5" fill="white"/>
+  <!-- Cloud highlights -->
+  <circle cx="90" cy="95" r="15" fill="#F8FCFF" opacity="0.7"/>
+  <circle cx="115" cy="90" r="12" fill="#F8FCFF" opacity="0.6"/>
+  <!-- Cute face -->
+  <circle cx="82" cy="115" r="5" fill="#5D8AA8"/>
+  <circle cx="120" cy="115" r="5" fill="#5D8AA8"/>
+  <circle cx="84" cy="113" r="2" fill="white"/>
+  <circle cx="122" cy="113" r="2" fill="white"/>
+  <!-- Smile -->
+  <path d="M90 132 Q100 142 112 132" fill="none" stroke="#5D8AA8" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Blush -->
+  <ellipse cx="72" cy="125" rx="8" ry="5" fill="#FFB0C0" opacity="0.4"/>
+  <ellipse cx="130" cy="125" rx="8" ry="5" fill="#FFB0C0" opacity="0.4"/>
+  <!-- Sun peeking from corner -->
+  <circle cx="175" cy="175" r="30" fill="#FFD700" opacity="0.6"/>
+  <circle cx="175" cy="175" r="25" fill="#FFE44D" opacity="0.7"/>
+</svg>

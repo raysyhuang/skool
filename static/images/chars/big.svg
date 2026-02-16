@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Big elephant with tiny mouse for comparison -->
+  <!-- Elephant body -->
+  <ellipse cx="85" cy="115" rx="60" ry="45" fill="#B0B0B0"/>
+  <!-- Head -->
+  <circle cx="132" cy="82" r="26" fill="#B0B0B0"/>
+  <!-- Ear -->
+  <ellipse cx="114" cy="78" rx="16" ry="20" fill="#D0D0D0"/>
+  <!-- Eye -->
+  <circle cx="142" cy="75" r="5" fill="#fff"/>
+  <circle cx="143" cy="75" r="3" fill="#333"/>
+  <!-- Trunk -->
+  <path d="M155 88 Q170 108 165 135 Q162 142 156 138 Q160 115 150 98" fill="#B0B0B0"/>
+  <!-- Legs -->
+  <rect x="42" y="148" width="16" height="28" rx="6" fill="#A0A0A0"/>
+  <rect x="68" y="148" width="16" height="28" rx="6" fill="#A0A0A0"/>
+  <rect x="94" y="148" width="16" height="28" rx="6" fill="#A0A0A0"/>
+  <rect x="116" y="148" width="16" height="28" rx="6" fill="#A0A0A0"/>
+  <!-- Tiny mouse for comparison -->
+  <ellipse cx="168" cy="170" rx="8" ry="6" fill="#E8C8A0"/>
+  <circle cx="174" cy="166" r="3" fill="#E8C8A0"/>
+  <circle cx="175" cy="165" r="1" fill="#333"/>
+  <line x1="176" y1="168" x2="190" y2="165" stroke="#E8C8A0" stroke-width="1"/>
+  <!-- Arrow showing BIG -->
+  <path d="M30 30 L55 30 L55 20 L75 40 L55 60 L55 50 L30 50 Z" fill="#FF6B35" opacity="0.8"/>
+</svg>

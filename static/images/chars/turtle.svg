@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Tail -->
+  <path d="M28 128 Q12 125 8 118" fill="none" stroke="#6B8E23" stroke-width="6" stroke-linecap="round"/>
+  <!-- Back left leg -->
+  <ellipse cx="52" cy="152" rx="14" ry="10" fill="#6B8E23" transform="rotate(-15 52 152)"/>
+  <!-- Back right leg -->
+  <ellipse cx="148" cy="152" rx="14" ry="10" fill="#6B8E23" transform="rotate(15 148 152)"/>
+  <!-- Front left leg -->
+  <ellipse cx="58" cy="108" rx="14" ry="10" fill="#6B8E23" transform="rotate(-20 58 108)"/>
+  <!-- Front right leg -->
+  <ellipse cx="148" cy="108" rx="14" ry="10" fill="#6B8E23" transform="rotate(20 148 108)"/>
+  <!-- Shell base -->
+  <ellipse cx="100" cy="120" rx="62" ry="42" fill="#8B6914"/>
+  <!-- Shell top (dome) -->
+  <ellipse cx="100" cy="115" rx="58" ry="42" fill="#2E7D32"/>
+  <!-- Shell pattern - hexagonal shapes -->
+  <ellipse cx="100" cy="100" rx="18" ry="14" fill="#43A047" stroke="#1B5E20" stroke-width="1.5"/>
+  <ellipse cx="72" cy="108" rx="14" ry="11" fill="#43A047" stroke="#1B5E20" stroke-width="1.5"/>
+  <ellipse cx="128" cy="108" rx="14" ry="11" fill="#43A047" stroke="#1B5E20" stroke-width="1.5"/>
+  <ellipse cx="80" cy="128" rx="13" ry="10" fill="#43A047" stroke="#1B5E20" stroke-width="1.5"/>
+  <ellipse cx="120" cy="128" rx="13" ry="10" fill="#43A047" stroke="#1B5E20" stroke-width="1.5"/>
+  <ellipse cx="100" cy="122" rx="12" ry="9" fill="#43A047" stroke="#1B5E20" stroke-width="1.5"/>
+  <!-- Shell rim -->
+  <ellipse cx="100" cy="120" rx="62" ry="42" fill="none" stroke="#5D4037" stroke-width="2"/>
+  <!-- Head -->
+  <ellipse cx="168" cy="115" rx="22" ry="18" fill="#7CB342"/>
+  <!-- Left eye -->
+  <circle cx="175" cy="108" r="5" fill="white"/>
+  <circle cx="176" cy="109" r="3" fill="#2C2C2C"/>
+  <circle cx="177" cy="108" r="1" fill="white"/>
+  <!-- Smile -->
+  <path d="M172 122 Q178 127 184 122" fill="none" stroke="#33691E" stroke-width="2" stroke-linecap="round"/>
+  <!-- Blush -->
+  <circle cx="180" cy="118" r="4" fill="#FFAB91" opacity="0.5"/>
+  <!-- Nostril -->
+  <circle cx="186" cy="112" r="1.5" fill="#558B2F"/>
+</svg>

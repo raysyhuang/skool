@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Fluffy body -->
+  <circle cx="80" cy="105" r="25" fill="white" stroke="#CCC" stroke-width="2"/>
+  <circle cx="105" cy="95" r="25" fill="white" stroke="#CCC" stroke-width="2"/>
+  <circle cx="130" cy="100" r="25" fill="white" stroke="#CCC" stroke-width="2"/>
+  <circle cx="90" cy="120" r="25" fill="white" stroke="#CCC" stroke-width="2"/>
+  <circle cx="115" cy="118" r="25" fill="white" stroke="#CCC" stroke-width="2"/>
+  <circle cx="140" cy="115" r="22" fill="white" stroke="#CCC" stroke-width="2"/>
+  <circle cx="75" cy="95" r="20" fill="white" stroke="#CCC" stroke-width="2"/>
+  <!-- Head -->
+  <ellipse cx="55" cy="80" rx="22" ry="25" fill="#555" stroke="#333" stroke-width="2"/>
+  <!-- Ears -->
+  <ellipse cx="33" cy="70" rx="12" ry="6" fill="#555" stroke="#333" stroke-width="2"/>
+  <ellipse cx="77" cy="70" rx="12" ry="6" fill="#555" stroke="#333" stroke-width="2"/>
+  <!-- Eyes -->
+  <circle cx="48" cy="75" r="4" fill="white"/>
+  <circle cx="62" cy="75" r="4" fill="white"/>
+  <circle cx="48" cy="75" r="2" fill="#333"/>
+  <circle cx="62" cy="75" r="2" fill="#333"/>
+  <!-- Nose -->
+  <ellipse cx="55" cy="90" rx="5" ry="3" fill="#888"/>
+  <!-- Mouth -->
+  <path d="M50 95 Q55 100 60 95" fill="none" stroke="#888" stroke-width="1.5"/>
+  <!-- Legs -->
+  <rect x="82" y="138" width="10" height="35" rx="3" fill="#555"/>
+  <rect x="100" y="138" width="10" height="35" rx="3" fill="#555"/>
+  <rect x="120" y="135" width="10" height="38" rx="3" fill="#555"/>
+  <rect x="138" y="132" width="10" height="41" rx="3" fill="#555"/>
+</svg>

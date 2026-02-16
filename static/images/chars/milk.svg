@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <rect x="45" y="50" width="110" height="140" rx="8" fill="white" stroke="#4A90D9" stroke-width="3"/>
+  <rect x="60" y="25" width="80" height="30" rx="4" fill="white" stroke="#4A90D9" stroke-width="3"/>
+  <polygon points="60,50 45,50 60,25" fill="white" stroke="#4A90D9" stroke-width="3"/>
+  <polygon points="140,50 155,50 140,25" fill="white" stroke="#4A90D9" stroke-width="3"/>
+  <rect x="60" y="90" width="80" height="50" rx="5" fill="#4A90D9"/>
+  <text x="100" y="122" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="22" fill="white">MILK</text>
+  <circle cx="100" cy="75" r="10" fill="#87CEEB" opacity="0.5"/>
+</svg>

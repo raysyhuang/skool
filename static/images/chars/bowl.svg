@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Steam wisps -->
+  <path d="M70 55 Q65 40 70 28" stroke="#B0BEC5" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M100 50 Q95 32 100 18" stroke="#B0BEC5" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <path d="M130 55 Q135 40 130 28" stroke="#B0BEC5" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.5"/>
+  <!-- Bowl shadow -->
+  <ellipse cx="100" cy="170" rx="65" ry="10" fill="#E0E0E0" opacity="0.5"/>
+  <!-- Bowl body -->
+  <path d="M25 80 Q25 165 100 165 Q175 165 175 80 Z" fill="#E3F2FD"/>
+  <path d="M25 80 Q25 165 100 165 Q175 165 175 80 Z" fill="none" stroke="#64B5F6" stroke-width="3"/>
+  <!-- Bowl rim -->
+  <ellipse cx="100" cy="80" rx="78" ry="18" fill="#BBDEFB"/>
+  <ellipse cx="100" cy="80" rx="78" ry="18" fill="none" stroke="#64B5F6" stroke-width="3"/>
+  <!-- Inner bowl -->
+  <ellipse cx="100" cy="82" rx="65" ry="13" fill="#E3F2FD" opacity="0.6"/>
+  <!-- Rice/food inside -->
+  <ellipse cx="100" cy="85" rx="55" ry="10" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="85" cy="83" r="5" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="105" cy="82" r="6" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="95" cy="86" r="4" fill="#FFFFFF" opacity="0.4"/>
+  <!-- Blue decorative stripe -->
+  <path d="M40 110 Q40 145 100 145 Q160 145 160 110" fill="none" stroke="#42A5F5" stroke-width="2.5" stroke-dasharray="8 4"/>
+  <!-- Bowl base -->
+  <ellipse cx="100" cy="163" rx="30" ry="6" fill="#BBDEFB"/>
+  <ellipse cx="100" cy="163" rx="30" ry="6" fill="none" stroke="#64B5F6" stroke-width="2"/>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Head -->
+  <circle cx="100" cy="55" r="35" fill="#FFCC99" stroke="#CC8844" stroke-width="2"/>
+  <!-- Hair -->
+  <path d="M65 45 Q70 20 100 18 Q130 20 135 45" fill="#4A3510" stroke="none"/>
+  <!-- Glasses -->
+  <rect x="72" y="45" width="22" height="18" rx="4" fill="none" stroke="#333" stroke-width="3"/>
+  <rect x="106" y="45" width="22" height="18" rx="4" fill="none" stroke="#333" stroke-width="3"/>
+  <line x1="94" y1="54" x2="106" y2="54" stroke="#333" stroke-width="3"/>
+  <!-- Eyes behind glasses -->
+  <circle cx="83" cy="54" r="4" fill="#333"/>
+  <circle cx="117" cy="54" r="4" fill="#333"/>
+  <!-- Smile -->
+  <path d="M85 72 Q100 82 115 72" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+  <!-- Body -->
+  <rect x="70" y="90" width="60" height="70" rx="5" fill="#4A90D9" stroke="#2C5F8A" stroke-width="2"/>
+  <!-- Collar/tie -->
+  <polygon points="100,92 95,105 100,115 105,105" fill="#CC4444"/>
+  <path d="M88 90 L100 95 L112 90" fill="none" stroke="white" stroke-width="2"/>
+  <!-- Arms -->
+  <rect x="45" y="95" width="25" height="12" rx="5" fill="#4A90D9" stroke="#2C5F8A" stroke-width="2"/>
+  <rect x="130" y="95" width="25" height="12" rx="5" fill="#4A90D9" stroke="#2C5F8A" stroke-width="2"/>
+  <!-- Hands -->
+  <circle cx="42" cy="101" r="8" fill="#FFCC99"/>
+  <circle cx="158" cy="101" r="8" fill="#FFCC99"/>
+  <!-- Legs -->
+  <rect x="75" y="160" width="20" height="30" rx="4" fill="#555"/>
+  <rect x="105" y="160" width="20" height="30" rx="4" fill="#555"/>
+  <!-- Shoes -->
+  <rect x="72" y="185" width="26" height="10" rx="4" fill="#333"/>
+  <rect x="102" y="185" width="26" height="10" rx="4" fill="#333"/>
+</svg>

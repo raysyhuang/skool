@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Hair -->
+  <circle cx="100" cy="55" r="35" fill="#5D4037"/>
+  <!-- Face -->
+  <circle cx="100" cy="58" r="28" fill="#FFCC80"/>
+  <!-- Hair bangs -->
+  <path d="M72 42 Q80 30 100 28 Q120 30 128 42 Q120 38 100 36 Q80 38 72 42Z" fill="#5D4037"/>
+  <!-- Side hair -->
+  <path d="M68 55 Q62 55 60 70 Q58 85 65 90" fill="#5D4037"/>
+  <path d="M132 55 Q138 55 140 70 Q142 85 135 90" fill="#5D4037"/>
+  <!-- Eyes -->
+  <circle cx="88" cy="55" r="4" fill="#3E2723"/>
+  <circle cx="112" cy="55" r="4" fill="#3E2723"/>
+  <circle cx="89" cy="53" r="1.5" fill="white"/>
+  <circle cx="113" cy="53" r="1.5" fill="white"/>
+  <!-- Blush -->
+  <ellipse cx="80" cy="65" rx="6" ry="4" fill="#F48FB1" opacity="0.5"/>
+  <ellipse cx="120" cy="65" rx="6" ry="4" fill="#F48FB1" opacity="0.5"/>
+  <!-- Mouth -->
+  <path d="M93 70 Q100 77 107 70" stroke="#E91E63" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Body (dress) -->
+  <path d="M80 88 Q70 95 55 150 L145 150 Q130 95 120 88Z" fill="#E91E63"/>
+  <!-- Dress detail -->
+  <path d="M80 88 Q100 100 120 88" stroke="#F48FB1" stroke-width="2" fill="none"/>
+  <circle cx="100" cy="105" r="4" fill="#FFEB3B"/>
+  <circle cx="100" cy="120" r="4" fill="#FFEB3B"/>
+  <circle cx="100" cy="135" r="4" fill="#FFEB3B"/>
+  <!-- Arms -->
+  <path d="M68 100 Q50 115 45 130" stroke="#FFCC80" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M132 100 Q150 115 155 130" stroke="#FFCC80" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- Legs -->
+  <rect x="78" y="150" width="14" height="30" rx="5" fill="#FFCC80"/>
+  <rect x="108" y="150" width="14" height="30" rx="5" fill="#FFCC80"/>
+  <!-- Shoes -->
+  <ellipse cx="85" cy="183" rx="12" ry="7" fill="#E91E63"/>
+  <ellipse cx="115" cy="183" rx="12" ry="7" fill="#E91E63"/>
+  <!-- Hair bow -->
+  <path d="M120 35 Q130 28 135 35 Q130 42 120 35Z" fill="#FF4081"/>
+  <path d="M120 35 Q110 28 105 35 Q110 42 120 35Z" fill="#FF4081"/>
+  <circle cx="120" cy="35" r="3" fill="#F50057"/>
+</svg>

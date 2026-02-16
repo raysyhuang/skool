@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" rx="20" fill="#F0F8FF"/>
+  <!-- Plate -->
+  <ellipse cx="100" cy="155" rx="70" ry="20" fill="#D0D0D0"/>
+  <ellipse cx="100" cy="150" rx="70" ry="20" fill="#E8E8E8"/>
+  <ellipse cx="100" cy="148" rx="60" ry="15" fill="#F5F5F5"/>
+  <!-- Tofu block - 3D appearance -->
+  <!-- Top face -->
+  <polygon points="55,95 100,75 145,95 100,115" fill="#FFFEF5"/>
+  <!-- Left face -->
+  <polygon points="55,95 100,115 100,145 55,125" fill="#F5F0E0"/>
+  <!-- Right face -->
+  <polygon points="145,95 100,115 100,145 145,125" fill="#EDE8D8"/>
+  <!-- Top face highlight -->
+  <polygon points="60,95 100,78 140,95 100,112" fill="#FFFFF8" opacity="0.5"/>
+  <!-- Grid lines on top -->
+  <line x1="78" y1="86" x2="78" y2="106" stroke="#E8E0D0" stroke-width="1" opacity="0.6" transform="rotate(-15 78 96)"/>
+  <line x1="122" y1="86" x2="122" y2="106" stroke="#E8E0D0" stroke-width="1" opacity="0.6" transform="rotate(15 122 96)"/>
+  <!-- Cute face on front -->
+  <circle cx="85" cy="123" r="3.5" fill="#8B7355"/>
+  <circle cx="110" cy="123" r="3.5" fill="#8B7355"/>
+  <circle cx="86" cy="122" r="1.2" fill="white"/>
+  <circle cx="111" cy="122" r="1.2" fill="white"/>
+  <!-- Smile -->
+  <path d="M90 132 Q97 138 107 132" fill="none" stroke="#8B7355" stroke-width="2" stroke-linecap="round"/>
+  <!-- Blush -->
+  <ellipse cx="80" cy="130" rx="5" ry="3.5" fill="#FFB5B5" opacity="0.45"/>
+  <ellipse cx="115" cy="130" rx="5" ry="3.5" fill="#FFB5B5" opacity="0.45"/>
+  <!-- Small soy sauce drops -->
+  <circle cx="130" cy="145" r="4" fill="#8B6914" opacity="0.3"/>
+  <circle cx="140" cy="148" r="2.5" fill="#8B6914" opacity="0.25"/>
+</svg>

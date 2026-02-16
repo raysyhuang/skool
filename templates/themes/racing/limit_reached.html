@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - Car is Resting!{% endblock %}
+
+{% block theme_css %}
+<style>
+    :root {
+        --sky-top: #a29bfe;
+        --sky-bottom: #6c5ce7;
+        --dark: #2d3436;
+        --orange: #ff6b35;
+        --purple: #6c5ce7;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%; height: 100%;
+        overflow: hidden;
+        font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    body {
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100dvh;
+    }
+
+    /* ── Stars / moon background ── */
+    .night-sky {
+        position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .twinkle {
+        position: absolute;
+        font-size: 20px;
+        animation: twinkle 3s ease-in-out infinite;
+        opacity: 0.6;
+    }
+    .twinkle:nth-child(1) { left: 8%; top: 12%; animation-delay: 0s; }
+    .twinkle:nth-child(2) { left: 22%; top: 30%; animation-delay: 0.5s; font-size: 14px; }
+    .twinkle:nth-child(3) { left: 50%; top: 8%; animation-delay: 1s; font-size: 24px; }
+    .twinkle:nth-child(4) { left: 70%; top: 20%; animation-delay: 1.5s; }
+    .twinkle:nth-child(5) { left: 85%; top: 35%; animation-delay: 0.3s; font-size: 16px; }
+    .twinkle:nth-child(6) { left: 35%; top: 45%; animation-delay: 2s; font-size: 12px; }
+    .twinkle:nth-child(7) { left: 60%; top: 50%; animation-delay: 0.8s; }
+    .twinkle:nth-child(8) { left: 15%; top: 55%; animation-delay: 1.2s; font-size: 18px; }
+    .twinkle:nth-child(9) { left: 90%; top: 10%; animation-delay: 2.5s; font-size: 22px; }
+    .twinkle:nth-child(10) { left: 45%; top: 65%; animation-delay: 1.8s; font-size: 14px; }
+
+    .moon {
+        position: absolute;
+        right: 10%; top: 8%;
+        font-size: clamp(48px, 8vw, 80px);
+        animation: moonGlow 4s ease-in-out infinite;
+    }
+    @keyframes moonGlow {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.3); }
+    }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.4; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ── Main card ── */
+    .limit-card {
+        position: relative; z-index: 1;
+        background: rgba(255,255,255,0.95);
+        border-radius: 36px;
+        padding: clamp(28px, 5vw, 48px);
+        width: clamp(340px, 70vw, 560px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(16px, 3vh, 28px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+        animation: cardFloat 0.6s ease-out;
+    }
+    @keyframes cardFloat {
+        0% { transform: translateY(30px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Sleeping car */
+    .sleeping-car {
+        font-size: clamp(72px, 14vw, 120px);
+        position: relative;
+        animation: carSleep 3s ease-in-out infinite;
+    }
+    @keyframes carSleep {
+        0%, 100% { transform: rotate(-2deg); }
+        50% { transform: rotate(2deg); }
+    }
+    .zzz {
+        position: absolute;
+        top: -20px; right: -30px;
+        font-size: clamp(28px, 5vw, 40px);
+        animation: zzzFloat 2s ease-in-out infinite;
+    }
+    @keyframes zzzFloat {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+        50% { transform: translateY(-15px) scale(1.1); opacity: 1; }
+    }
+
+    .limit-title {
+        font-size: clamp(28px, 5vw, 42px);
+        font-weight: 900;
+        color: var(--dark);
+        text-align: center;
+        line-height: 1.3;
+    }
+
+    .limit-msg {
+        font-size: clamp(18px, 3vw, 24px);
+        color: #636e72;
+        text-align: center;
+        line-height: 1.5;
+        max-width: 400px;
+    }
+
+    /* Stats row */
+    .stats-row {
+        display: flex;
+        gap: clamp(10px, 2vw, 20px);
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .stat-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 50px;
+        background: #f0f0f3;
+        font-size: clamp(18px, 3vw, 24px);
+        font-weight: 800;
+        color: var(--dark);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .stat-pill .emoji {
+        font-size: clamp(22px, 4vw, 32px);
+    }
+
+    /* Back button */
+    .back-btn {
+        min-width: clamp(200px, 36vw, 300px);
+        min-height: clamp(64px, 10vw, 80px);
+        border: none;
+        border-radius: 24px;
+        font-size: clamp(20px, 3.5vw, 28px);
+        font-weight: 800;
+        color: #fff;
+        background: linear-gradient(135deg, var(--purple), #4834d4);
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(108,92,231,0.4);
+        transition: transform 0.15s, box-shadow 0.15s;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    .back-btn:active {
+        transform: scale(0.95);
+    }
+    .back-btn:hover {
+        box-shadow: 0 10px 30px rgba(108,92,231,0.5);
+        transform: scale(1.03);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{# ── Night sky ── #}
+<div class="night-sky">
+    <span class="twinkle">&#10024;</span>
+    <span class="twinkle">&#11088;</span>
+    <span class="twinkle">&#10024;</span>
+    <span class="twinkle">&#11088;</span>
+    <span class="twinkle">&#10024;</span>
+    <span class="twinkle">&#11088;</span>
+    <span class="twinkle">&#10024;</span>
+    <span class="twinkle">&#11088;</span>
+    <span class="twinkle">&#10024;</span>
+    <span class="twinkle">&#11088;</span>
+    <span class="moon">&#127769;</span>
+</div>
+
+{# ── Main card ── #}
+<div class="limit-card">
+    <div class="sleeping-car">
+        &#128663;
+        <span class="zzz">&#128164;</span>
+    </div>
+
+    <h1 class="limit-title">
+        The car is resting! &#128564;
+    </h1>
+
+    <p class="limit-msg">
+        Great racing today!<br>
+        Come back tomorrow for more fun! &#127775;
+    </p>
+
+    {# Current stats #}
+    <div class="stats-row">
+        <div class="stat-pill">
+            <span class="emoji">&#11088;</span>
+            <span>{{ user.points }} pts</span>
+        </div>
+        <div class="stat-pill">
+            <span class="emoji">&#127775;</span>
+            <span>{{ user.stars }} stars</span>
+        </div>
+        <div class="stat-pill">
+            <span class="emoji">&#129689;</span>
+            <span>{{ user.coins }} coins</span>
+        </div>
+        <div class="stat-pill">
+            <span class="emoji">&#128293;</span>
+            <span>{{ user.streak }} day streak</span>
+        </div>
+    </div>
+
+    <a href="/logout" style="text-decoration: none;">
+        <button class="back-btn" type="button">
+            &#128075; See You Tomorrow!
+        </button>
+    </a>
+</div>
+{% endblock %}

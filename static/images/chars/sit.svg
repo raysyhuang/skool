@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Chair -->
+  <rect x="55" y="85" width="90" height="10" rx="3" fill="#C49A6C" stroke="#8B6914" stroke-width="2"/>
+  <rect x="125" y="35" width="12" height="60" rx="3" fill="#C49A6C" stroke="#8B6914" stroke-width="2"/>
+  <rect x="60" y="95" width="10" height="50" fill="#C49A6C" stroke="#8B6914" stroke-width="2"/>
+  <rect x="125" y="95" width="10" height="50" fill="#C49A6C" stroke="#8B6914" stroke-width="2"/>
+  <!-- Person head -->
+  <circle cx="90" cy="40" r="25" fill="#FFCC99" stroke="#CC8844" stroke-width="2"/>
+  <!-- Hair -->
+  <path d="M65 35 Q70 15 90 12 Q110 15 115 35" fill="#885533"/>
+  <!-- Eyes -->
+  <circle cx="82" cy="38" r="4" fill="#333"/>
+  <circle cx="98" cy="38" r="4" fill="#333"/>
+  <!-- Smile -->
+  <path d="M80 50 Q90 58 100 50" fill="none" stroke="#333" stroke-width="2"/>
+  <!-- Body (sitting) -->
+  <rect x="70" y="65" width="40" height="30" rx="5" fill="#4A90D9" stroke="#2C5F8A" stroke-width="2"/>
+  <!-- Legs (bent at chair) -->
+  <path d="M75 95 L75 120 L60 145" fill="none" stroke="#555" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M105 95 L105 120 L90 145" fill="none" stroke="#555" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Arms resting -->
+  <line x1="70" y1="75" x2="55" y2="85" stroke="#FFCC99" stroke-width="8" stroke-linecap="round"/>
+  <line x1="110" y1="75" x2="125" y2="85" stroke="#FFCC99" stroke-width="8" stroke-linecap="round"/>
+  <!-- Shoes -->
+  <ellipse cx="56" cy="148" rx="10" ry="5" fill="#333"/>
+  <ellipse cx="86" cy="148" rx="10" ry="5" fill="#333"/>
+</svg>

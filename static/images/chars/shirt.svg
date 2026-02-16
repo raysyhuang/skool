@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Body -->
+  <path d="M55 55 L55 175 L145 175 L145 55 L120 35 Q100 25 80 35 Z" fill="#44BB44" stroke="#228822" stroke-width="3"/>
+  <!-- Left sleeve -->
+  <path d="M55 55 L15 75 L25 115 L55 95 Z" fill="#44BB44" stroke="#228822" stroke-width="3"/>
+  <!-- Right sleeve -->
+  <path d="M145 55 L185 75 L175 115 L145 95 Z" fill="#44BB44" stroke="#228822" stroke-width="3"/>
+  <!-- Collar -->
+  <path d="M80 35 Q90 50 100 45 Q110 50 120 35" fill="#44BB44" stroke="#228822" stroke-width="2"/>
+  <!-- Neckline -->
+  <path d="M80 35 Q100 55 120 35" fill="none" stroke="#228822" stroke-width="2"/>
+  <!-- Hem -->
+  <line x1="55" y1="175" x2="145" y2="175" stroke="#228822" stroke-width="3"/>
+</svg>

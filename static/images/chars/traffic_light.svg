@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" rx="20" fill="#E8F5E9"/>
+  <!-- Pole -->
+  <rect x="93" y="140" width="14" height="50" rx="3" fill="#757575"/>
+  <rect x="85" y="182" width="30" height="10" rx="5" fill="#616161"/>
+  <!-- Traffic light housing -->
+  <rect x="65" y="20" width="70" height="125" rx="12" fill="#424242"/>
+  <rect x="65" y="20" width="70" height="125" rx="12" fill="url(#tlGrad)" opacity="0.2"/>
+  <!-- Housing inner -->
+  <rect x="70" y="25" width="60" height="115" rx="9" fill="#333333"/>
+  <!-- Visor tops -->
+  <path d="M62 50 L75 40 L75 60 Z" fill="#424242"/>
+  <path d="M62 90 L75 80 L75 100 Z" fill="#424242"/>
+  <path d="M62 128 L75 118 L75 138 Z" fill="#424242"/>
+  <path d="M138 50 L125 40 L125 60 Z" fill="#424242"/>
+  <path d="M138 90 L125 80 L125 100 Z" fill="#424242"/>
+  <path d="M138 128 L125 118 L125 138 Z" fill="#424242"/>
+  <!-- Red light -->
+  <circle cx="100" cy="50" r="18" fill="#B71C1C"/>
+  <circle cx="100" cy="50" r="15" fill="#F44336"/>
+  <circle cx="100" cy="50" r="12" fill="#EF5350" opacity="0.8"/>
+  <!-- Red glow -->
+  <circle cx="100" cy="50" r="20" fill="#F44336" opacity="0.15"/>
+  <!-- Red shine -->
+  <circle cx="94" cy="44" r="4" fill="white" opacity="0.3"/>
+  <!-- Yellow light -->
+  <circle cx="100" cy="90" r="18" fill="#F57F17"/>
+  <circle cx="100" cy="90" r="15" fill="#FFEB3B"/>
+  <circle cx="100" cy="90" r="12" fill="#FFF176" opacity="0.8"/>
+  <!-- Yellow glow -->
+  <circle cx="100" cy="90" r="20" fill="#FFEB3B" opacity="0.15"/>
+  <!-- Yellow shine -->
+  <circle cx="94" cy="84" r="4" fill="white" opacity="0.3"/>
+  <!-- Green light -->
+  <circle cx="100" cy="128" r="18" fill="#1B5E20"/>
+  <circle cx="100" cy="128" r="15" fill="#4CAF50"/>
+  <circle cx="100" cy="128" r="12" fill="#66BB6A" opacity="0.8"/>
+  <!-- Green glow -->
+  <circle cx="100" cy="128" r="20" fill="#4CAF50" opacity="0.15"/>
+  <!-- Green shine -->
+  <circle cx="94" cy="122" r="4" fill="white" opacity="0.3"/>
+  <!-- Cute face on yellow (center) light -->
+  <circle cx="93" cy="87" r="2.5" fill="#F57F17"/>
+  <circle cx="107" cy="87" r="2.5" fill="#F57F17"/>
+  <path d="M95 95 Q100 100 105 95" fill="none" stroke="#F57F17" stroke-width="1.5" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="tlGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="white" stop-opacity="0.1"/>
+      <stop offset="50%" stop-color="white" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+</svg>

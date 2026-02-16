@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Flexing arm muscle -->
+  <!-- Upper arm -->
+  <path d="M50 160 Q45 120 60 90 Q70 70 85 75 L95 80 Q80 95 75 120 Q72 140 80 160 Z" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <!-- Forearm -->
+  <path d="M85 75 Q100 70 120 55 Q140 42 150 50 Q155 55 145 65 Q130 78 110 85 Q95 90 95 80 Z" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <!-- Bicep muscle bulge -->
+  <ellipse cx="92" cy="82" rx="22" ry="16" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(-30,92,82)"/>
+  <!-- Muscle highlight -->
+  <path d="M82 72 Q90 65 98 72" fill="none" stroke="#E0A050" stroke-width="2" opacity="0.6"/>
+  <!-- Fist -->
+  <circle cx="148" cy="52" r="16" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <!-- Fist details -->
+  <line x1="140" y1="48" x2="156" y2="48" stroke="#E0A050" stroke-width="1.5"/>
+  <line x1="140" y1="53" x2="156" y2="53" stroke="#E0A050" stroke-width="1.5"/>
+  <!-- Sleeve -->
+  <rect x="38" y="155" width="50" height="30" rx="8" fill="#42A5F5"/>
+  <!-- Power sparkles -->
+  <text x="110" y="35" font-size="22" fill="#FFD700">&#9733;</text>
+  <text x="155" y="90" font-size="18" fill="#FFD700">&#9733;</text>
+  <text x="35" y="70" font-size="16" fill="#FFD700">&#9733;</text>
+  <!-- Power lines -->
+  <line x1="105" y1="60" x2="115" y2="45" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+  <line x1="75" y1="62" x2="65" y2="48" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+  <line x1="120" y1="75" x2="135" y2="72" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+</svg>

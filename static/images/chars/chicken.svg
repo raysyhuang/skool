@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Body -->
+  <ellipse cx="100" cy="120" rx="55" ry="45" fill="#FFE4B5" stroke="#D4A06A" stroke-width="3"/>
+  <!-- Head -->
+  <circle cx="100" cy="60" r="30" fill="#FFE4B5" stroke="#D4A06A" stroke-width="3"/>
+  <!-- Comb -->
+  <path d="M85 32 Q90 15 100 30 Q110 15 115 32" fill="#FF4444" stroke="#CC0000" stroke-width="2"/>
+  <!-- Beak -->
+  <polygon points="130,58 145,65 130,72" fill="#FFA500" stroke="#CC7700" stroke-width="2"/>
+  <!-- Eye -->
+  <circle cx="110" cy="55" r="5" fill="#333"/>
+  <circle cx="112" cy="53" r="2" fill="white"/>
+  <!-- Wattle -->
+  <ellipse cx="125" cy="75" rx="6" ry="10" fill="#FF4444"/>
+  <!-- Wing -->
+  <ellipse cx="80" cy="115" rx="25" ry="20" fill="#F5D4A0" stroke="#D4A06A" stroke-width="2"/>
+  <!-- Legs -->
+  <line x1="85" y1="160" x2="80" y2="185" stroke="#FFA500" stroke-width="4"/>
+  <line x1="115" y1="160" x2="120" y2="185" stroke="#FFA500" stroke-width="4"/>
+  <path d="M65 185 L80 185 L90 185" fill="none" stroke="#FFA500" stroke-width="4"/>
+  <path d="M105 185 L120 185 L135 185" fill="none" stroke="#FFA500" stroke-width="4"/>
+</svg>

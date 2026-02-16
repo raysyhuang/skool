@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Gray background -->
+  <rect x="0" y="0" width="200" height="200" rx="10" fill="#CCCCCC"/>
+  <!-- White circle -->
+  <circle cx="100" cy="100" r="70" fill="white" stroke="#DDDDDD" stroke-width="3"/>
+  <!-- Subtle sparkle -->
+  <path d="M100 50 L103 65 L115 55 L105 67 L120 70 L105 73 L115 85 L103 75 L100 90 L97 75 L85 85 L95 73 L80 70 L95 67 L85 55 L97 65 Z" fill="#EEE" opacity="0.6"/>
+</svg>

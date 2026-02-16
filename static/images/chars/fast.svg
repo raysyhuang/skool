@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Running rabbit with speed lines -->
+  <!-- Rabbit body -->
+  <ellipse cx="115" cy="110" rx="40" ry="30" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="2"/>
+  <!-- Rabbit head -->
+  <circle cx="150" cy="80" r="22" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="2"/>
+  <!-- Ears -->
+  <ellipse cx="140" cy="42" rx="8" ry="22" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="2"/>
+  <ellipse cx="140" cy="45" rx="4" ry="16" fill="#FFB3C1"/>
+  <ellipse cx="158" cy="46" rx="8" ry="20" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="2"/>
+  <ellipse cx="158" cy="48" rx="4" ry="14" fill="#FFB3C1"/>
+  <!-- Eye -->
+  <circle cx="160" cy="76" r="4" fill="#E91E63"/>
+  <circle cx="161" cy="75" r="1.5" fill="white"/>
+  <!-- Nose -->
+  <circle cx="170" cy="82" r="3" fill="#FFB3C1"/>
+  <!-- Tail -->
+  <circle cx="75" cy="100" r="10" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="2"/>
+  <!-- Running legs -->
+  <line x1="95" y1="135" x2="80" y2="165" stroke="#BDBDBD" stroke-width="6" stroke-linecap="round"/>
+  <line x1="110" y1="137" x2="100" y2="168" stroke="#BDBDBD" stroke-width="6" stroke-linecap="round"/>
+  <line x1="130" y1="135" x2="145" y2="165" stroke="#BDBDBD" stroke-width="6" stroke-linecap="round"/>
+  <line x1="140" y1="130" x2="165" y2="155" stroke="#BDBDBD" stroke-width="6" stroke-linecap="round"/>
+  <!-- Speed lines -->
+  <line x1="10" y1="80" x2="55" y2="80" stroke="#FF9800" stroke-width="4" stroke-linecap="round"/>
+  <line x1="20" y1="100" x2="60" y2="100" stroke="#FF9800" stroke-width="4" stroke-linecap="round"/>
+  <line x1="15" y1="120" x2="55" y2="120" stroke="#FF9800" stroke-width="4" stroke-linecap="round"/>
+  <line x1="25" y1="140" x2="50" y2="140" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+</svg>

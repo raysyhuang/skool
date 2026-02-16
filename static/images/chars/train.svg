@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Main body -->
+  <rect x="40" y="55" width="120" height="85" rx="8" fill="#FF4444" stroke="#CC0000" stroke-width="3"/>
+  <!-- Roof -->
+  <rect x="35" y="48" width="130" height="15" rx="6" fill="#CC0000"/>
+  <!-- Windows -->
+  <rect x="55" y="70" width="30" height="25" rx="4" fill="#87CEEB" stroke="#999" stroke-width="2"/>
+  <rect x="95" y="70" width="30" height="25" rx="4" fill="#87CEEB" stroke="#999" stroke-width="2"/>
+  <rect x="135" y="70" width="20" height="25" rx="4" fill="#87CEEB" stroke="#999" stroke-width="2"/>
+  <!-- Front -->
+  <rect x="155" y="75" width="25" height="65" rx="5" fill="#DD3333" stroke="#CC0000" stroke-width="2"/>
+  <circle cx="168" cy="95" r="8" fill="#FFDD44" stroke="#CC9900" stroke-width="2"/>
+  <!-- Bottom bar -->
+  <rect x="30" y="140" width="150" height="10" rx="3" fill="#333"/>
+  <!-- Wheels -->
+  <circle cx="60" cy="155" r="15" fill="#555" stroke="#333" stroke-width="3"/>
+  <circle cx="60" cy="155" r="5" fill="#888"/>
+  <circle cx="110" cy="155" r="15" fill="#555" stroke="#333" stroke-width="3"/>
+  <circle cx="110" cy="155" r="5" fill="#888"/>
+  <circle cx="155" cy="155" r="15" fill="#555" stroke="#333" stroke-width="3"/>
+  <circle cx="155" cy="155" r="5" fill="#888"/>
+  <!-- Smokestack -->
+  <rect x="52" y="30" width="18" height="25" rx="3" fill="#555"/>
+  <ellipse cx="61" cy="28" rx="14" ry="6" fill="#666"/>
+  <!-- Smoke -->
+  <circle cx="55" cy="18" r="8" fill="#CCC" opacity="0.6"/>
+  <circle cx="45" cy="10" r="10" fill="#CCC" opacity="0.4"/>
+  <!-- Rail -->
+  <rect x="10" y="168" width="180" height="5" rx="2" fill="#888"/>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background - green landscape -->
+  <rect width="200" height="200" rx="20" fill="#81C784"/>
+  <!-- Distant hills -->
+  <ellipse cx="60" cy="50" rx="70" ry="30" fill="#66BB6A"/>
+  <ellipse cx="160" cy="55" rx="55" ry="25" fill="#6EC26E"/>
+  <!-- Sky area -->
+  <rect width="200" height="50" rx="20" fill="#87CEEB"/>
+  <rect width="200" height="40" fill="#87CEEB"/>
+  <!-- Sun -->
+  <circle cx="160" cy="30" r="15" fill="#FFD54F"/>
+  <!-- River - winding path from top to bottom -->
+  <path d="M80 0 Q60 30 90 60 Q130 100 70 130 Q30 150 80 180 Q100 195 120 200" fill="#42A5F5" stroke="#1E88E5" stroke-width="2"/>
+  <path d="M100 0 Q80 30 110 60 Q150 100 90 130 Q50 150 100 180 Q120 195 140 200" fill="#42A5F5" stroke="#1E88E5" stroke-width="2"/>
+  <!-- River middle fill -->
+  <path d="M80 0 Q60 30 90 60 Q130 100 70 130 Q30 150 80 180 Q100 195 120 200 L140 200 Q120 195 100 180 Q50 150 90 130 Q150 100 110 60 Q80 30 100 0 Z" fill="#64B5F6"/>
+  <!-- Water reflections -->
+  <path d="M88 20 Q90 18 92 20" fill="none" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M95 55 Q100 52 105 55" fill="none" stroke="white" stroke-width="1.5" opacity="0.4"/>
+  <path d="M85 95 Q90 92 95 95" fill="none" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M70 135 Q75 132 80 135" fill="none" stroke="white" stroke-width="1.5" opacity="0.4"/>
+  <path d="M88 175 Q93 172 98 175" fill="none" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <!-- Green banks with grass tufts -->
+  <!-- Left bank grass -->
+  <path d="M30 80 L28 68 L33 80" fill="#4CAF50"/>
+  <path d="M35 80 L37 66 L40 80" fill="#43A047"/>
+  <path d="M20 120 L18 108 L23 120" fill="#4CAF50"/>
+  <path d="M15 150 L12 138 L18 150" fill="#43A047"/>
+  <!-- Right bank grass -->
+  <path d="M150 70 L152 58 L155 70" fill="#4CAF50"/>
+  <path d="M160 90 L158 78 L163 90" fill="#43A047"/>
+  <path d="M130 140 L128 128 L133 140" fill="#4CAF50"/>
+  <!-- Trees -->
+  <circle cx="25" cy="55" r="12" fill="#388E3C"/>
+  <rect x="23" y="62" width="4" height="10" fill="#795548"/>
+  <circle cx="170" cy="75" r="10" fill="#2E7D32"/>
+  <rect x="168" y="82" width="4" height="8" fill="#795548"/>
+  <!-- Small rocks -->
+  <ellipse cx="60" cy="62" rx="5" ry="3" fill="#9E9E9E"/>
+  <ellipse cx="130" cy="125" rx="4" ry="3" fill="#BDBDBD"/>
+  <!-- Small cloud -->
+  <ellipse cx="50" cy="20" rx="18" ry="8" fill="white" opacity="0.7"/>
+</svg>

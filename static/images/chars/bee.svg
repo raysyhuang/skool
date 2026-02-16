@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Left wing -->
+  <ellipse cx="62" cy="62" rx="28" ry="20" fill="#D6EAF8" stroke="#AED6F1" stroke-width="1.5" transform="rotate(-20 62 62)"/>
+  <!-- Right wing -->
+  <ellipse cx="138" cy="62" rx="28" ry="20" fill="#D6EAF8" stroke="#AED6F1" stroke-width="1.5" transform="rotate(20 138 62)"/>
+  <!-- Left antenna -->
+  <path d="M85 55 Q75 30 65 20" fill="none" stroke="#2C2C2C" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="63" cy="18" r="5" fill="#2C2C2C"/>
+  <!-- Right antenna -->
+  <path d="M115 55 Q125 30 135 20" fill="none" stroke="#2C2C2C" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="137" cy="18" r="5" fill="#2C2C2C"/>
+  <!-- Body -->
+  <ellipse cx="100" cy="110" rx="38" ry="52" fill="#FFD54F"/>
+  <!-- Stripes -->
+  <rect x="62" y="85" width="76" height="10" rx="5" fill="#2C2C2C"/>
+  <rect x="62" y="105" width="76" height="10" rx="5" fill="#2C2C2C"/>
+  <rect x="62" y="125" width="76" height="10" rx="5" fill="#2C2C2C"/>
+  <!-- Clip stripes to body shape -->
+  <ellipse cx="100" cy="110" rx="38" ry="52" fill="none" stroke="#FFD54F" stroke-width="0"/>
+  <!-- Head -->
+  <circle cx="100" cy="62" r="25" fill="#FFD54F"/>
+  <!-- Left eye -->
+  <circle cx="90" cy="58" r="7" fill="white"/>
+  <circle cx="91" cy="59" r="4" fill="#2C2C2C"/>
+  <circle cx="92" cy="58" r="1.5" fill="white"/>
+  <!-- Right eye -->
+  <circle cx="110" cy="58" r="7" fill="white"/>
+  <circle cx="111" cy="59" r="4" fill="#2C2C2C"/>
+  <circle cx="112" cy="58" r="1.5" fill="white"/>
+  <!-- Smile -->
+  <path d="M92 72 Q100 80 108 72" fill="none" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Blush -->
+  <circle cx="80" cy="68" r="5" fill="#FFAB91" opacity="0.6"/>
+  <circle cx="120" cy="68" r="5" fill="#FFAB91" opacity="0.6"/>
+  <!-- Stinger -->
+  <polygon points="95,162 100,175 105,162" fill="#5D4037"/>
+  <!-- Legs -->
+  <path d="M72 100 Q55 105 48 115" fill="none" stroke="#2C2C2C" stroke-width="3" stroke-linecap="round"/>
+  <path d="M70 118 Q52 122 45 132" fill="none" stroke="#2C2C2C" stroke-width="3" stroke-linecap="round"/>
+  <path d="M128 100 Q145 105 152 115" fill="none" stroke="#2C2C2C" stroke-width="3" stroke-linecap="round"/>
+  <path d="M130 118 Q148 122 155 132" fill="none" stroke="#2C2C2C" stroke-width="3" stroke-linecap="round"/>
+</svg>

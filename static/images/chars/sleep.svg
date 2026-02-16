@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <circle cx="100" cy="105" r="75" fill="#9B8EC4" stroke="#7B6EA4" stroke-width="3"/>
+  <!-- Closed eyes -->
+  <path d="M55 90 Q70 80 85 90" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  <path d="M115 90 Q130 80 145 90" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  <!-- Eyelashes -->
+  <line x1="55" y1="90" x2="52" y2="95" stroke="#333" stroke-width="2"/>
+  <line x1="85" y1="90" x2="88" y2="95" stroke="#333" stroke-width="2"/>
+  <line x1="115" y1="90" x2="112" y2="95" stroke="#333" stroke-width="2"/>
+  <line x1="145" y1="90" x2="148" y2="95" stroke="#333" stroke-width="2"/>
+  <!-- Mouth (small O) -->
+  <ellipse cx="100" cy="130" rx="10" ry="8" fill="#7B6EA4" stroke="#333" stroke-width="2"/>
+  <!-- Cheeks -->
+  <circle cx="60" cy="110" r="10" fill="#B8A8D8" opacity="0.5"/>
+  <circle cx="140" cy="110" r="10" fill="#B8A8D8" opacity="0.5"/>
+  <!-- ZZZ -->
+  <text x="155" y="55" font-family="Arial" font-weight="bold" font-size="20" fill="white" opacity="0.9">Z</text>
+  <text x="168" y="38" font-family="Arial" font-weight="bold" font-size="16" fill="white" opacity="0.7">Z</text>
+  <text x="178" y="24" font-family="Arial" font-weight="bold" font-size="12" fill="white" opacity="0.5">Z</text>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Water waves -->
+  <path d="M0 155 Q25 145 50 155 Q75 165 100 155 Q125 145 150 155 Q175 165 200 155 L200 200 L0 200 Z" fill="#4FC3F7"/>
+  <path d="M0 165 Q25 155 50 165 Q75 175 100 165 Q125 155 150 165 Q175 175 200 165 L200 200 L0 200 Z" fill="#29B6F6"/>
+  <path d="M0 178 Q25 170 50 178 Q75 186 100 178 Q125 170 150 178 Q175 186 200 178 L200 200 L0 200 Z" fill="#039BE5"/>
+  <!-- Water splash -->
+  <ellipse cx="120" cy="148" rx="18" ry="6" fill="#B3E5FC" opacity="0.7"/>
+  <circle cx="110" cy="140" r="3" fill="#B3E5FC" opacity="0.6"/>
+  <circle cx="130" cy="138" r="2.5" fill="#B3E5FC" opacity="0.6"/>
+  <circle cx="118" cy="135" r="2" fill="#B3E5FC" opacity="0.5"/>
+  <!-- Dolphin body -->
+  <path d="M40 110 Q60 55 100 50 Q140 47 160 80 Q170 100 150 130 Q130 150 100 145 Q60 140 40 110 Z" fill="#5B9BD5"/>
+  <!-- Belly -->
+  <path d="M65 110 Q80 80 110 75 Q140 73 155 95 Q160 110 145 130 Q125 145 100 140 Q75 135 65 110 Z" fill="#B8D9F0"/>
+  <!-- Dorsal fin -->
+  <path d="M105 55 L115 20 L125 55" fill="#4A8AC4"/>
+  <!-- Tail -->
+  <path d="M40 110 Q25 95 15 80 Q10 90 20 100" fill="#5B9BD5"/>
+  <path d="M40 110 Q25 120 15 135 Q10 125 20 115" fill="#5B9BD5"/>
+  <!-- Snout -->
+  <path d="M155 90 Q175 85 180 80" fill="none" stroke="#5B9BD5" stroke-width="6" stroke-linecap="round"/>
+  <!-- Eye -->
+  <circle cx="140" cy="78" r="6" fill="white"/>
+  <circle cx="142" cy="79" r="3.5" fill="#1A1A2E"/>
+  <circle cx="143" cy="78" r="1.2" fill="white"/>
+  <!-- Smile -->
+  <path d="M152 92 Q162 96 170 90" fill="none" stroke="#3A7AB5" stroke-width="2" stroke-linecap="round"/>
+  <!-- Flipper -->
+  <path d="M110 105 Q95 125 85 135 Q100 125 115 115" fill="#4A8AC4"/>
+</svg>

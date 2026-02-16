@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Plate -->
+  <ellipse cx="100" cy="175" rx="85" ry="12" fill="#E0E0E0"/>
+  <!-- Bottom layer -->
+  <rect x="30" y="130" width="140" height="45" rx="8" fill="#F48FB1"/>
+  <!-- Top layer -->
+  <rect x="45" y="90" width="110" height="45" rx="8" fill="#F06292"/>
+  <!-- Frosting drip bottom -->
+  <path d="M30 130 Q30 125 40 125 Q50 125 50 135 Q60 120 70 130 Q80 120 90 130 Q100 118 110 130 Q120 120 130 130 Q140 120 150 130 Q160 125 170 125 Q170 130 170 130Z" fill="#FFEB3B"/>
+  <!-- Frosting drip top -->
+  <path d="M45 90 Q45 85 55 85 Q60 85 60 95 Q70 80 80 90 Q90 78 100 90 Q110 80 120 90 Q130 78 140 90 Q150 85 155 85 Q155 90 155 90Z" fill="#FFEB3B"/>
+  <!-- Candles -->
+  <rect x="70" y="55" width="6" height="35" rx="2" fill="#42A5F5"/>
+  <rect x="97" y="55" width="6" height="35" rx="2" fill="#66BB6A"/>
+  <rect x="124" y="55" width="6" height="35" rx="2" fill="#FF7043"/>
+  <!-- Flames -->
+  <ellipse cx="73" cy="48" rx="5" ry="8" fill="#FFD54F"/>
+  <ellipse cx="73" cy="46" rx="3" ry="5" fill="#FFAB00"/>
+  <ellipse cx="100" cy="48" rx="5" ry="8" fill="#FFD54F"/>
+  <ellipse cx="100" cy="46" rx="3" ry="5" fill="#FFAB00"/>
+  <ellipse cx="127" cy="48" rx="5" ry="8" fill="#FFD54F"/>
+  <ellipse cx="127" cy="46" rx="3" ry="5" fill="#FFAB00"/>
+</svg>

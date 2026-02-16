@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Tail feathers -->
+  <path d="M60 170 Q40 185 30 195" fill="none" stroke="#FF5722" stroke-width="8" stroke-linecap="round"/>
+  <path d="M65 168 Q50 190 45 198" fill="none" stroke="#4CAF50" stroke-width="7" stroke-linecap="round"/>
+  <path d="M72 170 Q62 192 60 200" fill="none" stroke="#2196F3" stroke-width="6" stroke-linecap="round"/>
+  <!-- Body -->
+  <ellipse cx="90" cy="130" rx="35" ry="48" fill="#E53935"/>
+  <!-- Belly -->
+  <ellipse cx="95" cy="140" rx="22" ry="32" fill="#EF5350"/>
+  <!-- Wing -->
+  <path d="M60 110 Q40 130 35 160 Q55 145 65 125 Q70 115 68 108" fill="#43A047"/>
+  <path d="M60 115 Q42 135 38 158 Q55 145 62 128" fill="#388E3C"/>
+  <!-- Wing detail -->
+  <path d="M62 120 Q48 140 44 155" fill="none" stroke="#2E7D32" stroke-width="1.5"/>
+  <!-- Head -->
+  <circle cx="110" cy="65" r="30" fill="#E53935"/>
+  <!-- Head crest -->
+  <path d="M100 38 Q95 15 85 8 Q100 20 105 35" fill="#FDD835"/>
+  <path d="M108 35 Q108 12 102 5 Q112 18 112 33" fill="#FBC02D"/>
+  <path d="M115 38 Q120 18 118 8 Q122 22 118 38" fill="#F9A825"/>
+  <!-- White eye ring -->
+  <circle cx="118" cy="58" r="10" fill="white"/>
+  <!-- Eye -->
+  <circle cx="119" cy="59" r="6" fill="#1A1A1A"/>
+  <circle cx="120" cy="57" r="2" fill="white"/>
+  <!-- Beak upper -->
+  <path d="M135 62 Q155 55 158 65 Q155 68 140 70" fill="#FF8F00"/>
+  <!-- Beak lower -->
+  <path d="M135 70 Q148 72 148 78 Q145 80 138 75" fill="#E65100"/>
+  <!-- Beak curve -->
+  <path d="M155 65 Q158 70 152 72" fill="#F57C00"/>
+  <!-- Feet/perch -->
+  <rect x="65" y="172" width="50" height="6" rx="3" fill="#8D6E63"/>
+  <!-- Left foot -->
+  <path d="M78 172 Q75 168 72 172" fill="none" stroke="#FF8F00" stroke-width="3" stroke-linecap="round"/>
+  <path d="M82 172 Q80 166 76 172" fill="none" stroke="#FF8F00" stroke-width="3" stroke-linecap="round"/>
+  <!-- Right foot -->
+  <path d="M98 172 Q95 168 92 172" fill="none" stroke="#FF8F00" stroke-width="3" stroke-linecap="round"/>
+  <path d="M102 172 Q100 166 96 172" fill="none" stroke="#FF8F00" stroke-width="3" stroke-linecap="round"/>
+  <!-- Blush -->
+  <circle cx="125" cy="72" r="4" fill="#FFAB91" opacity="0.5"/>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Tail -->
+  <path d="M35 130 Q15 120 8 100 Q5 110 12 125 Q20 138 35 140" fill="#4CAF50"/>
+  <!-- Body -->
+  <ellipse cx="85" cy="120" rx="50" ry="40" fill="#4CAF50"/>
+  <!-- Belly -->
+  <ellipse cx="85" cy="128" rx="32" ry="28" fill="#A5D6A7"/>
+  <!-- Head -->
+  <ellipse cx="148" cy="75" rx="32" ry="28" fill="#4CAF50"/>
+  <!-- Neck -->
+  <path d="M110 90 Q130 80 135 75 Q140 90 125 105 Q115 110 105 105" fill="#4CAF50"/>
+  <!-- Snout -->
+  <ellipse cx="170" cy="80" rx="18" ry="15" fill="#43A047"/>
+  <!-- Mouth -->
+  <path d="M158 88 Q170 92 185 86" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+  <!-- Teeth -->
+  <rect x="162" y="86" width="3" height="4" rx="1" fill="white"/>
+  <rect x="170" y="87" width="3" height="4" rx="1" fill="white"/>
+  <!-- Eye -->
+  <circle cx="155" cy="70" r="7" fill="white"/>
+  <circle cx="157" cy="71" r="4" fill="#2C2C2C"/>
+  <circle cx="158" cy="69" r="1.5" fill="white"/>
+  <!-- Nostril -->
+  <circle cx="182" cy="76" r="2" fill="#2E7D32"/>
+  <!-- Back spikes -->
+  <polygon points="70,80 78,60 86,80" fill="#66BB6A"/>
+  <polygon points="85,78 93,55 101,78" fill="#66BB6A"/>
+  <polygon points="100,82 108,62 116,85" fill="#66BB6A"/>
+  <polygon points="128,72 133,52 140,74" fill="#66BB6A"/>
+  <!-- Left arm (tiny T-rex arms!) -->
+  <path d="M120 110 Q130 115 128 125" fill="none" stroke="#4CAF50" stroke-width="7" stroke-linecap="round"/>
+  <!-- Right arm -->
+  <path d="M125 105 Q138 108 136 118" fill="none" stroke="#43A047" stroke-width="6" stroke-linecap="round"/>
+  <!-- Left leg -->
+  <rect x="62" y="150" width="16" height="28" rx="8" fill="#4CAF50"/>
+  <ellipse cx="68" cy="180" rx="14" ry="7" fill="#43A047"/>
+  <!-- Right leg -->
+  <rect x="95" y="150" width="16" height="28" rx="8" fill="#4CAF50"/>
+  <ellipse cx="103" cy="180" rx="14" ry="7" fill="#43A047"/>
+  <!-- Toes -->
+  <circle cx="58" cy="183" r="3" fill="#388E3C"/>
+  <circle cx="68" cy="185" r="3" fill="#388E3C"/>
+  <circle cx="78" cy="183" r="3" fill="#388E3C"/>
+  <circle cx="93" cy="183" r="3" fill="#388E3C"/>
+  <circle cx="103" cy="185" r="3" fill="#388E3C"/>
+  <circle cx="113" cy="183" r="3" fill="#388E3C"/>
+  <!-- Blush -->
+  <circle cx="165" cy="85" r="4" fill="#FFB6C1" opacity="0.5"/>
+</svg>

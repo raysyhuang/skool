@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Tiny mouse next to big cat for comparison -->
+  <!-- Big cat silhouette in background -->
+  <ellipse cx="130" cy="100" rx="55" ry="50" fill="#DDD" opacity="0.5"/>
+  <circle cx="165" cy="60" r="28" fill="#DDD" opacity="0.5"/>
+  <polygon points="150,38 158,55 142,55" fill="#DDD" opacity="0.5"/>
+  <polygon points="175,38 183,55 167,55" fill="#DDD" opacity="0.5"/>
+  <!-- Tiny mouse (main subject) -->
+  <ellipse cx="50" cy="140" rx="22" ry="16" fill="#E8C8A0"/>
+  <!-- Mouse head -->
+  <circle cx="70" cy="130" r="12" fill="#E8C8A0"/>
+  <!-- Mouse ears -->
+  <circle cx="64" cy="120" r="7" fill="#F0D8B8"/>
+  <circle cx="76" cy="120" r="7" fill="#F0D8B8"/>
+  <!-- Mouse eye -->
+  <circle cx="74" cy="128" r="3" fill="#333"/>
+  <circle cx="75" cy="127" r="1" fill="#fff"/>
+  <!-- Mouse nose -->
+  <circle cx="80" cy="132" r="2" fill="#FF9999"/>
+  <!-- Mouse tail -->
+  <path d="M28 142 Q15 130 20 115" stroke="#D4A878" stroke-width="2" fill="none"/>
+  <!-- Mouse whiskers -->
+  <line x1="80" y1="130" x2="95" y2="127" stroke="#999" stroke-width="1"/>
+  <line x1="80" y1="133" x2="95" y2="133" stroke="#999" stroke-width="1"/>
+  <line x1="80" y1="136" x2="95" y2="139" stroke="#999" stroke-width="1"/>
+  <!-- Arrow pointing at tiny mouse -->
+  <path d="M40 75 L40 90 L30 90 L50 105 L70 90 L60 90 L60 75 Z" fill="#FFD93D" opacity="0.8"/>
+  <text x="32" y="70" font-size="16" font-weight="bold" fill="#E6B800" font-family="Arial">tiny!</text>
+</svg>

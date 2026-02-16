@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="80" fill="#FFD700" stroke="#E6B800" stroke-width="3"/>
+  <!-- Eyes -->
+  <circle cx="70" cy="85" r="10" fill="#333"/>
+  <circle cx="130" cy="85" r="10" fill="#333"/>
+  <circle cx="73" cy="82" r="4" fill="white"/>
+  <circle cx="133" cy="82" r="4" fill="white"/>
+  <!-- Big smile -->
+  <path d="M55 115 Q100 160 145 115" fill="none" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="50" cy="110" r="12" fill="#FFB347" opacity="0.5"/>
+  <circle cx="150" cy="110" r="12" fill="#FFB347" opacity="0.5"/>
+</svg>

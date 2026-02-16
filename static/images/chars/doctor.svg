@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#E8F5E9"/>
+
+  <!-- Body - white coat -->
+  <rect x="60" y="105" width="80" height="70" rx="15" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="2"/>
+
+  <!-- Coat lapels -->
+  <polygon points="80,105 100,130 95,105" fill="#F0F0F0"/>
+  <polygon points="120,105 100,130 105,105" fill="#F0F0F0"/>
+
+  <!-- Coat buttons -->
+  <circle cx="100" cy="135" r="3" fill="#4CAF50"/>
+  <circle cx="100" cy="150" r="3" fill="#4CAF50"/>
+
+  <!-- Pocket -->
+  <rect x="108" y="140" width="20" height="15" rx="3" fill="#F5F5F5" stroke="#CCCCCC" stroke-width="1"/>
+
+  <!-- Pen in pocket -->
+  <rect x="115" y="135" width="3" height="12" rx="1" fill="#2196F3"/>
+  <circle cx="116.5" cy="135" r="2" fill="#2196F3"/>
+
+  <!-- Neck -->
+  <rect x="90" y="90" width="20" height="20" rx="5" fill="#FDBCB4"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="70" r="35" fill="#FDBCB4"/>
+
+  <!-- Hair -->
+  <ellipse cx="100" cy="48" rx="33" ry="18" fill="#5D4037"/>
+  <rect x="67" y="45" width="12" height="20" rx="5" fill="#5D4037"/>
+  <rect x="121" y="45" width="12" height="20" rx="5" fill="#5D4037"/>
+
+  <!-- Eyes -->
+  <circle cx="87" cy="68" r="5" fill="#FFFFFF"/>
+  <circle cx="113" cy="68" r="5" fill="#FFFFFF"/>
+  <circle cx="88" cy="69" r="3" fill="#3E2723"/>
+  <circle cx="114" cy="69" r="3" fill="#3E2723"/>
+  <circle cx="89" cy="68" r="1" fill="#FFFFFF"/>
+  <circle cx="115" cy="68" r="1" fill="#FFFFFF"/>
+
+  <!-- Rosy cheeks -->
+  <circle cx="78" cy="78" r="6" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="122" cy="78" r="6" fill="#FFB6C1" opacity="0.5"/>
+
+  <!-- Smile -->
+  <path d="M90,82 Q100,95 110,82" fill="none" stroke="#D84315" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Head mirror -->
+  <circle cx="100" cy="40" r="8" fill="#B0BEC5" stroke="#78909C" stroke-width="2"/>
+  <circle cx="100" cy="40" r="4" fill="#E0E0E0"/>
+  <rect x="98" y="35" width="4" height="10" fill="#78909C" opacity="0"/>
+
+  <!-- Stethoscope -->
+  <path d="M85,105 L85,120 Q85,140 100,140 Q115,140 115,120 L115,105" fill="none" stroke="#424242" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="100" cy="143" r="7" fill="#E53935" stroke="#424242" stroke-width="2"/>
+  <!-- Earpieces -->
+  <path d="M85,105 L80,95" stroke="#424242" stroke-width="3" stroke-linecap="round"/>
+  <path d="M115,105 L120,95" stroke="#424242" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="79" cy="93" r="3" fill="#757575"/>
+  <circle cx="121" cy="93" r="3" fill="#757575"/>
+
+  <!-- Arms -->
+  <rect x="40" y="110" width="25" height="14" rx="7" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="1.5"/>
+  <rect x="135" y="110" width="25" height="14" rx="7" fill="#FFFFFF" stroke="#CCCCCC" stroke-width="1.5"/>
+
+  <!-- Hands -->
+  <circle cx="42" cy="117" r="8" fill="#FDBCB4"/>
+  <circle cx="158" cy="117" r="8" fill="#FDBCB4"/>
+
+  <!-- Red cross on coat -->
+  <rect x="70" y="118" width="14" height="4" rx="1" fill="#E53935"/>
+  <rect x="75" y="113" width="4" height="14" rx="1" fill="#E53935"/>
+</svg>

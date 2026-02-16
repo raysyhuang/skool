@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" rx="20" fill="#FFF5F0"/>
+  <!-- Tomato body -->
+  <ellipse cx="100" cy="115" rx="60" ry="55" fill="#E53935"/>
+  <!-- Highlight/shine -->
+  <ellipse cx="80" cy="95" rx="20" ry="15" fill="#FF5252" opacity="0.5" transform="rotate(-15 80 95)"/>
+  <ellipse cx="75" cy="90" rx="10" ry="7" fill="white" opacity="0.2" transform="rotate(-15 75 90)"/>
+  <!-- Bottom dimple -->
+  <path d="M90 168 Q100 172 110 168" fill="none" stroke="#C62828" stroke-width="1.5" opacity="0.5"/>
+  <!-- Stem -->
+  <rect x="96" y="55" width="8" height="15" rx="3" fill="#4CAF50"/>
+  <!-- Leaves/sepals -->
+  <path d="M100 68 Q80 50 60 60 Q75 62 85 68" fill="#66BB6A"/>
+  <path d="M100 68 Q120 50 140 60 Q125 62 115 68" fill="#66BB6A"/>
+  <path d="M100 65 Q85 45 75 48 Q85 55 95 65" fill="#4CAF50"/>
+  <path d="M100 65 Q115 45 125 48 Q115 55 105 65" fill="#4CAF50"/>
+  <path d="M100 62 Q100 42 100 40 Q102 42 100 62" fill="#388E3C"/>
+  <!-- Cute face -->
+  <circle cx="82" cy="112" r="5" fill="#2D1B1B"/>
+  <circle cx="118" cy="112" r="5" fill="#2D1B1B"/>
+  <circle cx="84" cy="110" r="2" fill="white"/>
+  <circle cx="120" cy="110" r="2" fill="white"/>
+  <!-- Smile -->
+  <path d="M88 130 Q100 142 112 130" fill="none" stroke="#2D1B1B" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Blush -->
+  <ellipse cx="72" cy="125" rx="8" ry="5" fill="#FF8A80" opacity="0.5"/>
+  <ellipse cx="128" cy="125" rx="8" ry="5" fill="#FF8A80" opacity="0.5"/>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Body -->
+  <ellipse cx="100" cy="130" rx="40" ry="45" fill="#8B5E3C"/>
+  <!-- Belly -->
+  <ellipse cx="100" cy="135" rx="25" ry="30" fill="#D2A679"/>
+  <!-- Head -->
+  <circle cx="100" cy="70" r="38" fill="#8B5E3C"/>
+  <!-- Face -->
+  <ellipse cx="100" cy="78" rx="28" ry="25" fill="#D2A679"/>
+  <!-- Left ear -->
+  <circle cx="58" cy="62" r="14" fill="#8B5E3C"/>
+  <circle cx="58" cy="62" r="9" fill="#D2A679"/>
+  <!-- Right ear -->
+  <circle cx="142" cy="62" r="14" fill="#8B5E3C"/>
+  <circle cx="142" cy="62" r="9" fill="#D2A679"/>
+  <!-- Left eye -->
+  <circle cx="88" cy="72" r="6" fill="white"/>
+  <circle cx="89" cy="73" r="3.5" fill="#2C1810"/>
+  <circle cx="90" cy="72" r="1.2" fill="white"/>
+  <!-- Right eye -->
+  <circle cx="112" cy="72" r="6" fill="white"/>
+  <circle cx="113" cy="73" r="3.5" fill="#2C1810"/>
+  <circle cx="114" cy="72" r="1.2" fill="white"/>
+  <!-- Nose -->
+  <ellipse cx="100" cy="82" rx="4" ry="3" fill="#5C3A1E"/>
+  <!-- Smile -->
+  <path d="M90 90 Q100 100 110 90" fill="none" stroke="#5C3A1E" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Left arm -->
+  <path d="M62 120 Q45 140 55 160" fill="none" stroke="#8B5E3C" stroke-width="12" stroke-linecap="round"/>
+  <!-- Right arm -->
+  <path d="M138 120 Q155 140 145 160" fill="none" stroke="#8B5E3C" stroke-width="12" stroke-linecap="round"/>
+  <!-- Left foot -->
+  <ellipse cx="82" cy="175" rx="14" ry="8" fill="#7A5232"/>
+  <!-- Right foot -->
+  <ellipse cx="118" cy="175" rx="14" ry="8" fill="#7A5232"/>
+  <!-- Curly tail -->
+  <path d="M60 145 Q35 135 38 115 Q42 95 55 105 Q65 112 55 120" fill="none" stroke="#8B5E3C" stroke-width="6" stroke-linecap="round"/>
+</svg>

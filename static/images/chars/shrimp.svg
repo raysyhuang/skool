@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" rx="20" fill="#E8F8FF"/>
+  <!-- Shrimp body - curved shape -->
+  <path d="M140 50 Q170 60 165 90 Q160 120 130 135 Q110 145 90 140 Q75 135 70 125" fill="#FF8C60" stroke="#E07040" stroke-width="2"/>
+  <!-- Shrimp segments -->
+  <path d="M155 70 Q140 75 135 65" fill="none" stroke="#E07040" stroke-width="1.5" opacity="0.6"/>
+  <path d="M158 85 Q142 92 135 80" fill="none" stroke="#E07040" stroke-width="1.5" opacity="0.6"/>
+  <path d="M155 100 Q138 108 130 95" fill="none" stroke="#E07040" stroke-width="1.5" opacity="0.6"/>
+  <path d="M148 115 Q132 122 125 110" fill="none" stroke="#E07040" stroke-width="1.5" opacity="0.6"/>
+  <path d="M135 128 Q118 135 110 125" fill="none" stroke="#E07040" stroke-width="1.5" opacity="0.6"/>
+  <!-- Shrimp tail fan -->
+  <ellipse cx="145" cy="48" rx="18" ry="10" fill="#FF7050" transform="rotate(-30 145 48)"/>
+  <ellipse cx="152" cy="42" rx="14" ry="8" fill="#FF8060" transform="rotate(-20 152 42)"/>
+  <ellipse cx="138" cy="42" rx="14" ry="8" fill="#FF8060" transform="rotate(-40 138 42)"/>
+  <line x1="140" y1="50" x2="145" y2="38" stroke="#E06040" stroke-width="1" opacity="0.5"/>
+  <line x1="140" y1="50" x2="152" y2="40" stroke="#E06040" stroke-width="1" opacity="0.5"/>
+  <!-- Shrimp head -->
+  <ellipse cx="65" cy="120" rx="22" ry="18" fill="#FF9070"/>
+  <!-- Shrimp horn/rostrum -->
+  <path d="M50 110 L30 95 L35 100" fill="none" stroke="#FF8060" stroke-width="3" stroke-linecap="round"/>
+  <!-- Antennae -->
+  <path d="M55 108 Q35 85 25 70" fill="none" stroke="#FF9070" stroke-width="2" stroke-linecap="round"/>
+  <path d="M58 105 Q45 78 40 60" fill="none" stroke="#FF9070" stroke-width="2" stroke-linecap="round"/>
+  <!-- Legs -->
+  <line x1="70" y1="135" x2="65" y2="155" stroke="#FF9070" stroke-width="2" stroke-linecap="round"/>
+  <line x1="80" y1="138" x2="78" y2="158" stroke="#FF9070" stroke-width="2" stroke-linecap="round"/>
+  <line x1="90" y1="138" x2="90" y2="157" stroke="#FF9070" stroke-width="2" stroke-linecap="round"/>
+  <!-- Cute eye -->
+  <circle cx="55" cy="115" r="6" fill="white"/>
+  <circle cx="55" cy="115" r="4" fill="#2D2D2D"/>
+  <circle cx="53" cy="113" r="2" fill="white"/>
+  <!-- Blush -->
+  <ellipse cx="65" cy="128" rx="6" ry="4" fill="#FF6060" opacity="0.4"/>
+  <!-- Smile -->
+  <path d="M52 125 Q58 130 64 125" fill="none" stroke="#C05030" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Bubbles -->
+  <circle cx="30 " cy="150" r="4" fill="#B0E0FF" opacity="0.5"/>
+  <circle cx="40" cy="165" r="3" fill="#B0E0FF" opacity="0.4"/>
+  <circle cx="22" cy="140" r="2.5" fill="#B0E0FF" opacity="0.35"/>
+</svg>

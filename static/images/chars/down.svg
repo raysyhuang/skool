@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Big red arrow pointing down -->
+  <polygon points="100,185 170,100 130,100 130,15 70,15 70,100 30,100" fill="#F44336" stroke="#D32F2F" stroke-width="4"/>
+</svg>

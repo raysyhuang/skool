@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Paper -->
+  <rect x="50" y="70" width="120" height="120" rx="3" fill="white" stroke="#CCC" stroke-width="2"/>
+  <!-- Lines on paper -->
+  <line x1="65" y1="95" x2="155" y2="95" stroke="#DDD" stroke-width="1.5"/>
+  <line x1="65" y1="110" x2="155" y2="110" stroke="#DDD" stroke-width="1.5"/>
+  <line x1="65" y1="125" x2="155" y2="125" stroke="#DDD" stroke-width="1.5"/>
+  <line x1="65" y1="140" x2="155" y2="140" stroke="#DDD" stroke-width="1.5"/>
+  <line x1="65" y1="155" x2="155" y2="155" stroke="#DDD" stroke-width="1.5"/>
+  <line x1="65" y1="170" x2="155" y2="170" stroke="#DDD" stroke-width="1.5"/>
+  <!-- Written text squiggles -->
+  <path d="M70 93 Q80 88 90 93 Q100 98 110 93" fill="none" stroke="#333" stroke-width="1.5"/>
+  <path d="M70 108 Q80 103 90 108 Q100 113 115 108" fill="none" stroke="#333" stroke-width="1.5"/>
+  <path d="M70 123 Q78 118 86 123" fill="none" stroke="#333" stroke-width="1.5"/>
+  <!-- Hand -->
+  <path d="M90 140 L75 155 L70 150 L68 158 L72 162 L80 152 L95 145" fill="#FFCC99" stroke="#CC8844" stroke-width="1.5"/>
+  <!-- Pencil -->
+  <line x1="60" y1="170" x2="95" y2="135" stroke="#FFD700" stroke-width="6" stroke-linecap="round"/>
+  <line x1="60" y1="170" x2="95" y2="135" stroke="#E6B800" stroke-width="4" stroke-linecap="round"/>
+  <!-- Pencil tip -->
+  <polygon points="55,175 60,170 63,173" fill="#FFCC99"/>
+  <polygon points="53,177 55,175 57,177" fill="#333"/>
+  <!-- Pencil eraser -->
+  <line x1="93" y1="137" x2="98" y2="132" stroke="#FF69B4" stroke-width="6" stroke-linecap="round"/>
+  <!-- Pencil writing motion lines -->
+  <path d="M50 180 Q55 178 52 175" fill="none" stroke="#CCC" stroke-width="1"/>
+</svg>

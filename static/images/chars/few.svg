@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Just 2-3 dots spread out -->
+  <circle cx="50" cy="70" r="22" fill="#F44336"/>
+  <circle cx="150" cy="60" r="22" fill="#2196F3"/>
+  <circle cx="100" cy="140" r="22" fill="#4CAF50"/>
+</svg>

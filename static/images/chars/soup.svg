@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Bowl -->
+  <ellipse cx="100" cy="120" rx="75" ry="20" fill="#F57F17"/>
+  <path d="M25 120 Q32 178 100 178 Q168 178 175 120Z" fill="#F9A825"/>
+  <ellipse cx="100" cy="120" rx="75" ry="20" fill="#FDD835"/>
+  <!-- Soup liquid -->
+  <ellipse cx="100" cy="120" rx="68" ry="15" fill="#FFCC80"/>
+  <!-- Soup ingredients -->
+  <circle cx="80" cy="115" r="5" fill="#4CAF50"/>
+  <circle cx="110" cy="118" r="4" fill="#FF7043"/>
+  <circle cx="95" cy="112" r="3" fill="#66BB6A"/>
+  <rect x="115" y="110" width="8" height="8" rx="1" fill="#FFAB40"/>
+  <!-- Spoon -->
+  <ellipse cx="145" cy="95" rx="15" ry="10" fill="#E0E0E0" stroke="#BDBDBD" stroke-width="1.5" transform="rotate(-30 145 95)"/>
+  <line x1="155" y1="100" x2="180" y2="50" stroke="#BDBDBD" stroke-width="5" stroke-linecap="round"/>
+  <!-- Steam -->
+  <path d="M70 78 Q65 58 70 40" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M100 73 Q95 53 100 35" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M130 78 Q125 58 130 40" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+</svg>

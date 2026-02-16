@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Pointing hand with arrow -->
+  <!-- Hand/palm -->
+  <ellipse cx="80" cy="100" rx="30" ry="40" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <!-- Folded fingers -->
+  <path d="M58 78 Q52 70 58 65 Q64 60 68 68 L70 78" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <path d="M65 72 Q60 64 65 58 Q72 54 75 62 L75 75" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <path d="M74 68 Q70 58 76 53 Q83 50 84 58 L82 72" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <!-- Pointing finger (index) -->
+  <rect x="90" y="85" width="60" height="18" rx="9" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <!-- Thumb -->
+  <rect x="68" y="62" width="16" height="30" rx="8" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(-30,76,77)"/>
+  <!-- Wrist -->
+  <rect x="55" y="138" width="45" height="25" rx="8" fill="#42A5F5"/>
+  <!-- Big arrow going right -->
+  <polygon points="175,94 155,72 155,82 148,82 148,106 155,106 155,116" fill="#F44336"/>
+  <!-- Speed lines -->
+  <line x1="155" y1="60" x2="170" y2="55" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+  <line x1="160" y1="130" x2="175" y2="135" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Banana -->
+  <path d="M110 40 C90 50 70 80 65 120 C60 145 75 155 90 150 C100 147 130 110 135 60 C136 50 125 35 110 40Z" fill="#FFE135" stroke="#D4B82A" stroke-width="2"/>
+  <!-- Grapes -->
+  <circle cx="55" cy="110" r="14" fill="#8B45A6"/>
+  <circle cx="75" cy="105" r="14" fill="#9B55B6"/>
+  <circle cx="45" cy="130" r="14" fill="#9B55B6"/>
+  <circle cx="65" cy="128" r="14" fill="#8B45A6"/>
+  <circle cx="85" cy="125" r="14" fill="#9B55B6"/>
+  <circle cx="55" cy="148" r="14" fill="#8B45A6"/>
+  <circle cx="75" cy="148" r="14" fill="#9B55B6"/>
+  <circle cx="65" cy="165" r="14" fill="#8B45A6"/>
+  <line x1="65" y1="95" x2="65" y2="70" stroke="#4A7A2E" stroke-width="3"/>
+  <path d="M65 70 Q75 65 85 70" fill="#4A7A2E" stroke="none"/>
+</svg>

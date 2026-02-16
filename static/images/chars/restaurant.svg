@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Building body -->
+  <rect x="25" y="60" width="150" height="120" rx="5" fill="#FF8A65"/>
+  <!-- Roof -->
+  <path d="M15 65 L100 20 L185 65Z" fill="#D32F2F"/>
+  <path d="M20 65 L100 25 L180 65Z" fill="#E53935"/>
+  <!-- Door -->
+  <rect x="75" y="120" width="50" height="60" rx="3" fill="#5D4037"/>
+  <circle cx="115" cy="152" r="4" fill="#FFD54F"/>
+  <!-- Windows -->
+  <rect x="38" y="80" width="30" height="28" rx="3" fill="#BBDEFB"/>
+  <line x1="53" y1="80" x2="53" y2="108" stroke="#90CAF9" stroke-width="2"/>
+  <line x1="38" y1="94" x2="68" y2="94" stroke="#90CAF9" stroke-width="2"/>
+  <rect x="132" y="80" width="30" height="28" rx="3" fill="#BBDEFB"/>
+  <line x1="147" y1="80" x2="147" y2="108" stroke="#90CAF9" stroke-width="2"/>
+  <line x1="132" y1="94" x2="162" y2="94" stroke="#90CAF9" stroke-width="2"/>
+  <!-- Sign -->
+  <rect x="55" y="38" width="90" height="22" rx="4" fill="#FFEB3B"/>
+  <rect x="60" y="41" width="80" height="16" rx="3" fill="#FFF9C4"/>
+  <!-- Fork and knife icon on sign -->
+  <line x1="90" y1="44" x2="90" y2="54" stroke="#E53935" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M87 44 L87 48 Q90 50 93 48 L93 44" stroke="#E53935" stroke-width="1.5" fill="none"/>
+  <line x1="105" y1="44" x2="105" y2="54" stroke="#E53935" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M103 44 Q105 48 107 44" stroke="#E53935" stroke-width="1.5" fill="none"/>
+  <!-- Awning -->
+  <path d="M25 60 Q38 75 50 60 Q63 75 75 60 Q88 75 100 60 Q113 75 125 60 Q138 75 150 60 Q163 75 175 60" fill="#D32F2F"/>
+</svg>

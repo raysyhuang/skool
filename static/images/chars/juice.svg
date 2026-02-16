@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Glass -->
+  <path d="M55 45 Q52 50 58 170 Q60 180 100 180 Q140 180 142 170 Q148 50 145 45Z" fill="#B3E5FC" opacity="0.4" stroke="#90CAF9" stroke-width="2"/>
+  <!-- Orange juice -->
+  <path d="M58 70 Q56 75 60 168 Q62 176 100 176 Q138 176 140 168 Q144 75 142 70Z" fill="#FFB74D"/>
+  <!-- Bubbles -->
+  <circle cx="80" cy="100" r="4" fill="#FFCC80" opacity="0.6"/>
+  <circle cx="110" cy="130" r="3" fill="#FFCC80" opacity="0.6"/>
+  <circle cx="95" cy="150" r="5" fill="#FFCC80" opacity="0.6"/>
+  <!-- Orange slice on rim -->
+  <circle cx="130" cy="55" r="20" fill="#FF9800"/>
+  <circle cx="130" cy="55" r="16" fill="#FFB74D"/>
+  <line x1="130" y1="40" x2="130" y2="70" stroke="#FF9800" stroke-width="1.5"/>
+  <line x1="115" y1="55" x2="145" y2="55" stroke="#FF9800" stroke-width="1.5"/>
+  <line x1="119" y1="44" x2="141" y2="66" stroke="#FF9800" stroke-width="1.5"/>
+  <line x1="141" y1="44" x2="119" y2="66" stroke="#FF9800" stroke-width="1.5"/>
+  <!-- Straw -->
+  <rect x="108" y="15" width="6" height="90" rx="2" fill="#E53935" transform="rotate(10 111 60)"/>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Box -->
+  <rect x="25" y="80" width="150" height="105" rx="5" fill="#FF7043"/>
+  <rect x="25" y="80" width="150" height="105" rx="5" fill="none" stroke="#E64A19" stroke-width="3"/>
+  <!-- Box front face detail -->
+  <rect x="30" y="85" width="140" height="95" rx="3" fill="#FF8A65"/>
+  <!-- Star decoration on box -->
+  <polygon points="100,90 105,100 115,102 108,110 110,120 100,115 90,120 92,110 85,102 95,100" fill="#FFEB3B"/>
+  <!-- Teddy bear peeking out -->
+  <circle cx="60" cy="72" r="18" fill="#A1887F"/>
+  <circle cx="50" cy="60" r="8" fill="#A1887F"/>
+  <circle cx="70" cy="60" r="8" fill="#A1887F"/>
+  <circle cx="50" cy="60" r="5" fill="#8D6E63"/>
+  <circle cx="70" cy="60" r="5" fill="#8D6E63"/>
+  <circle cx="55" cy="70" r="2.5" fill="#3E2723"/>
+  <circle cx="65" cy="70" r="2.5" fill="#3E2723"/>
+  <ellipse cx="60" cy="76" rx="4" ry="3" fill="#FFCC80"/>
+  <circle cx="60" cy="75" r="2" fill="#3E2723"/>
+  <!-- Ball peeking out -->
+  <circle cx="140" cy="70" r="16" fill="#E53935"/>
+  <path d="M130 60 Q140 55 150 60" stroke="white" stroke-width="2" fill="none"/>
+  <path d="M128 72 Q140 80 152 72" stroke="white" stroke-width="2" fill="none"/>
+  <!-- Block peeking out -->
+  <rect x="95" y="60" width="22" height="22" rx="3" fill="#42A5F5"/>
+  <text x="106" y="77" text-anchor="middle" font-size="14" fill="white" font-family="Arial" font-weight="bold">B</text>
+</svg>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Rear wheel -->
+  <circle cx="55" cy="135" r="35" fill="none" stroke="#333" stroke-width="5"/>
+  <circle cx="55" cy="135" r="5" fill="#333"/>
+  <!-- Front wheel -->
+  <circle cx="150" cy="135" r="35" fill="none" stroke="#333" stroke-width="5"/>
+  <circle cx="150" cy="135" r="5" fill="#333"/>
+  <!-- Frame -->
+  <line x1="55" y1="135" x2="95" y2="85" stroke="#FF4444" stroke-width="5" stroke-linecap="round"/>
+  <line x1="55" y1="135" x2="115" y2="100" stroke="#FF4444" stroke-width="5" stroke-linecap="round"/>
+  <line x1="95" y1="85" x2="115" y2="100" stroke="#FF4444" stroke-width="5" stroke-linecap="round"/>
+  <line x1="115" y1="100" x2="150" y2="135" stroke="#FF4444" stroke-width="5" stroke-linecap="round"/>
+  <!-- Fork -->
+  <line x1="135" y1="75" x2="150" y2="135" stroke="#FF4444" stroke-width="4" stroke-linecap="round"/>
+  <!-- Handlebar -->
+  <line x1="120" y1="70" x2="148" y2="75" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  <!-- Seat -->
+  <line x1="85" y1="80" x2="105" y2="80" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+  <!-- Seat post -->
+  <line x1="95" y1="80" x2="95" y2="85" stroke="#333" stroke-width="3"/>
+  <!-- Pedals -->
+  <circle cx="115" cy="100" r="8" fill="none" stroke="#333" stroke-width="3"/>
+  <!-- Spokes hint -->
+  <line x1="55" y1="100" x2="55" y2="170" stroke="#999" stroke-width="1"/>
+  <line x1="20" y1="135" x2="90" y2="135" stroke="#999" stroke-width="1"/>
+  <line x1="150" y1="100" x2="150" y2="170" stroke="#999" stroke-width="1"/>
+  <line x1="115" y1="135" x2="185" y2="135" stroke="#999" stroke-width="1"/>
+</svg>

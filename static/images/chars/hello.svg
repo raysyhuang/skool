@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Waving hand -->
+  <!-- Palm -->
+  <ellipse cx="100" cy="120" rx="40" ry="50" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(-10,100,120)"/>
+  <!-- Thumb -->
+  <rect x="52" y="100" width="20" height="42" rx="10" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(20,62,121)"/>
+  <!-- Fingers -->
+  <rect x="68" y="48" width="16" height="50" rx="8" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(-5,76,73)"/>
+  <rect x="88" y="40" width="16" height="55" rx="8" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <rect x="108" y="44" width="16" height="50" rx="8" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(5,116,69)"/>
+  <rect x="126" y="54" width="15" height="42" rx="8" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(12,133,75)"/>
+  <!-- Motion lines -->
+  <path d="M155,50 Q170,50 175,45" fill="none" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+  <path d="M160,70 Q175,70 180,65" fill="none" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+  <path d="M155,90 Q170,90 175,85" fill="none" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+  <!-- Wrist -->
+  <rect x="80" y="165" width="40" height="25" rx="8" fill="#42A5F5"/>
+</svg>

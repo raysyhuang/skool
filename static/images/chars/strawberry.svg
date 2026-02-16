@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Strawberry body -->
+  <path d="M100 25 Q55 50 40 90 Q30 130 50 155 Q70 180 100 185 Q130 180 150 155 Q170 130 160 90 Q145 50 100 25Z" fill="#E53935"/>
+  <!-- Highlight -->
+  <path d="M80 50 Q65 70 58 100 Q55 115 58 130" stroke="#EF5350" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <!-- Seeds -->
+  <ellipse cx="75" cy="80" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="100" cy="70" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="125" cy="80" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="65" cy="110" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="90" cy="100" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="115" cy="100" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="140" cy="110" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="80" cy="130" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="105" cy="125" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="130" cy="130" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="95" cy="150" rx="3" ry="4" fill="#FFEE58"/>
+  <ellipse cx="115" cy="155" rx="3" ry="4" fill="#FFEE58"/>
+  <!-- Leaves -->
+  <path d="M100 30 Q80 15 65 20 Q75 30 85 32" fill="#4CAF50"/>
+  <path d="M100 30 Q120 15 135 20 Q125 30 115 32" fill="#4CAF50"/>
+  <path d="M100 30 Q95 10 100 5 Q105 10 100 30" fill="#66BB6A"/>
+  <path d="M100 30 Q70 25 60 30 Q72 35 90 33" fill="#388E3C"/>
+  <path d="M100 30 Q130 25 140 30 Q128 35 110 33" fill="#388E3C"/>
+</svg>

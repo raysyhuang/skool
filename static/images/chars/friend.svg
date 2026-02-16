@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Person 1 head -->
+  <circle cx="70" cy="50" r="28" fill="#FFCC99" stroke="#CC8844" stroke-width="2"/>
+  <!-- Person 1 hair -->
+  <path d="M42 42 Q50 20 70 18 Q90 20 98 42" fill="#4A3510" stroke="none"/>
+  <!-- Person 1 eyes -->
+  <circle cx="60" cy="46" r="4" fill="#333"/>
+  <circle cx="80" cy="46" r="4" fill="#333"/>
+  <!-- Person 1 smile -->
+  <path d="M58 60 Q70 70 82 60" fill="none" stroke="#333" stroke-width="2"/>
+  <!-- Person 1 body -->
+  <rect x="50" y="78" width="40" height="55" rx="5" fill="#FF6B6B" stroke="#CC4444" stroke-width="2"/>
+  <!-- Person 1 legs -->
+  <rect x="55" y="133" width="12" height="30" rx="3" fill="#4477BB"/>
+  <rect x="73" y="133" width="12" height="30" rx="3" fill="#4477BB"/>
+  <!-- Person 1 arm (waving/reaching toward friend) -->
+  <line x1="90" y1="90" x2="110" y2="85" stroke="#FFCC99" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Person 2 head -->
+  <circle cx="140" cy="50" r="28" fill="#FFDDBB" stroke="#DDAA77" stroke-width="2"/>
+  <!-- Person 2 hair -->
+  <ellipse cx="140" cy="38" rx="30" ry="22" fill="#885533"/>
+  <circle cx="140" cy="50" r="26" fill="#FFDDBB"/>
+  <!-- Person 2 eyes -->
+  <circle cx="130" cy="46" r="4" fill="#333"/>
+  <circle cx="150" cy="46" r="4" fill="#333"/>
+  <!-- Person 2 smile -->
+  <path d="M128 60 Q140 70 152 60" fill="none" stroke="#333" stroke-width="2"/>
+  <!-- Person 2 body -->
+  <rect x="120" y="78" width="40" height="55" rx="5" fill="#44BB44" stroke="#228822" stroke-width="2"/>
+  <!-- Person 2 legs -->
+  <rect x="125" y="133" width="12" height="30" rx="3" fill="#4477BB"/>
+  <rect x="143" y="133" width="12" height="30" rx="3" fill="#4477BB"/>
+  <!-- Person 2 arm (reaching toward friend) -->
+  <line x1="120" y1="90" x2="100" y2="85" stroke="#FFDDBB" stroke-width="8" stroke-linecap="round"/>
+  <!-- Heart between them -->
+  <path d="M105 78 C102 72 95 72 95 78 C95 84 105 90 105 90 C105 90 115 84 115 78 C115 72 108 72 105 78Z" fill="#FF4444"/>
+  <!-- Shoes -->
+  <rect x="52" y="160" width="18" height="8" rx="3" fill="#333"/>
+  <rect x="70" y="160" width="18" height="8" rx="3" fill="#333"/>
+  <rect x="122" y="160" width="18" height="8" rx="3" fill="#333"/>
+  <rect x="140" y="160" width="18" height="8" rx="3" fill="#333"/>
+</svg>

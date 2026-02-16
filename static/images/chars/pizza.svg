@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" rx="20" fill="#FFF5E5"/>
+  <!-- Pizza slice shape -->
+  <path d="M100 30 L35 170 Q100 185 165 170 Z" fill="#F4C430"/>
+  <!-- Crust -->
+  <path d="M35 170 Q100 190 165 170 Q100 180 35 170" fill="#D4942A"/>
+  <path d="M35 170 Q100 188 165 170" fill="none" stroke="#C08420" stroke-width="3"/>
+  <!-- Cheese layer -->
+  <path d="M100 40 L42 165 Q100 178 158 165 Z" fill="#FFE066"/>
+  <!-- Sauce peaking through -->
+  <path d="M100 50 L50 160 Q100 172 150 160 Z" fill="#E85030" opacity="0.3"/>
+  <!-- Pepperoni -->
+  <circle cx="90" cy="100" r="12" fill="#CC3020"/>
+  <circle cx="90" cy="100" r="10" fill="#E04030"/>
+  <circle cx="120" cy="120" r="10" fill="#CC3020"/>
+  <circle cx="120" cy="120" r="8" fill="#E04030"/>
+  <circle cx="85" cy="145" r="11" fill="#CC3020"/>
+  <circle cx="85" cy="145" r="9" fill="#E04030"/>
+  <circle cx="115" cy="150" r="9" fill="#CC3020"/>
+  <circle cx="115" cy="150" r="7" fill="#E04030"/>
+  <!-- Green pepper bits -->
+  <ellipse cx="75" cy="120" rx="6" ry="4" fill="#4CAF50" transform="rotate(20 75 120)"/>
+  <ellipse cx="130" cy="140" rx="5" ry="3.5" fill="#4CAF50" transform="rotate(-15 130 140)"/>
+  <ellipse cx="100" cy="70" rx="5" ry="3" fill="#4CAF50" transform="rotate(10 100 70)"/>
+  <!-- Cheese dots/bubbles -->
+  <circle cx="105" cy="85" r="4" fill="#FFD54F" opacity="0.6"/>
+  <circle cx="70" cy="135" r="3" fill="#FFD54F" opacity="0.5"/>
+  <circle cx="140" cy="135" r="3.5" fill="#FFD54F" opacity="0.5"/>
+  <!-- Cute face -->
+  <circle cx="85" cy="90" r="3" fill="#5D4037" opacity="0"/>
+  <!-- Sparkle -->
+  <path d="M160 40 L163 48 L170 50 L163 52 L160 60 L157 52 L150 50 L157 48 Z" fill="#FFD700" opacity="0.7"/>
+  <path d="M40 50 L42 55 L47 56 L42 57 L40 62 L38 57 L33 56 L38 55 Z" fill="#FFD700" opacity="0.6"/>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Reaching hands -->
+  <!-- Left hand -->
+  <ellipse cx="60" cy="110" rx="28" ry="35" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <!-- Left fingers reaching -->
+  <rect x="42" y="55" width="12" height="42" rx="6" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(8,48,76)"/>
+  <rect x="56" y="48" width="12" height="48" rx="6" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(3,62,72)"/>
+  <rect x="70" y="50" width="12" height="45" rx="6" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(-3,76,72)"/>
+  <rect x="83" y="56" width="11" height="38" rx="6" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(-8,88,75)"/>
+  <!-- Left wrist -->
+  <rect x="40" y="142" width="40" height="22" rx="8" fill="#42A5F5"/>
+  <!-- Right hand -->
+  <ellipse cx="140" cy="110" rx="28" ry="35" fill="#FFCC80" stroke="#E0A050" stroke-width="2"/>
+  <!-- Right fingers reaching -->
+  <rect x="107" y="56" width="11" height="38" rx="6" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(8,112,75)"/>
+  <rect x="119" y="50" width="12" height="45" rx="6" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(3,125,72)"/>
+  <rect x="133" y="48" width="12" height="48" rx="6" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(-3,139,72)"/>
+  <rect x="147" y="55" width="12" height="42" rx="6" fill="#FFCC80" stroke="#E0A050" stroke-width="2" transform="rotate(-8,153,76)"/>
+  <!-- Right wrist -->
+  <rect x="120" y="142" width="40" height="22" rx="8" fill="#42A5F5"/>
+  <!-- Desire sparkles between hands -->
+  <text x="90" y="85" font-size="20" fill="#FFD700">&#9733;</text>
+  <text x="93" y="110" font-size="16" fill="#FF9800">&#9733;</text>
+  <text x="88" y="135" font-size="14" fill="#FFD700">&#9733;</text>
+</svg>

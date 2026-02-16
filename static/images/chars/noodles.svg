@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Bowl -->
+  <ellipse cx="100" cy="130" rx="75" ry="20" fill="#E65100"/>
+  <path d="M25 130 Q30 185 100 185 Q170 185 175 130Z" fill="#FF8F00"/>
+  <ellipse cx="100" cy="130" rx="75" ry="20" fill="#FFE082"/>
+  <!-- Noodles -->
+  <path d="M50 120 Q60 100 80 115 Q100 130 90 110 Q80 90 100 105 Q120 120 110 100 Q105 85 130 110 Q145 125 150 115" stroke="#FFD54F" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M55 125 Q70 105 85 120 Q100 135 95 115 Q90 95 110 110 Q125 120 140 110" stroke="#FFCA28" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Steam -->
+  <path d="M70 75 Q65 55 70 40" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M100 70 Q95 50 100 35" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M130 75 Q125 55 130 40" stroke="#BDBDBD" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+</svg>

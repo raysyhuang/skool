@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" rx="20" fill="#FFF8E0"/>
+  <!-- Red container -->
+  <path d="M55 100 L45 170 Q45 180 100 180 Q155 180 155 170 L145 100 Z" fill="#E02020"/>
+  <path d="M55 100 L45 170 Q45 180 100 180 Q155 180 155 170 L145 100 Z" fill="url(#friesContGrad)" opacity="0.2"/>
+  <!-- Container front design - white stripe -->
+  <path d="M60 115 L52 165 Q55 172 100 172 Q145 172 148 165 L140 115 Z" fill="#CC1818" opacity="0.4"/>
+  <!-- French fries sticking out -->
+  <rect x="62" y="45" width="12" height="65" rx="4" fill="#FFD54F" transform="rotate(-12 68 77)"/>
+  <rect x="75" y="38" width="11" height="70" rx="4" fill="#FFCA28" transform="rotate(-4 80 73)"/>
+  <rect x="88" y="35" width="12" height="72" rx="4" fill="#FFD54F" transform="rotate(2 94 71)"/>
+  <rect x="100" y="40" width="11" height="68" rx="4" fill="#FFC107" transform="rotate(6 105 74)"/>
+  <rect x="112" y="42" width="12" height="66" rx="4" fill="#FFD54F" transform="rotate(10 118 75)"/>
+  <rect x="122" y="48" width="11" height="60" rx="4" fill="#FFCA28" transform="rotate(15 127 78)"/>
+  <!-- Container rim -->
+  <ellipse cx="100" cy="100" rx="46" ry="10" fill="#FF3030"/>
+  <!-- Cute face on container -->
+  <circle cx="82" cy="140" r="4" fill="#FFFFFF"/>
+  <circle cx="118" cy="140" r="4" fill="#FFFFFF"/>
+  <circle cx="83" cy="139" r="1.5" fill="#E02020"/>
+  <circle cx="119" cy="139" r="1.5" fill="#E02020"/>
+  <path d="M88 153 Q100 162 112 153" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Blush -->
+  <ellipse cx="74" cy="148" rx="6" ry="4" fill="#FF8080" opacity="0.4"/>
+  <ellipse cx="126" cy="148" rx="6" ry="4" fill="#FF8080" opacity="0.4"/>
+  <!-- Salt sparkles -->
+  <circle cx="70" cy="55" r="1.5" fill="white" opacity="0.7"/>
+  <circle cx="95" cy="42" r="1" fill="white" opacity="0.6"/>
+  <circle cx="120" cy="50" r="1.5" fill="white" opacity="0.7"/>
+  <defs>
+    <linearGradient id="friesContGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="black"/>
+      <stop offset="50%" stop-color="white"/>
+      <stop offset="100%" stop-color="black"/>
+    </linearGradient>
+  </defs>
+</svg>

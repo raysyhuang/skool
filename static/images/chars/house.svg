@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Roof -->
+  <polygon points="100,20 15,90 185,90" fill="#CC4444" stroke="#993333" stroke-width="3"/>
+  <!-- Walls -->
+  <rect x="30" y="90" width="140" height="95" fill="#FFDD77" stroke="#CC9933" stroke-width="3"/>
+  <!-- Door -->
+  <rect x="80" y="125" width="40" height="60" rx="3" fill="#8B5E3C" stroke="#6B4226" stroke-width="2"/>
+  <circle cx="112" cy="158" r="4" fill="#FFD700"/>
+  <!-- Window left -->
+  <rect x="42" y="105" width="30" height="30" rx="2" fill="#87CEEB" stroke="#CC9933" stroke-width="2"/>
+  <line x1="57" y1="105" x2="57" y2="135" stroke="#CC9933" stroke-width="2"/>
+  <line x1="42" y1="120" x2="72" y2="120" stroke="#CC9933" stroke-width="2"/>
+  <!-- Window right -->
+  <rect x="128" y="105" width="30" height="30" rx="2" fill="#87CEEB" stroke="#CC9933" stroke-width="2"/>
+  <line x1="143" y1="105" x2="143" y2="135" stroke="#CC9933" stroke-width="2"/>
+  <line x1="128" y1="120" x2="158" y2="120" stroke="#CC9933" stroke-width="2"/>
+  <!-- Chimney -->
+  <rect x="140" y="35" width="22" height="45" fill="#CC4444" stroke="#993333" stroke-width="2"/>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Shadow -->
+  <ellipse cx="95" cy="180" rx="55" ry="8" fill="#E0E0E0" opacity="0.4"/>
+  <!-- Cup body -->
+  <path d="M35 50 L45 170 Q45 178 100 178 Q155 178 155 170 L165 50 Z" fill="#FF7043"/>
+  <path d="M35 50 L45 170 Q45 178 100 178 Q155 178 155 170 L165 50 Z" fill="none" stroke="#E64A19" stroke-width="3"/>
+  <!-- Cup rim -->
+  <ellipse cx="100" cy="50" rx="67" ry="14" fill="#FF8A65"/>
+  <ellipse cx="100" cy="50" rx="67" ry="14" fill="none" stroke="#E64A19" stroke-width="3"/>
+  <!-- Inner cup -->
+  <ellipse cx="100" cy="52" rx="57" ry="10" fill="#FFAB91" opacity="0.6"/>
+  <!-- Liquid inside -->
+  <ellipse cx="100" cy="55" rx="52" ry="8" fill="#FFCC80" opacity="0.7"/>
+  <!-- Handle -->
+  <path d="M163 70 Q195 75 195 115 Q195 155 160 150" fill="none" stroke="#E64A19" stroke-width="8" stroke-linecap="round"/>
+  <path d="M163 70 Q190 75 190 115 Q190 150 160 148" fill="none" stroke="#FF7043" stroke-width="5" stroke-linecap="round"/>
+  <!-- Cute face - eyes -->
+  <circle cx="80" cy="110" r="6" fill="#4E342E"/>
+  <circle cx="120" cy="110" r="6" fill="#4E342E"/>
+  <circle cx="82" cy="108" r="2" fill="white"/>
+  <circle cx="122" cy="108" r="2" fill="white"/>
+  <!-- Cute face - smile -->
+  <path d="M85 130 Q100 145 115 130" fill="none" stroke="#4E342E" stroke-width="3" stroke-linecap="round"/>
+  <!-- Cheek blush -->
+  <ellipse cx="70" cy="125" rx="8" ry="5" fill="#FF8A80" opacity="0.5"/>
+  <ellipse cx="130" cy="125" rx="8" ry="5" fill="#FF8A80" opacity="0.5"/>
+  <!-- Steam -->
+  <path d="M80 35 Q75 22 80 12" stroke="#BDBDBD" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <path d="M100 32 Q95 18 100 8" stroke="#BDBDBD" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <path d="M120 35 Q125 22 120 12" stroke="#BDBDBD" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

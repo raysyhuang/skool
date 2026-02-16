@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background - sky gradient -->
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#64B5F6"/>
+      <stop offset="60%" stop-color="#90CAF9"/>
+      <stop offset="100%" stop-color="#BBDEFB"/>
+    </linearGradient>
+    <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1E88E5"/>
+      <stop offset="100%" stop-color="#0D47A1"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="20" fill="url(#skyGrad)"/>
+  <!-- Sun -->
+  <circle cx="150" cy="45" r="28" fill="#FFD54F"/>
+  <circle cx="150" cy="45" r="22" fill="#FFE082"/>
+  <!-- Sun rays -->
+  <line x1="150" y1="10" x2="150" y2="18" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="115" y1="45" x2="122" y2="45" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="125" y1="20" x2="130" y2="26" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="175" y1="20" x2="170" y2="26" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="175" y1="70" x2="170" y2="64" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="125" y1="70" x2="130" y2="64" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <!-- Ocean body -->
+  <rect x="0" y="100" width="200" height="100" rx="0" fill="url(#oceanGrad)"/>
+  <!-- Round bottom corners to match -->
+  <rect x="0" y="100" width="200" height="80" fill="url(#oceanGrad)"/>
+  <rect x="0" y="165" width="200" height="35" rx="20" fill="#0D47A1"/>
+  <!-- Waves layer 1 -->
+  <path d="M0 100 Q25 88 50 100 Q75 112 100 100 Q125 88 150 100 Q175 112 200 100 L200 110 Q175 122 150 110 Q125 98 100 110 Q75 122 50 110 Q25 98 0 110 Z" fill="#1976D2" opacity="0.7"/>
+  <!-- Waves layer 2 -->
+  <path d="M0 115 Q25 105 50 115 Q75 125 100 115 Q125 105 150 115 Q175 125 200 115 L200 125 Q175 135 150 125 Q125 115 100 125 Q75 135 50 125 Q25 115 0 125 Z" fill="#1565C0" opacity="0.5"/>
+  <!-- Waves layer 3 -->
+  <path d="M0 135 Q30 127 60 135 Q90 143 120 135 Q150 127 180 135 Q195 139 200 140 L200 145 Q180 148 160 142 Q130 135 100 145 Q70 148 40 142 Q20 138 0 145 Z" fill="#0D47A1" opacity="0.4"/>
+  <!-- White wave caps -->
+  <path d="M10 100 Q20 92 30 100" fill="none" stroke="white" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <path d="M60 100 Q70 92 80 100" fill="none" stroke="white" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+  <path d="M110 100 Q120 92 130 100" fill="none" stroke="white" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+  <path d="M160 100 Q170 92 180 100" fill="none" stroke="white" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+  <!-- Small clouds -->
+  <ellipse cx="40" cy="40" rx="22" ry="10" fill="white" opacity="0.6"/>
+  <ellipse cx="35" cy="38" rx="15" ry="8" fill="white" opacity="0.5"/>
+  <!-- Seagull -->
+  <path d="M70 55 Q75 48 80 55" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M85 50 Q90 43 95 50" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

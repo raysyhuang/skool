@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#FFF3E0"/>
+
+  <!-- Body - yellow/tan fireproof coat -->
+  <rect x="55" y="105" width="90" height="70" rx="15" fill="#F9A825"/>
+
+  <!-- Reflective stripes on coat -->
+  <rect x="55" y="135" width="90" height="6" rx="2" fill="#FFEE58"/>
+  <rect x="55" y="150" width="90" height="6" rx="2" fill="#FFEE58"/>
+
+  <!-- Coat closure -->
+  <rect x="96" y="108" width="8" height="60" rx="2" fill="#F57F17"/>
+
+  <!-- Neck -->
+  <rect x="90" y="90" width="20" height="20" rx="5" fill="#FDBCB4"/>
+
+  <!-- Collar - protective -->
+  <rect x="75" y="100" width="50" height="12" rx="5" fill="#F57F17"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="68" r="35" fill="#FDBCB4"/>
+
+  <!-- Firefighter helmet -->
+  <ellipse cx="100" cy="45" rx="42" ry="20" fill="#D32F2F"/>
+  <rect x="65" y="35" width="70" height="18" rx="8" fill="#D32F2F"/>
+  <!-- Helmet front shield -->
+  <rect x="85" y="40" width="30" height="14" rx="4" fill="#FFD700" stroke="#FFA000" stroke-width="1"/>
+  <!-- Number on helmet -->
+  <text x="100" y="51" text-anchor="middle" font-size="10" font-weight="bold" fill="#D32F2F" font-family="Arial">1</text>
+  <!-- Helmet brim -->
+  <path d="M55,50 Q100,60 145,50" fill="none" stroke="#B71C1C" stroke-width="4" stroke-linecap="round"/>
+  <!-- Back of helmet extends -->
+  <path d="M60,48 Q58,55 65,58" fill="#D32F2F" stroke="none"/>
+  <path d="M140,48 Q142,55 135,58" fill="#D32F2F" stroke="none"/>
+
+  <!-- Eyes -->
+  <circle cx="87" cy="66" r="5" fill="#FFFFFF"/>
+  <circle cx="113" cy="66" r="5" fill="#FFFFFF"/>
+  <circle cx="88" cy="67" r="3" fill="#3E2723"/>
+  <circle cx="114" cy="67" r="3" fill="#3E2723"/>
+  <circle cx="89" cy="66" r="1" fill="#FFFFFF"/>
+  <circle cx="115" cy="66" r="1" fill="#FFFFFF"/>
+
+  <!-- Determined eyebrows -->
+  <line x1="82" y1="58" x2="92" y2="60" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="108" y1="60" x2="118" y2="58" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Rosy cheeks -->
+  <circle cx="78" cy="76" r="6" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="122" cy="76" r="6" fill="#FFB6C1" opacity="0.5"/>
+
+  <!-- Smile -->
+  <path d="M90,80 Q100,92 110,80" fill="none" stroke="#D84315" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Arms -->
+  <rect x="33" y="110" width="28" height="16" rx="8" fill="#F9A825"/>
+  <rect x="139" y="108" width="28" height="16" rx="8" fill="#F9A825"/>
+
+  <!-- Gloves -->
+  <circle cx="35" cy="118" r="9" fill="#424242"/>
+  <circle cx="165" cy="116" r="9" fill="#424242"/>
+
+  <!-- Axe in hand -->
+  <rect x="155" y="90" width="4" height="40" rx="2" fill="#795548" transform="rotate(-15,157,110)"/>
+  <path d="M150,88 L162,82 L165,90 L155,93 Z" fill="#B0BEC5" stroke="#78909C" stroke-width="1" transform="rotate(-15,157,88)"/>
+
+  <!-- Reflective stripe on arms -->
+  <rect x="33" y="118" width="28" height="4" rx="1" fill="#FFEE58"/>
+  <rect x="139" y="116" width="28" height="4" rx="1" fill="#FFEE58"/>
+</svg>

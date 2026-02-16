@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Body -->
+  <ellipse cx="100" cy="130" rx="65" ry="45" fill="#44BB44" stroke="#228822" stroke-width="3"/>
+  <!-- Eyes (bulging) -->
+  <circle cx="65" cy="70" r="25" fill="#44BB44" stroke="#228822" stroke-width="3"/>
+  <circle cx="135" cy="70" r="25" fill="#44BB44" stroke="#228822" stroke-width="3"/>
+  <circle cx="65" cy="65" r="15" fill="white"/>
+  <circle cx="135" cy="65" r="15" fill="white"/>
+  <circle cx="65" cy="65" r="8" fill="#333"/>
+  <circle cx="135" cy="65" r="8" fill="#333"/>
+  <circle cx="67" cy="63" r="3" fill="white"/>
+  <circle cx="137" cy="63" r="3" fill="white"/>
+  <!-- Mouth -->
+  <path d="M40 125 Q100 155 160 125" fill="none" stroke="#228822" stroke-width="3"/>
+  <!-- Nostrils -->
+  <circle cx="88" cy="100" r="3" fill="#228822"/>
+  <circle cx="112" cy="100" r="3" fill="#228822"/>
+  <!-- Cheeks -->
+  <circle cx="55" cy="120" r="12" fill="#66CC66" opacity="0.5"/>
+  <circle cx="145" cy="120" r="12" fill="#66CC66" opacity="0.5"/>
+  <!-- Front legs -->
+  <path d="M40 145 L20 165 L15 160 M20 165 L20 155 M20 165 L25 158" fill="none" stroke="#228822" stroke-width="4" stroke-linecap="round"/>
+  <path d="M160 145 L180 165 L185 160 M180 165 L180 155 M180 165 L175 158" fill="none" stroke="#228822" stroke-width="4" stroke-linecap="round"/>
+</svg>

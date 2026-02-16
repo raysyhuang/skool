@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Head -->
+  <circle cx="100" cy="35" r="25" fill="#FFCC99" stroke="#CC8844" stroke-width="2"/>
+  <!-- Hair -->
+  <path d="M75 28 Q80 8 100 5 Q120 8 125 28" fill="#885533"/>
+  <!-- Happy eyes -->
+  <path d="M88 30 Q93 25 98 30" fill="none" stroke="#333" stroke-width="3"/>
+  <path d="M105 30 Q110 25 115 30" fill="none" stroke="#333" stroke-width="3"/>
+  <!-- Smile -->
+  <path d="M90 44 Q100 52 110 44" fill="none" stroke="#333" stroke-width="2"/>
+  <!-- Body (tilted slightly) -->
+  <rect x="80" y="60" width="40" height="45" rx="5" fill="#9B59B6" stroke="#7B3F96" stroke-width="2" transform="rotate(-5 100 82)"/>
+  <!-- Left arm (up high) -->
+  <line x1="82" y1="68" x2="45" y2="40" stroke="#FFCC99" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="42" cy="37" r="6" fill="#FFCC99"/>
+  <!-- Right arm (out to side) -->
+  <line x1="118" y1="68" x2="155" y2="50" stroke="#FFCC99" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="158" cy="48" r="6" fill="#FFCC99"/>
+  <!-- Left leg (kicked out) -->
+  <line x1="88" y1="105" x2="55" y2="145" stroke="#4477BB" stroke-width="12" stroke-linecap="round"/>
+  <ellipse cx="50" cy="148" rx="12" ry="6" fill="#333"/>
+  <!-- Right leg (standing) -->
+  <line x1="112" y1="105" x2="120" y2="150" stroke="#4477BB" stroke-width="12" stroke-linecap="round"/>
+  <ellipse cx="122" cy="154" rx="12" ry="6" fill="#333"/>
+  <!-- Motion sparkles -->
+  <text x="30" y="30" font-family="Arial" font-size="14" fill="#FFD700">*</text>
+  <text x="165" y="40" font-family="Arial" font-size="14" fill="#FFD700">*</text>
+  <text x="40" y="60" font-family="Arial" font-size="10" fill="#FF69B4">*</text>
+  <!-- Music notes -->
+  <text x="150" y="30" font-family="Arial" font-size="18" fill="#FF69B4">&#9835;</text>
+  <text x="25" y="50" font-family="Arial" font-size="16" fill="#FFB347">&#9834;</text>
+</svg>

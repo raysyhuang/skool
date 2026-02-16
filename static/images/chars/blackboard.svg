@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Board frame -->
+  <rect x="15" y="25" width="170" height="120" rx="3" fill="#5D4037"/>
+  <!-- Green board -->
+  <rect x="22" y="32" width="156" height="106" rx="2" fill="#2E7D32"/>
+  <!-- Chalk writing -->
+  <text x="50" y="70" font-size="24" fill="white" font-family="Arial" opacity="0.9">A B C</text>
+  <text x="50" y="100" font-size="20" fill="#FFEB3B" font-family="Arial" opacity="0.9">1+1=2</text>
+  <path d="M50 115 Q80 108 110 115 Q130 120 150 112" stroke="white" stroke-width="1.5" fill="none" opacity="0.6"/>
+  <!-- Chalk tray -->
+  <rect x="25" y="145" width="150" height="8" rx="2" fill="#795548"/>
+  <rect x="25" y="142" width="150" height="6" rx="2" fill="#8D6E63"/>
+  <!-- Chalk pieces -->
+  <rect x="40" y="138" width="20" height="6" rx="2" fill="white"/>
+  <rect x="70" y="138" width="18" height="6" rx="2" fill="#FFEB3B"/>
+  <rect x="98" y="138" width="15" height="6" rx="2" fill="#FF7043"/>
+  <!-- Legs -->
+  <rect x="35" y="153" width="6" height="35" fill="#5D4037"/>
+  <rect x="159" y="153" width="6" height="35" fill="#5D4037"/>
+  <!-- Cross bar -->
+  <line x1="38" y1="175" x2="162" y2="175" stroke="#5D4037" stroke-width="4"/>
+</svg>

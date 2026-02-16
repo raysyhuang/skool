@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - Race Complete!{% endblock %}
+
+{% block theme_css %}
+<style>
+    :root {
+        --gold: #fdcb6e;
+        --gold-dark: #e17f2e;
+        --green: #00b894;
+        --purple: #6c5ce7;
+        --orange: #ff6b35;
+        --dark: #2d3436;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%; height: 100%;
+        overflow: hidden;
+        font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    body {
+        background: linear-gradient(180deg, #2d3436 0%, #636e72 40%, #00b894 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100dvh;
+    }
+
+    /* ── Confetti ── */
+    .confetti-bg {
+        position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .confetti-piece {
+        position: absolute;
+        width: 14px; height: 14px;
+        border-radius: 3px;
+        animation: confettiFall linear forwards;
+    }
+    @keyframes confettiFall {
+        0% { transform: translateY(-30px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(110vh) rotate(1080deg); opacity: 0; }
+    }
+
+    /* ── Main card ── */
+    .complete-card {
+        position: relative; z-index: 1;
+        background: #fff;
+        border-radius: 36px;
+        padding: clamp(28px, 5vw, 48px);
+        width: clamp(340px, 70vw, 600px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(16px, 3vh, 28px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+        animation: cardSlideUp 0.6s ease-out;
+    }
+    @keyframes cardSlideUp {
+        0% { transform: translateY(40px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Trophy section */
+    .trophy-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    .trophy-emoji {
+        font-size: clamp(64px, 14vw, 120px);
+        animation: trophyBounce 1s ease-in-out infinite;
+    }
+    @keyframes trophyBounce {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        25% { transform: translateY(-12px) rotate(-5deg); }
+        75% { transform: translateY(-12px) rotate(5deg); }
+    }
+
+    .complete-title {
+        font-size: clamp(32px, 6vw, 52px);
+        font-weight: 900;
+        color: var(--dark);
+        text-align: center;
+    }
+
+    /* Stats row */
+    .stats-row {
+        display: flex;
+        gap: clamp(12px, 2vw, 24px);
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .stat-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: clamp(12px, 2vw, 20px);
+        border-radius: 20px;
+        min-width: clamp(90px, 16vw, 130px);
+    }
+    .stat-card.score {
+        background: linear-gradient(135deg, var(--green), #55efc4);
+    }
+    .stat-card.points {
+        background: linear-gradient(135deg, var(--orange), #fdcb6e);
+    }
+    .stat-card.streak {
+        background: linear-gradient(135deg, var(--purple), #a29bfe);
+    }
+
+    .stat-emoji {
+        font-size: clamp(28px, 5vw, 40px);
+    }
+    .stat-value {
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 1px 2px 4px rgba(0,0,0,0.2);
+    }
+    .stat-label {
+        font-size: clamp(14px, 2.5vw, 18px);
+        font-weight: 600;
+        color: rgba(255,255,255,0.9);
+    }
+
+    /* Rewards row */
+    .rewards-row {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+    }
+    .reward-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: clamp(22px, 4vw, 32px);
+        font-weight: 800;
+        color: var(--dark);
+    }
+    .reward-item .emoji {
+        font-size: clamp(28px, 5vw, 40px);
+    }
+
+    /* Action button */
+    .action-btn {
+        min-width: clamp(220px, 40vw, 340px);
+        min-height: clamp(64px, 10vw, 80px);
+        border: none;
+        border-radius: 24px;
+        font-size: clamp(22px, 4vw, 32px);
+        font-weight: 800;
+        color: #fff;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    .action-btn:active {
+        transform: scale(0.95);
+    }
+
+    .action-btn.race-again {
+        background: linear-gradient(135deg, var(--orange), #e55a2b);
+        box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+    }
+    .action-btn.race-again:hover {
+        box-shadow: 0 10px 30px rgba(255,107,53,0.5);
+        transform: scale(1.03);
+    }
+
+    .action-btn.come-back {
+        background: linear-gradient(135deg, var(--purple), #4834d4);
+        box-shadow: 0 6px 20px rgba(108,92,231,0.4);
+    }
+    .action-btn.come-back:hover {
+        box-shadow: 0 10px 30px rgba(108,92,231,0.5);
+        transform: scale(1.03);
+    }
+
+    /* Stars animation for perfect */
+    .perfect-burst {
+        position: fixed; inset: 0;
+        pointer-events: none; z-index: 50;
+        display: none;
+    }
+    .perfect-burst.active { display: block; }
+
+    .flying-star {
+        position: absolute;
+        font-size: 40px;
+        animation: starBurst 1.5s ease-out forwards;
+    }
+    @keyframes starBurst {
+        0% { transform: scale(0) translate(0,0); opacity: 1; }
+        100% { opacity: 0; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{# ── Confetti background ── #}
+<div class="confetti-bg" id="confettiBg"></div>
+
+{# ── Perfect burst ── #}
+<div class="perfect-burst" id="perfectBurst"></div>
+
+{# ── Main card ── #}
+<div class="complete-card">
+    <div class="trophy-section">
+        <span class="trophy-emoji">
+            {% if session.total_correct == total_questions|default(5) %}
+                &#127942;
+            {% else %}
+                &#127937;
+            {% endif %}
+        </span>
+    </div>
+
+    <h1 class="complete-title">
+        {% if session.total_correct == session.questions|length %}
+            &#127775; Perfect Race! &#127775;
+        {% else %}
+            Race Complete!
+        {% endif %}
+    </h1>
+
+    {# Stats #}
+    <div class="stats-row">
+        <div class="stat-card score">
+            <span class="stat-emoji">&#9989;</span>
+            <span class="stat-value">{{ session.total_correct }}/{{ session.questions|length }}</span>
+            <span class="stat-label">Correct</span>
+        </div>
+        <div class="stat-card points">
+            <span class="stat-emoji">&#11088;</span>
+            <span class="stat-value">+{{ session.points_earned }}</span>
+            <span class="stat-label">Points</span>
+        </div>
+        <div class="stat-card streak">
+            <span class="stat-emoji">&#128293;</span>
+            <span class="stat-value">{{ user.streak }}</span>
+            <span class="stat-label">Day Streak</span>
+        </div>
+    </div>
+
+    {# Rewards totals #}
+    <div class="rewards-row">
+        <div class="reward-item">
+            <span class="emoji">&#11088;</span>
+            <span>{{ user.points }}</span>
+        </div>
+        <div class="reward-item">
+            <span class="emoji">&#127775;</span>
+            <span>{{ user.stars }}</span>
+        </div>
+        <div class="reward-item">
+            <span class="emoji">&#129689;</span>
+            <span>{{ user.coins }}</span>
+        </div>
+    </div>
+
+    {# Action buttons #}
+    {% if can_play_again %}
+    <a href="/game/" style="text-decoration: none;">
+        <button class="action-btn race-again" type="button">
+            &#128663; Race Again!
+        </button>
+    </a>
+    {% else %}
+    <a href="/logout" style="text-decoration: none;">
+        <button class="action-btn come-back" type="button">
+            &#128564; Come Back Tomorrow!
+        </button>
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    /* ── Launch confetti ── */
+    var confettiBg = document.getElementById('confettiBg');
+    var colors = ['#ff6b35', '#fdcb6e', '#00b894', '#e84393', '#6c5ce7', '#74b9ff', '#fd79a8', '#ffeaa7'];
+    var pieceCount = 60;
+
+    for (var i = 0; i < pieceCount; i++) {
+        var piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = (Math.random() * 100) + '%';
+        piece.style.top = '-30px';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = (2 + Math.random() * 3) + 's';
+        piece.style.animationDelay = (Math.random() * 2) + 's';
+        piece.style.width = (8 + Math.random() * 10) + 'px';
+        piece.style.height = (8 + Math.random() * 10) + 'px';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        confettiBg.appendChild(piece);
+    }
+
+    /* ── Perfect score burst ── */
+    var totalCorrect = {{ session.total_correct }};
+    if (totalCorrect === 5) {
+        var burst = document.getElementById('perfectBurst');
+        burst.classList.add('active');
+        var starEmojis = ['\u2B50', '\u{1F31F}', '\u2728', '\u{1F3C6}', '\u{1F389}'];
+        for (var j = 0; j < 20; j++) {
+            var star = document.createElement('div');
+            star.className = 'flying-star';
+            star.textContent = starEmojis[Math.floor(Math.random() * starEmojis.length)];
+            /* Start from center */
+            star.style.left = '50%';
+            star.style.top = '50%';
+            var angle = (j / 20) * 2 * Math.PI;
+            var dist = 150 + Math.random() * 200;
+            var tx = Math.cos(angle) * dist;
+            var ty = Math.sin(angle) * dist;
+            star.style.animation = 'none';
+            star.style.animationDelay = (Math.random() * 0.5) + 's';
+            star.animate([
+                { transform: 'scale(0) translate(0,0)', opacity: 1 },
+                { transform: 'scale(1.5) translate(' + tx + 'px,' + ty + 'px)', opacity: 0 }
+            ], {
+                duration: 1200 + Math.random() * 600,
+                easing: 'ease-out',
+                fill: 'forwards',
+                delay: Math.random() * 400
+            });
+            burst.appendChild(star);
+        }
+        setTimeout(function() { burst.classList.remove('active'); }, 2500);
+    }
+
+    /* ── Celebration sound (TTS) ── */
+    if ('speechSynthesis' in window) {
+        setTimeout(function() {
+            var msg = totalCorrect === 5 ? '\u592A\u68D2\u4E86\uFF01' : '\u5B8C\u6210\uFF01';
+            var utter = new SpeechSynthesisUtterance(msg);
+            utter.lang = 'zh-CN';
+            utter.rate = 0.9;
+            utter.pitch = 1.3;
+            window.speechSynthesis.speak(utter);
+        }, 600);
+    }
+})();
+</script>
+{% endblock %}

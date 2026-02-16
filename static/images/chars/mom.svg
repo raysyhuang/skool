@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Hair -->
+  <ellipse cx="100" cy="50" rx="42" ry="42" fill="#8B4513"/>
+  <ellipse cx="60" cy="60" rx="15" ry="25" fill="#8B4513"/>
+  <ellipse cx="140" cy="60" rx="15" ry="25" fill="#8B4513"/>
+  <!-- Head -->
+  <circle cx="100" cy="55" r="33" fill="#FFCC99" stroke="#CC8844" stroke-width="2"/>
+  <!-- Eyes -->
+  <circle cx="85" cy="50" r="5" fill="#333"/>
+  <circle cx="115" cy="50" r="5" fill="#333"/>
+  <circle cx="87" cy="48" r="2" fill="white"/>
+  <circle cx="117" cy="48" r="2" fill="white"/>
+  <!-- Eyelashes -->
+  <path d="M78 45 Q82 42 86 45" fill="none" stroke="#333" stroke-width="1.5"/>
+  <path d="M114 45 Q118 42 122 45" fill="none" stroke="#333" stroke-width="1.5"/>
+  <!-- Smile -->
+  <path d="M88 68 Q100 78 112 68" fill="none" stroke="#CC4444" stroke-width="2" stroke-linecap="round"/>
+  <!-- Cheeks -->
+  <circle cx="75" cy="65" r="6" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="125" cy="65" r="6" fill="#FFB6C1" opacity="0.5"/>
+  <!-- Body (dress) -->
+  <path d="M72 88 L60 165 L140 165 L128 88 Z" fill="#FF69B4" stroke="#CC3388" stroke-width="2"/>
+  <!-- Neckline -->
+  <path d="M78 88 Q100 100 122 88" fill="#FF69B4" stroke="#CC3388" stroke-width="2"/>
+  <!-- Arms -->
+  <line x1="68" y1="95" x2="42" y2="120" stroke="#FFCC99" stroke-width="10" stroke-linecap="round"/>
+  <line x1="132" y1="95" x2="158" y2="120" stroke="#FFCC99" stroke-width="10" stroke-linecap="round"/>
+  <!-- Hands -->
+  <circle cx="38" cy="123" r="8" fill="#FFCC99"/>
+  <circle cx="162" cy="123" r="8" fill="#FFCC99"/>
+  <!-- Legs -->
+  <rect x="80" y="165" width="12" height="25" rx="4" fill="#FFCC99"/>
+  <rect x="108" y="165" width="12" height="25" rx="4" fill="#FFCC99"/>
+  <!-- Shoes -->
+  <ellipse cx="86" cy="192" rx="10" ry="5" fill="#FF69B4"/>
+  <ellipse cx="114" cy="192" rx="10" ry="5" fill="#FF69B4"/>
+</svg>

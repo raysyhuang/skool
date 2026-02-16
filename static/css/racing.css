@@ -1,0 +1,855 @@
+/* ================================================================
+   Skool -- Racing Theme Styles
+   Chinese character learning app with a racing car theme.
+   Optimised for iPad (touch-only, landscape + portrait).
+   ================================================================ */
+
+/* ── CSS Custom Properties ── */
+:root {
+    --road-color: #636e72;
+    --road-stripe: #ffeaa7;
+    --grass-top: #00b894;
+    --grass-bottom: #55efc4;
+    --sky-top: #74b9ff;
+    --sky-bottom: #a29bfe;
+    --correct-color: #00b894;
+    --wrong-color: #d63031;
+    --accent-orange: #ff6b35;
+    --accent-yellow: #fdcb6e;
+    --card-bg: #ffffff;
+    --dark: #2d3436;
+
+    /* Animation durations -- single source of truth */
+    --car-slide-duration: 0.8s;
+    --feedback-duration: 1.2s;
+    --answer-lockout: 1.6s;
+}
+
+
+/* ================================================================
+   LAYOUT SHELL
+   ================================================================ */
+
+body.racing-theme {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    width: 100%;
+}
+
+
+/* ================================================================
+   TOP BAR  (progress label + points badge)
+   ================================================================ */
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #2d3436, #636e72);
+    color: #fff;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progress-label {
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 700;
+}
+
+/* Points badge in corner */
+/* Music toggle button */
+.music-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: background 0.2s;
+}
+.music-toggle:active {
+    background: rgba(255, 255, 255, 0.4);
+}
+.music-toggle.muted {
+    opacity: 0.5;
+}
+
+.points-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-orange);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    min-height: 44px;
+}
+
+/* Logout / switch-user button */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    text-decoration: none;
+    font-size: 22px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: background 0.2s;
+}
+.logout-btn:active {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Progress bar ── */
+.progress-bar-track {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-yellow), var(--accent-orange));
+    border-radius: 4px;
+    transition: width 0.6s ease-out;
+}
+
+
+/* ================================================================
+   QUESTION AREA  (the "sky")
+   ================================================================ */
+
+.question-area {
+    flex: 1;
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(12px, 2.5vh, 32px);
+    padding: clamp(12px, 3vw, 32px);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+
+/* ── Clouds decoration ── */
+
+.clouds {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cloud {
+    position: absolute;
+    font-size: 60px;
+    opacity: 0.3;
+    animation: drift linear infinite;
+    will-change: transform;
+}
+
+.cloud:nth-child(1) { top:  8%; left: -10%; animation-duration: 30s; font-size: 50px; }
+.cloud:nth-child(2) { top: 25%; left: -15%; animation-duration: 40s; animation-delay: 10s; font-size: 70px; }
+.cloud:nth-child(3) { top:  5%; left:  -5%; animation-duration: 35s; animation-delay: 20s; font-size: 40px; }
+
+@keyframes drift {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(calc(100vw + 120px)); }
+}
+
+
+/* ================================================================
+   CHARACTER DISPLAY  (huge centred Chinese character)
+   ================================================================ */
+
+.char-row {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2vw, 24px);
+    z-index: 1;
+}
+
+.character-display {
+    font-size: clamp(80px, 16vw, 160px);
+    font-weight: 900;
+    color: var(--dark);
+    text-shadow: 4px 4px 0 rgba(255, 255, 255, 0.6);
+    line-height: 1.1;
+    animation: charPop 0.4s ease-out;
+}
+
+@keyframes charPop {
+    0%   { transform: scale(0.5); opacity: 0; }
+    70%  { transform: scale(1.08); }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+/* TTS / sound button */
+.tts-btn {
+    width: clamp(60px, 10vw, 80px);
+    height: clamp(60px, 10vw, 80px);
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-orange);
+    color: #fff;
+    font-size: clamp(28px, 5vw, 40px);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+    transition: transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    z-index: 1;
+    touch-action: manipulation;
+}
+
+.tts-btn:active {
+    transform: scale(0.9);
+}
+
+/* Pinyin subtitle */
+.pinyin-text {
+    font-size: clamp(24px, 5vw, 40px);
+    color: var(--dark);
+    font-weight: 600;
+    opacity: 0.8;
+    z-index: 1;
+}
+
+
+/* ================================================================
+   OPTION BUTTONS  (large rounded cards with shadows)
+   ================================================================ */
+
+.options-row {
+    display: flex;
+    gap: clamp(16px, 3vw, 40px);
+    z-index: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+}
+
+.option-btn {
+    flex: 1 1 0;
+    min-width: 100px;
+    max-width: 260px;
+    aspect-ratio: 1;
+    border: 5px solid #dfe6e9;
+    border-radius: 24px;
+    background: var(--card-bg);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Tap feedback (no hover needed -- iPad is touch-only) */
+.option-btn:active {
+    transform: scale(0.94);
+}
+
+.option-btn img {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.option-btn .option-label {
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 700;
+    color: var(--dark);
+    text-align: center;
+}
+
+
+/* ── Answer-feedback states ── */
+
+.option-btn.correct {
+    border-color: var(--correct-color);
+    background: #dff9f0;
+    box-shadow: 0 0 30px rgba(0, 184, 148, 0.5);
+}
+
+.option-btn.wrong {
+    border-color: var(--wrong-color);
+    background: #ffe0de;
+    animation: shake 0.4s ease-in-out;
+}
+
+.option-btn.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%      { transform: translateX(-8px); }
+    75%      { transform: translateX(8px); }
+}
+
+/* Green flash overlay on correct */
+.option-btn.correct::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: rgba(0, 184, 148, 0.25);
+    animation: flashGreen 0.6s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes flashGreen {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Red flash overlay on wrong */
+.option-btn.wrong::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: rgba(214, 48, 49, 0.2);
+    animation: flashRed 0.5s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes flashRed {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Make buttons relative so pseudo-elements position correctly */
+.option-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* ================================================================
+   FEEDBACK OVERLAY  (big emoji + text)
+   ================================================================ */
+
+.feedback-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.feedback-overlay.active {
+    display: flex;
+}
+
+.feedback-msg {
+    font-size: clamp(48px, 10vw, 80px);
+    font-weight: 900;
+    padding: 20px 40px;
+    border-radius: 24px;
+    animation: feedbackPop 0.5s ease-out;
+}
+
+.feedback-msg.correct {
+    color: var(--correct-color);
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.feedback-msg.wrong {
+    color: var(--wrong-color);
+    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+@keyframes feedbackPop {
+    0%   { transform: scale(0.3); opacity: 0; }
+    50%  { transform: scale(1.2); }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+
+/* ================================================================
+   ROAD AREA  (bottom third of viewport)
+   ================================================================ */
+
+.road-area {
+    flex-shrink: 0;
+    height: clamp(100px, 18vh, 200px);
+    position: relative;
+    background: var(--grass-top);
+    width: 100%;
+}
+
+/* Grass strips */
+.grass-strip {
+    height: 15px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--grass-top) 0px,
+        var(--grass-top) 20px,
+        var(--grass-bottom) 20px,
+        var(--grass-bottom) 40px
+    );
+}
+
+.grass-strip-bottom {
+    height: 15px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--grass-bottom) 0px,
+        var(--grass-bottom) 20px,
+        var(--grass-top) 20px,
+        var(--grass-top) 40px
+    );
+}
+
+/* Road surface */
+.road {
+    position: relative;
+    height: calc(100% - 30px);
+    background: var(--road-color);
+    border-top: 4px solid #b2bec3;
+    border-bottom: 4px solid #b2bec3;
+}
+
+/* Centre dashed line */
+.road::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--road-stripe) 0px,
+        var(--road-stripe) 30px,
+        transparent 30px,
+        transparent 50px
+    );
+    transform: translateY(-50%);
+}
+
+
+/* ── Stop markers (5 flags evenly spaced) ── */
+
+.stop-markers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: flex-start;
+    padding: 0 8%;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.stop-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-top: 4px;
+}
+
+.stop-flag {
+    font-size: clamp(20px, 3vw, 32px);
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.stop-flag.reached {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.stop-flag.current {
+    animation: flagPulse 1s ease-in-out infinite;
+}
+
+@keyframes flagPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.3); }
+}
+
+
+/* ── Car sprite ── */
+
+.car-sprite {
+    position: absolute;
+    bottom: 10px;
+    font-size: clamp(40px, 7vw, 64px);
+    transition: left var(--car-slide-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
+    z-index: 5;
+    will-change: left;
+    transform: scaleX(-1); /* Flip car emoji to face right */
+}
+
+/* Correct answer: car zooms forward with a boost effect */
+.car-sprite.boost {
+    animation: carBoost 0.6s ease-out;
+}
+
+@keyframes carBoost {
+    0%   { transform: scaleX(-1) scale(1); }
+    30%  { transform: scaleX(-1) scale(1.3) rotate(-3deg); }
+    60%  { transform: scaleX(-1) scale(1.1) rotate(2deg); }
+    100% { transform: scaleX(-1) scale(1); }
+}
+
+/* Wrong answer: car shakes / spins */
+.car-sprite.shake {
+    animation: carShake 0.5s ease-in-out;
+}
+
+@keyframes carShake {
+    0%, 100% { transform: scaleX(-1) translateX(0) rotate(0deg); }
+    20%      { transform: scaleX(-1) translateX(-6px) rotate(-4deg); }
+    40%      { transform: scaleX(-1) translateX(6px)  rotate(4deg); }
+    60%      { transform: scaleX(-1) translateX(-4px) rotate(-2deg); }
+    80%      { transform: scaleX(-1) translateX(4px)  rotate(2deg); }
+}
+
+.car-sprite.spin {
+    animation: carSpin 0.5s ease-in-out;
+}
+
+@keyframes carSpin {
+    0%   { transform: scaleX(-1) rotate(0deg); }
+    50%  { transform: scaleX(-1) rotate(15deg); }
+    100% { transform: scaleX(-1) rotate(0deg); }
+}
+
+
+/* ================================================================
+   CONFETTI  /  CELEBRATION
+   ================================================================ */
+
+.celebration-burst {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.celebration-burst.active {
+    display: block;
+}
+
+.confetti-piece {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    animation: confettiFall 2s ease-out forwards;
+    will-change: transform, opacity;
+}
+
+@keyframes confettiFall {
+    0%   { transform: translateY(-20px) rotate(0deg) scale(1);  opacity: 1; }
+    80%  { opacity: 0.8; }
+    100% { transform: translateY(100vh) rotate(720deg) scale(0.5); opacity: 0; }
+}
+
+/* Big celebration (end of race) confetti */
+.confetti-piece.big {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    animation-duration: 3s;
+}
+
+
+/* ================================================================
+   SCREEN-WIDE GREEN / RED FLASH
+   ================================================================ */
+
+.screen-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+}
+
+.screen-flash.correct-flash {
+    background: rgba(0, 184, 148, 0.25);
+}
+
+.screen-flash.wrong-flash {
+    background: rgba(214, 48, 49, 0.2);
+}
+
+.screen-flash.active {
+    opacity: 1;
+    animation: screenFlash 0.6s ease-out forwards;
+}
+
+@keyframes screenFlash {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+
+/* ================================================================
+   RESPONSIVE — scales to any screen size
+   ================================================================ */
+
+/* Small screens (phones, small windows) */
+@media (max-height: 500px) {
+    .character-display {
+        font-size: 60px;
+    }
+
+    .road-area {
+        height: 80px;
+    }
+
+    .top-bar {
+        padding: 6px 12px;
+    }
+
+    .options-row {
+        max-width: 600px;
+    }
+}
+
+
+/* ================================================================
+   ACCESSIBILITY  /  REDUCED MOTION
+   ================================================================ */
+
+/* ================================================================
+   TEACHING PANEL (wrong answer learning moment)
+   ================================================================ */
+
+.teaching-panel {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+}
+
+.teaching-panel.active {
+    display: flex;
+}
+
+.teaching-card {
+    background: #fff;
+    border-radius: 32px;
+    padding: clamp(24px, 4vw, 40px);
+    width: clamp(320px, 60vw, 500px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.teaching-header {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 800;
+    color: var(--accent-orange);
+    text-align: center;
+}
+
+.teaching-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.teaching-char {
+    font-size: clamp(64px, 12vw, 100px);
+    font-weight: 900;
+    color: var(--dark);
+    line-height: 1.1;
+}
+
+.teaching-pinyin {
+    font-size: clamp(22px, 4vw, 32px);
+    color: #636e72;
+    font-weight: 600;
+}
+
+.teaching-arrow {
+    font-size: clamp(28px, 5vw, 40px);
+    color: var(--accent-orange);
+}
+
+.teaching-image {
+    width: clamp(100px, 20vw, 160px);
+    height: clamp(100px, 20vw, 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    border-radius: 20px;
+    border: 4px solid var(--correct-color);
+    overflow: hidden;
+}
+
+.teaching-image img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.teaching-meaning {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 800;
+    color: var(--correct-color);
+    text-transform: capitalize;
+}
+
+.teaching-btn {
+    background: var(--accent-orange);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 16px 40px;
+    font-size: clamp(20px, 3.5vw, 28px);
+    font-weight: 800;
+    cursor: pointer;
+    min-height: 64px;
+    min-width: 200px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+    transition: transform 0.15s;
+}
+
+.teaching-btn:active {
+    transform: scale(0.95);
+}
+
+
+/* ================================================================
+   BACKGROUND THEMES  (randomly applied each session)
+   ================================================================ */
+
+/* Highway (default — same as base sky gradient) */
+.question-area.bg-highway {
+    background: linear-gradient(180deg, #74b9ff 0%, #a29bfe 100%);
+}
+
+/* City — warm sunset over buildings */
+.question-area.bg-city {
+    background: linear-gradient(180deg, #fd79a8 0%, #fdcb6e 40%, #fab1a0 100%);
+}
+
+/* Beach — ocean and sand */
+.question-area.bg-beach {
+    background: linear-gradient(180deg, #74b9ff 0%, #81ecec 50%, #ffeaa7 100%);
+}
+
+/* Space — deep dark with stars */
+.question-area.bg-space {
+    background: linear-gradient(180deg, #0c0c1d 0%, #2d1b69 50%, #6c5ce7 100%);
+}
+.question-area.bg-space .character-display,
+.question-area.bg-space .pinyin-text {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(108, 92, 231, 0.8), 4px 4px 0 rgba(0,0,0,0.3);
+}
+
+/* Forest — green canopy */
+.question-area.bg-forest {
+    background: linear-gradient(180deg, #00b894 0%, #55efc4 40%, #a3d9a5 100%);
+}
+
+/* Snow — white winter wonderland */
+.question-area.bg-snow {
+    background: linear-gradient(180deg, #dfe6e9 0%, #b2bec3 50%, #74b9ff 100%);
+}
+
+
+/* ================================================================
+   TRUE/FALSE BUTTON STYLES
+   ================================================================ */
+
+.option-btn.tf-btn {
+    min-width: 140px;
+    max-width: 300px;
+    aspect-ratio: auto;
+    padding: 20px 32px;
+}
+
+.option-btn.tf-true {
+    border-color: #00b894;
+    background: #e0f9f0;
+}
+
+.option-btn.tf-false {
+    border-color: #d63031;
+    background: #ffe8e6;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

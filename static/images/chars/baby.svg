@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Head (big for baby proportions) -->
+  <circle cx="100" cy="95" r="65" fill="#FFDDBB" stroke="#DDAA77" stroke-width="2"/>
+  <!-- Hair tuft -->
+  <path d="M90 32 Q95 15 100 30 Q105 18 110 32" fill="#885533" stroke="none"/>
+  <!-- Eyes (big and cute) -->
+  <circle cx="75" cy="90" r="14" fill="white" stroke="#DDAA77" stroke-width="1"/>
+  <circle cx="125" cy="90" r="14" fill="white" stroke="#DDAA77" stroke-width="1"/>
+  <circle cx="75" cy="92" r="9" fill="#333"/>
+  <circle cx="125" cy="92" r="9" fill="#333"/>
+  <circle cx="79" cy="88" r="4" fill="white"/>
+  <circle cx="129" cy="88" r="4" fill="white"/>
+  <!-- Cheeks -->
+  <circle cx="55" cy="110" r="12" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="145" cy="110" r="12" fill="#FFB6C1" opacity="0.5"/>
+  <!-- Cute mouth -->
+  <ellipse cx="100" cy="120" rx="8" ry="6" fill="#FF9999"/>
+  <!-- Pacifier -->
+  <circle cx="100" cy="135" r="10" fill="#87CEEB" stroke="#5B9BD5" stroke-width="2"/>
+  <circle cx="100" cy="135" r="5" fill="#5B9BD5"/>
+  <!-- Body (onesie) -->
+  <ellipse cx="100" cy="170" rx="35" ry="22" fill="#87CEEB" stroke="#5B9BD5" stroke-width="2"/>
+</svg>

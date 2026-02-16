@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Head -->
+  <circle cx="100" cy="38" r="28" fill="#FFCC99" stroke="#CC8844" stroke-width="2"/>
+  <!-- Hair -->
+  <path d="M72 30 Q75 10 100 8 Q125 10 128 30" fill="#885533"/>
+  <!-- Eyes -->
+  <circle cx="90" cy="35" r="4" fill="#333"/>
+  <circle cx="110" cy="35" r="4" fill="#333"/>
+  <!-- Smile -->
+  <path d="M88 48 Q100 56 112 48" fill="none" stroke="#333" stroke-width="2"/>
+  <!-- Body -->
+  <rect x="78" y="66" width="44" height="55" rx="5" fill="#44BB44" stroke="#228822" stroke-width="2"/>
+  <!-- Arms at sides -->
+  <line x1="78" y1="75" x2="55" y2="110" stroke="#FFCC99" stroke-width="10" stroke-linecap="round"/>
+  <line x1="122" y1="75" x2="145" y2="110" stroke="#FFCC99" stroke-width="10" stroke-linecap="round"/>
+  <!-- Hands -->
+  <circle cx="52" cy="113" r="7" fill="#FFCC99"/>
+  <circle cx="148" cy="113" r="7" fill="#FFCC99"/>
+  <!-- Legs (straight) -->
+  <rect x="82" y="121" width="14" height="50" rx="4" fill="#4477BB"/>
+  <rect x="104" y="121" width="14" height="50" rx="4" fill="#4477BB"/>
+  <!-- Shoes -->
+  <rect x="78" y="168" width="22" height="10" rx="4" fill="#333"/>
+  <rect x="100" y="168" width="22" height="10" rx="4" fill="#333"/>
+</svg>

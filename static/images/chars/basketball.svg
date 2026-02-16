@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Ball -->
+  <circle cx="100" cy="100" r="75" fill="#FF6F00"/>
+  <circle cx="100" cy="100" r="75" fill="none" stroke="#E65100" stroke-width="3"/>
+  <!-- Lines -->
+  <line x1="25" y1="100" x2="175" y2="100" stroke="#BF360C" stroke-width="3"/>
+  <line x1="100" y1="25" x2="100" y2="175" stroke="#BF360C" stroke-width="3"/>
+  <!-- Curved lines -->
+  <path d="M60 28 Q45 60 45 100 Q45 140 60 172" stroke="#BF360C" stroke-width="3" fill="none"/>
+  <path d="M140 28 Q155 60 155 100 Q155 140 140 172" stroke="#BF360C" stroke-width="3" fill="none"/>
+  <!-- Highlight -->
+  <ellipse cx="72" cy="65" rx="18" ry="12" fill="#FF8F00" opacity="0.5" transform="rotate(-30 72 65)"/>
+</svg>

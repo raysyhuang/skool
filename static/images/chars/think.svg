@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Head with thought bubble -->
+  <!-- Head -->
+  <circle cx="80" cy="130" r="45" fill="#FFCC80"/>
+  <!-- Hair -->
+  <path d="M35 125 Q35 80 80 75 Q125 80 125 125" fill="#5D4037"/>
+  <!-- Eyes (looking up, thinking) -->
+  <circle cx="65" cy="128" r="5" fill="#333"/>
+  <circle cx="95" cy="128" r="5" fill="#333"/>
+  <!-- Pupils looking up -->
+  <circle cx="65" cy="126" r="2.5" fill="#333"/>
+  <circle cx="95" cy="126" r="2.5" fill="#333"/>
+  <!-- Eyebrows raised -->
+  <path d="M55 118 Q65 112 75 118" fill="none" stroke="#5D4037" stroke-width="2.5"/>
+  <path d="M85 118 Q95 112 105 118" fill="none" stroke="#5D4037" stroke-width="2.5"/>
+  <!-- Small mouth -->
+  <circle cx="80" cy="148" r="4" fill="#EF9A9A"/>
+  <!-- Thought bubbles -->
+  <circle cx="120" cy="95" r="6" fill="#E3F2FD" stroke="#90CAF9" stroke-width="2"/>
+  <circle cx="135" cy="72" r="9" fill="#E3F2FD" stroke="#90CAF9" stroke-width="2"/>
+  <!-- Big thought cloud -->
+  <ellipse cx="155" cy="38" rx="35" ry="25" fill="#E3F2FD" stroke="#90CAF9" stroke-width="2"/>
+  <circle cx="130" cy="35" r="15" fill="#E3F2FD" stroke="#90CAF9" stroke-width="2"/>
+  <circle cx="175" cy="30" r="12" fill="#E3F2FD" stroke="#90CAF9" stroke-width="2"/>
+  <!-- Question mark in thought bubble -->
+  <text x="145" y="46" font-size="24" font-family="Arial" font-weight="bold" fill="#42A5F5">?</text>
+</svg>

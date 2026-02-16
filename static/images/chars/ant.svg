@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Left antenna -->
+  <path d="M82 65 Q70 40 60 28" fill="none" stroke="#2C2C2C" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="58" cy="25" r="5" fill="#2C2C2C"/>
+  <!-- Right antenna -->
+  <path d="M110 65 Q120 40 130 28" fill="none" stroke="#2C2C2C" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="132" cy="25" r="5" fill="#2C2C2C"/>
+  <!-- Head -->
+  <ellipse cx="96" cy="75" rx="22" ry="20" fill="#3C3C3C"/>
+  <!-- Left eye -->
+  <circle cx="87" cy="70" r="6" fill="white"/>
+  <circle cx="88" cy="71" r="3.5" fill="#1A1A1A"/>
+  <circle cx="89" cy="70" r="1.2" fill="white"/>
+  <!-- Right eye -->
+  <circle cx="105" cy="70" r="6" fill="white"/>
+  <circle cx="106" cy="71" r="3.5" fill="#1A1A1A"/>
+  <circle cx="107" cy="70" r="1.2" fill="white"/>
+  <!-- Smile -->
+  <path d="M88 82 Q96 90 104 82" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round"/>
+  <!-- Thorax (middle body) -->
+  <ellipse cx="96" cy="110" rx="18" ry="16" fill="#3C3C3C"/>
+  <!-- Abdomen (back body) -->
+  <ellipse cx="96" cy="148" rx="26" ry="24" fill="#3C3C3C"/>
+  <!-- Abdomen shine -->
+  <ellipse cx="88" cy="140" rx="8" ry="10" fill="#555" opacity="0.5"/>
+  <!-- Front legs (pair 1) -->
+  <path d="M80 102 Q55 90 40 100 Q35 105 42 108" fill="none" stroke="#2C2C2C" stroke-width="4" stroke-linecap="round"/>
+  <path d="M112 102 Q137 90 152 100 Q157 105 150 108" fill="none" stroke="#2C2C2C" stroke-width="4" stroke-linecap="round"/>
+  <!-- Middle legs (pair 2) -->
+  <path d="M80 115 Q50 118 35 130 Q30 136 38 136" fill="none" stroke="#2C2C2C" stroke-width="4" stroke-linecap="round"/>
+  <path d="M112 115 Q142 118 157 130 Q162 136 154 136" fill="none" stroke="#2C2C2C" stroke-width="4" stroke-linecap="round"/>
+  <!-- Back legs (pair 3) -->
+  <path d="M78 145 Q50 155 38 170 Q34 176 42 174" fill="none" stroke="#2C2C2C" stroke-width="4" stroke-linecap="round"/>
+  <path d="M114 145 Q142 155 154 170 Q158 176 150 174" fill="none" stroke="#2C2C2C" stroke-width="4" stroke-linecap="round"/>
+  <!-- Blush -->
+  <circle cx="80" cy="80" r="4" fill="#FF9999" opacity="0.5"/>
+  <circle cx="112" cy="80" r="4" fill="#FF9999" opacity="0.5"/>
+</svg>

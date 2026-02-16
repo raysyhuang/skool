@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Ear -->
+  <path d="M110 40 C155 40 170 70 170 110 C170 155 135 180 105 180 C85 180 75 165 78 155" fill="#FFCC99" stroke="#CC8844" stroke-width="4"/>
+  <path d="M110 65 C140 65 150 85 150 110 C150 135 135 155 115 158" fill="none" stroke="#CC8844" stroke-width="3"/>
+  <path d="M115 158 C100 158 95 145 100 130 C105 115 118 110 122 100" fill="none" stroke="#CC8844" stroke-width="3"/>
+  <ellipse cx="92" cy="140" rx="12" ry="15" fill="#EEBB88"/>
+  <!-- Sound waves -->
+  <path d="M45 80 Q30 100 45 120" fill="none" stroke="#4A90D9" stroke-width="4" stroke-linecap="round"/>
+  <path d="M30 70 Q10 100 30 130" fill="none" stroke="#4A90D9" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+  <path d="M15 60 Q-10 100 15 140" fill="none" stroke="#4A90D9" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+  <!-- Small sound dots -->
+  <circle cx="55" cy="90" r="3" fill="#4A90D9" opacity="0.6"/>
+  <circle cx="60" cy="100" r="3" fill="#4A90D9" opacity="0.8"/>
+  <circle cx="55" cy="110" r="3" fill="#4A90D9" opacity="0.6"/>
+</svg>

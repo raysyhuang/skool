@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#F3E5F5"/>
+
+  <!-- Steering wheel -->
+  <circle cx="100" cy="155" r="35" fill="none" stroke="#424242" stroke-width="7"/>
+  <circle cx="100" cy="155" r="8" fill="#616161" stroke="#424242" stroke-width="3"/>
+  <!-- Steering wheel spokes -->
+  <line x1="100" y1="128" x2="100" y2="147" stroke="#424242" stroke-width="5" stroke-linecap="round"/>
+  <line x1="73" y1="168" x2="92" y2="158" stroke="#424242" stroke-width="5" stroke-linecap="round"/>
+  <line x1="127" y1="168" x2="108" y2="158" stroke="#424242" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Body - uniform shirt -->
+  <rect x="62" y="95" width="76" height="50" rx="15" fill="#42A5F5"/>
+
+  <!-- Collar -->
+  <polygon points="82,95 100,110 94,95" fill="#1E88E5"/>
+  <polygon points="118,95 100,110 106,95" fill="#1E88E5"/>
+
+  <!-- Buttons -->
+  <circle cx="100" cy="115" r="2.5" fill="#FFFFFF"/>
+  <circle cx="100" cy="128" r="2.5" fill="#FFFFFF"/>
+
+  <!-- Neck -->
+  <rect x="90" y="82" width="20" height="18" rx="5" fill="#FDBCB4"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="60" r="33" fill="#FDBCB4"/>
+
+  <!-- Driver's cap -->
+  <ellipse cx="100" cy="42" rx="35" ry="15" fill="#37474F"/>
+  <rect x="70" y="30" width="60" height="16" rx="8" fill="#37474F"/>
+  <!-- Cap brim/visor -->
+  <ellipse cx="100" cy="45" rx="38" ry="8" fill="#263238"/>
+  <!-- Cap badge -->
+  <circle cx="100" cy="36" r="5" fill="#FFD700"/>
+
+  <!-- Hair peeking out -->
+  <rect x="68" y="45" width="8" height="12" rx="4" fill="#5D4037"/>
+  <rect x="124" y="45" width="8" height="12" rx="4" fill="#5D4037"/>
+
+  <!-- Eyes -->
+  <circle cx="87" cy="58" r="5" fill="#FFFFFF"/>
+  <circle cx="113" cy="58" r="5" fill="#FFFFFF"/>
+  <circle cx="88" cy="59" r="3" fill="#3E2723"/>
+  <circle cx="114" cy="59" r="3" fill="#3E2723"/>
+  <circle cx="89" cy="58" r="1" fill="#FFFFFF"/>
+  <circle cx="115" cy="58" r="1" fill="#FFFFFF"/>
+
+  <!-- Rosy cheeks -->
+  <circle cx="78" cy="68" r="6" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="122" cy="68" r="6" fill="#FFB6C1" opacity="0.5"/>
+
+  <!-- Smile -->
+  <path d="M90,72 Q100,84 110,72" fill="none" stroke="#D84315" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Arms reaching to steering wheel -->
+  <path d="M60,105 Q45,130 75,145" fill="none" stroke="#42A5F5" stroke-width="14" stroke-linecap="round"/>
+  <path d="M140,105 Q155,130 125,145" fill="none" stroke="#42A5F5" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Hands on steering wheel -->
+  <circle cx="75" cy="145" r="8" fill="#FDBCB4"/>
+  <circle cx="125" cy="145" r="8" fill="#FDBCB4"/>
+
+  <!-- Shoulder patches -->
+  <rect x="58" y="97" width="12" height="8" rx="3" fill="#1E88E5"/>
+  <rect x="130" y="97" width="12" height="8" rx="3" fill="#1E88E5"/>
+</svg>

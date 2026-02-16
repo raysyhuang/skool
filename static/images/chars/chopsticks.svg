@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Shadow -->
+  <ellipse cx="105" cy="185" rx="50" ry="6" fill="#D7CCC8" opacity="0.4"/>
+  <!-- Left chopstick -->
+  <line x1="55" y1="20" x2="85" y2="175" stroke="#A1887F" stroke-width="7" stroke-linecap="round"/>
+  <line x1="55" y1="20" x2="85" y2="175" stroke="#8D6E63" stroke-width="5" stroke-linecap="round"/>
+  <!-- Left chopstick highlight -->
+  <line x1="57" y1="25" x2="83" y2="150" stroke="#BCAAA4" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <!-- Left chopstick tip -->
+  <line x1="85" y1="165" x2="87" y2="180" stroke="#6D4C41" stroke-width="4" stroke-linecap="round"/>
+  <!-- Right chopstick -->
+  <line x1="115" y1="20" x2="105" y2="175" stroke="#A1887F" stroke-width="7" stroke-linecap="round"/>
+  <line x1="115" y1="20" x2="105" y2="175" stroke="#8D6E63" stroke-width="5" stroke-linecap="round"/>
+  <!-- Right chopstick highlight -->
+  <line x1="113" y1="25" x2="106" y2="150" stroke="#BCAAA4" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  <!-- Right chopstick tip -->
+  <line x1="105" y1="165" x2="104" y2="180" stroke="#6D4C41" stroke-width="4" stroke-linecap="round"/>
+  <!-- Decorative band on left chopstick -->
+  <line x1="60" y1="38" x2="63" y2="50" stroke="#E53935" stroke-width="5" stroke-linecap="round"/>
+  <line x1="61" y1="42" x2="63" y2="48" stroke="#FF8A65" stroke-width="2" stroke-linecap="round"/>
+  <!-- Decorative band on right chopstick -->
+  <line x1="114" y1="38" x2="112" y2="50" stroke="#E53935" stroke-width="5" stroke-linecap="round"/>
+  <line x1="113" y1="42" x2="112" y2="48" stroke="#FF8A65" stroke-width="2" stroke-linecap="round"/>
+</svg>

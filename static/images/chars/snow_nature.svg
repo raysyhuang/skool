@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background - winter blue -->
+  <rect width="200" height="200" rx="20" fill="#D6EAF8"/>
+  <!-- Central snowflake -->
+  <g transform="translate(100,100)" stroke="#4FC3F7" stroke-width="4" stroke-linecap="round">
+    <!-- Main arms -->
+    <line x1="0" y1="-50" x2="0" y2="50"/>
+    <line x1="-43" y1="-25" x2="43" y2="25"/>
+    <line x1="-43" y1="25" x2="43" y2="-25"/>
+    <!-- Branches on arm 1 (top) -->
+    <line x1="0" y1="-35" x2="-12" y2="-22"/>
+    <line x1="0" y1="-35" x2="12" y2="-22"/>
+    <line x1="0" y1="35" x2="-12" y2="22"/>
+    <line x1="0" y1="35" x2="12" y2="22"/>
+    <!-- Branches on arm 2 -->
+    <line x1="-30" y1="-17" x2="-25" y2="-30"/>
+    <line x1="-30" y1="-17" x2="-18" y2="-10"/>
+    <line x1="30" y1="17" x2="25" y2="30"/>
+    <line x1="30" y1="17" x2="18" y2="10"/>
+    <!-- Branches on arm 3 -->
+    <line x1="-30" y1="17" x2="-25" y2="30"/>
+    <line x1="-30" y1="17" x2="-18" y2="10"/>
+    <line x1="30" y1="-17" x2="25" y2="-30"/>
+    <line x1="30" y1="-17" x2="18" y2="-10"/>
+    <!-- Center diamond -->
+    <polygon points="0,-8 8,0 0,8 -8,0" fill="#4FC3F7" stroke="none"/>
+  </g>
+  <!-- Small snowflakes around -->
+  <g stroke="#90CAF9" stroke-width="2" stroke-linecap="round" opacity="0.5">
+    <!-- Top left -->
+    <line x1="30" y1="25" x2="30" y2="45"/>
+    <line x1="20" y1="35" x2="40" y2="35"/>
+    <line x1="23" y1="28" x2="37" y2="42"/>
+    <line x1="37" y1="28" x2="23" y2="42"/>
+  </g>
+  <g stroke="#90CAF9" stroke-width="2" stroke-linecap="round" opacity="0.4">
+    <!-- Top right -->
+    <line x1="165" y1="30" x2="165" y2="48"/>
+    <line x1="156" y1="39" x2="174" y2="39"/>
+    <line x1="159" y1="33" x2="171" y2="45"/>
+    <line x1="171" y1="33" x2="159" y2="45"/>
+  </g>
+  <g stroke="#90CAF9" stroke-width="2" stroke-linecap="round" opacity="0.45">
+    <!-- Bottom left -->
+    <line x1="35" y1="155" x2="35" y2="173"/>
+    <line x1="26" y1="164" x2="44" y2="164"/>
+    <line x1="29" y1="158" x2="41" y2="170"/>
+    <line x1="41" y1="158" x2="29" y2="170"/>
+  </g>
+  <g stroke="#90CAF9" stroke-width="2" stroke-linecap="round" opacity="0.5">
+    <!-- Bottom right -->
+    <line x1="160" y1="158" x2="160" y2="178"/>
+    <line x1="150" y1="168" x2="170" y2="168"/>
+    <line x1="153" y1="161" x2="167" y2="175"/>
+    <line x1="167" y1="161" x2="153" y2="175"/>
+  </g>
+  <!-- Tiny sparkle dots -->
+  <circle cx="60" cy="80" r="2" fill="white" opacity="0.7"/>
+  <circle cx="150" cy="90" r="2" fill="white" opacity="0.6"/>
+  <circle cx="80" cy="160" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="140" cy="55" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="55" cy="140" r="2" fill="white" opacity="0.5"/>
+  <circle cx="155" cy="140" r="1.5" fill="white" opacity="0.5"/>
+</svg>

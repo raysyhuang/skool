@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Shadow -->
+  <rect x="45" y="185" width="120" height="10" rx="5" fill="#E0E0E0" opacity="0.4"/>
+  <!-- Fridge body -->
+  <rect x="35" y="10" width="130" height="180" rx="8" fill="#B3E5FC"/>
+  <rect x="35" y="10" width="130" height="180" rx="8" fill="none" stroke="#81D4FA" stroke-width="3"/>
+  <!-- Freezer door (top) -->
+  <rect x="40" y="15" width="120" height="55" rx="5" fill="#E1F5FE"/>
+  <rect x="40" y="15" width="120" height="55" rx="5" fill="none" stroke="#81D4FA" stroke-width="2"/>
+  <!-- Fridge door (bottom) -->
+  <rect x="40" y="78" width="120" height="105" rx="5" fill="#E1F5FE"/>
+  <rect x="40" y="78" width="120" height="105" rx="5" fill="none" stroke="#81D4FA" stroke-width="2"/>
+  <!-- Freezer handle -->
+  <rect x="142" y="32" width="8" height="20" rx="3" fill="#78909C"/>
+  <!-- Fridge handle -->
+  <rect x="142" y="100" width="8" height="35" rx="3" fill="#78909C"/>
+  <!-- Divider line -->
+  <line x1="40" y1="73" x2="160" y2="73" stroke="#90CAF9" stroke-width="2"/>
+  <!-- Feet -->
+  <rect x="42" y="188" width="12" height="6" rx="2" fill="#78909C"/>
+  <rect x="146" y="188" width="12" height="6" rx="2" fill="#78909C"/>
+  <!-- Magnets/decorations -->
+  <circle cx="70" cy="100" r="8" fill="#FF4081"/>
+  <circle cx="90" cy="95" r="7" fill="#FFEB3B"/>
+  <rect x="105" y="105" width="15" height="18" rx="2" fill="#4CAF50"/>
+  <!-- Star magnet -->
+  <polygon points="65,130 67,136 74,136 69,140 71,147 65,143 59,147 61,140 56,136 63,136" fill="#FF9800"/>
+</svg>

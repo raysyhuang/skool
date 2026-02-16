@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Body coil -->
+  <path d="M60 160 C20 160 15 130 40 115 C65 100 90 100 90 120 C90 140 60 145 50 135 C40 125 50 110 70 110" fill="none" stroke="#44AA44" stroke-width="16" stroke-linecap="round"/>
+  <path d="M60 160 C20 160 15 130 40 115 C65 100 90 100 90 120 C90 140 60 145 50 135 C40 125 50 110 70 110" fill="none" stroke="#66CC66" stroke-width="12" stroke-linecap="round"/>
+  <!-- Upper body -->
+  <path d="M70 110 C100 110 120 85 140 70 C155 60 165 55 170 50" fill="none" stroke="#44AA44" stroke-width="16" stroke-linecap="round"/>
+  <path d="M70 110 C100 110 120 85 140 70 C155 60 165 55 170 50" fill="none" stroke="#66CC66" stroke-width="12" stroke-linecap="round"/>
+  <!-- Head -->
+  <ellipse cx="175" cy="45" rx="18" ry="14" fill="#44AA44" stroke="#228822" stroke-width="2"/>
+  <!-- Eyes -->
+  <circle cx="180" cy="40" r="4" fill="white"/>
+  <circle cx="180" cy="40" r="2" fill="#333"/>
+  <!-- Tongue -->
+  <path d="M193 45 L200 40 M193 45 L200 50" fill="none" stroke="#FF4444" stroke-width="2" stroke-linecap="round"/>
+  <!-- Pattern spots -->
+  <circle cx="50" cy="155" r="4" fill="#228822" opacity="0.5"/>
+  <circle cx="75" cy="108" r="4" fill="#228822" opacity="0.5"/>
+  <circle cx="110" cy="95" r="4" fill="#228822" opacity="0.5"/>
+  <circle cx="145" cy="65" r="4" fill="#228822" opacity="0.5"/>
+</svg>

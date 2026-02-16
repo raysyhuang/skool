@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Open box -->
+  <!-- Box body -->
+  <rect x="35" y="90" width="130" height="90" rx="5" fill="#FFB74D" stroke="#F57C00" stroke-width="3"/>
+  <!-- Box front face detail -->
+  <line x1="35" y1="135" x2="165" y2="135" stroke="#F57C00" stroke-width="1.5" opacity="0.4"/>
+  <!-- Open lid (flipped back) -->
+  <path d="M30 90 L40 40 L160 40 L170 90" fill="#FFCC80" stroke="#F57C00" stroke-width="3"/>
+  <!-- Lid inner line -->
+  <line x1="40" y1="40" x2="160" y2="40" stroke="#F57C00" stroke-width="3"/>
+  <!-- Sparkles coming out of box (something exciting inside!) -->
+  <text x="60" y="80" font-size="20" fill="#FFD700">&#9733;</text>
+  <text x="95" y="70" font-size="24" fill="#FFD700">&#9733;</text>
+  <text x="125" y="82" font-size="18" fill="#FFD700">&#9733;</text>
+  <text x="80" y="55" font-size="16" fill="#FFD700">&#9733;</text>
+  <text x="110" y="50" font-size="14" fill="#FFD700">&#9733;</text>
+  <!-- Light rays -->
+  <line x1="100" y1="28" x2="100" y2="15" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+  <line x1="75" y1="32" x2="68" y2="18" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+  <line x1="125" y1="32" x2="132" y2="18" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+</svg>

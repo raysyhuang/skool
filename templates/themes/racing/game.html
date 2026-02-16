@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - Race!{% endblock %}
+
+{% block theme_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/racing.css') }}">
+{% endblock %}
+
+{% block content %}
+{# Add racing-theme class so body styles apply #}
+<script>document.body.classList.add('racing-theme');</script>
+
+{# ── Top bar ── #}
+<div class="top-bar">
+    <div class="top-bar-left">
+        <span class="progress-label" id="progressLabel">
+            Stop {{ question_number }} of {{ total_questions }}
+        </span>
+    </div>
+    <button class="music-toggle" id="musicToggle" onclick="toggleMusic()" type="button" aria-label="Toggle music">
+        &#127925;
+    </button>
+    <div class="points-badge">
+        <span>&#11088;</span>
+        <span id="pointsDisplay">{{ user.points }}</span>
+    </div>
+    <a href="/logout" class="logout-btn" aria-label="Switch user">&#128100;</a>
+</div>
+
+{# ── Progress bar ── #}
+<div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+</div>
+
+{# ── Question area ── #}
+<div class="question-area">
+    {# Clouds #}
+    <div class="clouds">
+        <span class="cloud">&#9729;&#65039;</span>
+        <span class="cloud">&#9925;</span>
+        <span class="cloud">&#9729;&#65039;</span>
+    </div>
+
+    {# Character + TTS #}
+    <div class="char-row">
+        <div class="character-display" id="charDisplay">{{ character.character }}</div>
+        <button class="tts-btn" id="ttsBtn" onclick="speakCharacter()" type="button" aria-label="Listen">
+            &#128266;
+        </button>
+    </div>
+
+    {# Pinyin #}
+    <div class="pinyin-text" id="pinyinDisplay">{{ character.pinyin }}</div>
+
+    {# Option buttons (will be rebuilt by racing.js) #}
+    <div class="options-row" id="optionsRow">
+        {% for opt in options %}
+        <button
+            class="option-btn"
+            data-answer="{{ opt }}"
+            type="button"
+        >
+            {% if opt.startswith('/') or opt.startswith('http') %}
+            <img src="{{ opt }}" alt="option">
+            {% else %}
+            <span class="option-label">{{ opt }}</span>
+            {% endif %}
+        </button>
+        {% endfor %}
+    </div>
+</div>
+
+{# ── Feedback overlay ── #}
+<div class="feedback-overlay" id="feedbackOverlay">
+    <div class="feedback-msg" id="feedbackMsg"></div>
+</div>
+
+{# ── Screen flash (green/red) ── #}
+<div class="screen-flash" id="screenFlash"></div>
+
+{# ── Celebration confetti ── #}
+<div class="celebration-burst" id="celebrationBurst"></div>
+
+{# ── Teaching panel (shown on wrong answer) ── #}
+<div class="teaching-panel" id="teachingPanel">
+    <div class="teaching-card">
+        <div class="teaching-header">Let's learn! &#128218;</div>
+        <div class="teaching-body">
+            <div class="teaching-char" id="teachChar"></div>
+            <div class="teaching-pinyin" id="teachPinyin"></div>
+            <div class="teaching-arrow">= </div>
+            <div class="teaching-image" id="teachImage"></div>
+            <div class="teaching-meaning" id="teachMeaning"></div>
+        </div>
+        <button class="teaching-btn" id="teachGotIt" type="button">
+            &#128077; Got it! Try again!
+        </button>
+    </div>
+</div>
+
+{# ── Road area ── #}
+<div class="road-area">
+    <div class="grass-strip"></div>
+    <div class="road">
+        {# Stop markers #}
+        <div class="stop-markers" id="stopMarkers">
+            {% for i in range(total_questions) %}
+            <div class="stop-marker">
+                <span
+                    class="stop-flag {% if i < question_number - 1 %}reached{% elif i == question_number - 1 %}current{% endif %}"
+                    data-stop="{{ i }}"
+                >&#127937;</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        {# Car #}
+        <div class="car-sprite" id="carSprite" style="left: 4%;">
+            &#128663;
+        </div>
+    </div>
+    <div class="grass-strip-bottom"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{# ── Set globals that racing.js expects ── #}
+<script>
+    window.questionsData  = JSON.parse('{{ questions_json | safe }}');
+    window.sessionId      = {{ session.id }};
+    window.totalQuestions  = {{ total_questions }};
+    window.initialPoints  = {{ user.points }};
+</script>
+
+{# ── Load JS modules in order ── #}
+<script src="{{ url_for('static', path='js/common.js') }}"></script>
+<script src="{{ url_for('static', path='js/tts.js') }}"></script>
+<script src="{{ url_for('static', path='js/music.js') }}"></script>
+<script src="{{ url_for('static', path='js/racing.js') }}"></script>
+{% endblock %}

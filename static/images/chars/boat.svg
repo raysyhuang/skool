@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Sail -->
+  <polygon points="105,25 105,110 45,110" fill="#FF6B6B" stroke="#CC4444" stroke-width="2"/>
+  <polygon points="110,35 110,110 155,110" fill="#FFE066" stroke="#CCB033" stroke-width="2"/>
+  <!-- Mast -->
+  <line x1="107" y1="20" x2="107" y2="120" stroke="#8B5E3C" stroke-width="4"/>
+  <!-- Hull -->
+  <path d="M25 120 L45 160 L160 160 L175 120 Z" fill="#4A90D9" stroke="#2C5F8A" stroke-width="3"/>
+  <!-- Hull stripe -->
+  <path d="M32 130 L50 155 L155 155 L170 130 Z" fill="#5BA0E9"/>
+  <!-- Water -->
+  <path d="M5 170 Q25 162 45 170 Q65 178 85 170 Q105 162 125 170 Q145 178 165 170 Q185 162 195 170" fill="none" stroke="#4488FF" stroke-width="3"/>
+  <path d="M5 182 Q25 174 45 182 Q65 190 85 182 Q105 174 125 182 Q145 190 165 182 Q185 174 195 182" fill="none" stroke="#4488FF" stroke-width="3"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Pencil body -->
+  <rect x="55" y="30" width="40" height="120" fill="#FFD54F"/>
+  <rect x="55" y="30" width="40" height="120" fill="#FDD835" rx="2"/>
+  <!-- Pencil stripe -->
+  <rect x="55" y="30" width="13" height="120" fill="#F9A825"/>
+  <rect x="82" y="30" width="13" height="120" fill="#F9A825"/>
+  <!-- Metal band (ferrule) -->
+  <rect x="52" y="140" width="46" height="18" fill="#BDBDBD"/>
+  <line x1="52" y1="145" x2="98" y2="145" stroke="#9E9E9E" stroke-width="1"/>
+  <line x1="52" y1="150" x2="98" y2="150" stroke="#9E9E9E" stroke-width="1"/>
+  <line x1="52" y1="155" x2="98" y2="155" stroke="#9E9E9E" stroke-width="1"/>
+  <!-- Eraser -->
+  <rect x="55" y="158" width="40" height="15" rx="3" fill="#F48FB1"/>
+  <!-- Pencil tip -->
+  <path d="M55 30 L75 5 L95 30Z" fill="#FFCC80"/>
+  <!-- Pencil point -->
+  <path d="M70 12 L75 5 L80 12Z" fill="#424242"/>
+</svg>

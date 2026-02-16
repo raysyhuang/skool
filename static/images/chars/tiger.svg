@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Face -->
+  <circle cx="100" cy="105" r="70" fill="#FF9933" stroke="#CC6600" stroke-width="3"/>
+  <!-- White areas -->
+  <ellipse cx="100" cy="130" rx="45" ry="35" fill="white"/>
+  <!-- Ears -->
+  <circle cx="40" cy="50" r="20" fill="#FF9933" stroke="#CC6600" stroke-width="3"/>
+  <circle cx="160" cy="50" r="20" fill="#FF9933" stroke="#CC6600" stroke-width="3"/>
+  <circle cx="40" cy="50" r="12" fill="#FFB366"/>
+  <circle cx="160" cy="50" r="12" fill="#FFB366"/>
+  <!-- Stripes -->
+  <path d="M55 55 Q65 65 55 80" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  <path d="M40 70 Q50 85 40 95" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  <path d="M145 55 Q135 65 145 80" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  <path d="M160 70 Q150 85 160 95" fill="none" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  <path d="M90 42 L95 55" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+  <path d="M110 42 L105 55" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+  <!-- Eyes -->
+  <ellipse cx="75" cy="95" rx="12" ry="10" fill="white" stroke="#333" stroke-width="2"/>
+  <ellipse cx="125" cy="95" rx="12" ry="10" fill="white" stroke="#333" stroke-width="2"/>
+  <circle cx="75" cy="95" r="6" fill="#44AA44"/>
+  <circle cx="125" cy="95" r="6" fill="#44AA44"/>
+  <circle cx="75" cy="95" r="3" fill="#333"/>
+  <circle cx="125" cy="95" r="3" fill="#333"/>
+  <!-- Nose -->
+  <ellipse cx="100" cy="118" rx="10" ry="7" fill="#FF6666"/>
+  <!-- Mouth -->
+  <path d="M90 128 Q100 140 110 128" fill="none" stroke="#333" stroke-width="2"/>
+  <line x1="100" y1="125" x2="100" y2="135" stroke="#333" stroke-width="2"/>
+  <!-- Whiskers -->
+  <line x1="45" y1="115" x2="80" y2="120" stroke="#333" stroke-width="2"/>
+  <line x1="45" y1="125" x2="80" y2="125" stroke="#333" stroke-width="2"/>
+  <line x1="120" y1="120" x2="155" y2="115" stroke="#333" stroke-width="2"/>
+  <line x1="120" y1="125" x2="155" y2="125" stroke="#333" stroke-width="2"/>
+</svg>

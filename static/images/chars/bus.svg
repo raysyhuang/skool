@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background -->
+  <rect width="200" height="200" rx="20" fill="#FFF8E1"/>
+  <!-- Bus body -->
+  <rect x="15" y="60" width="170" height="90" rx="12" fill="#FFA726"/>
+  <!-- Roof -->
+  <rect x="20" y="55" width="160" height="15" rx="7" fill="#FB8C00"/>
+  <!-- Bus front (right side) -->
+  <path d="M170 60 Q190 60 190 80 L190 140 Q190 155 175 155 L170 155 Z" fill="#FFB74D"/>
+  <!-- Yellow stripe -->
+  <rect x="15" y="95" width="175" height="8" fill="#FFD54F"/>
+  <!-- Windows -->
+  <rect x="25" y="68" width="30" height="22" rx="4" fill="#BBDEFB"/>
+  <rect x="62" y="68" width="30" height="22" rx="4" fill="#BBDEFB"/>
+  <rect x="99" y="68" width="30" height="22" rx="4" fill="#BBDEFB"/>
+  <rect x="136" y="68" width="30" height="22" rx="4" fill="#BBDEFB"/>
+  <!-- Window shine -->
+  <rect x="27" y="70" width="8" height="6" rx="2" fill="white" opacity="0.4"/>
+  <rect x="64" y="70" width="8" height="6" rx="2" fill="white" opacity="0.4"/>
+  <rect x="101" y="70" width="8" height="6" rx="2" fill="white" opacity="0.4"/>
+  <rect x="138" y="70" width="8" height="6" rx="2" fill="white" opacity="0.4"/>
+  <!-- Door -->
+  <rect x="42" y="108" width="22" height="42" rx="3" fill="#F57C00"/>
+  <rect x="46" y="112" width="6" height="15" rx="2" fill="#BBDEFB"/>
+  <rect x="54" y="112" width="6" height="15" rx="2" fill="#BBDEFB"/>
+  <line x1="53" y1="108" x2="53" y2="150" stroke="#EF6C00" stroke-width="1.5"/>
+  <!-- Headlights -->
+  <circle cx="185" cy="110" r="7" fill="#FFF9C4"/>
+  <circle cx="185" cy="110" r="5" fill="#FFEE58"/>
+  <!-- Tail light -->
+  <circle cx="18" cy="120" r="5" fill="#EF5350"/>
+  <!-- Bumpers -->
+  <rect x="10" y="148" width="180" height="8" rx="4" fill="#E65100"/>
+  <!-- Wheels -->
+  <circle cx="55" cy="158" r="16" fill="#424242"/>
+  <circle cx="55" cy="158" r="10" fill="#757575"/>
+  <circle cx="55" cy="158" r="4" fill="#424242"/>
+  <circle cx="150" cy="158" r="16" fill="#424242"/>
+  <circle cx="150" cy="158" r="10" fill="#757575"/>
+  <circle cx="150" cy="158" r="4" fill="#424242"/>
+  <!-- Wheel hubcap lines -->
+  <line x1="55" y1="148" x2="55" y2="152" stroke="#9E9E9E" stroke-width="1.5"/>
+  <line x1="55" y1="164" x2="55" y2="168" stroke="#9E9E9E" stroke-width="1.5"/>
+  <line x1="45" y1="158" x2="49" y2="158" stroke="#9E9E9E" stroke-width="1.5"/>
+  <line x1="61" y1="158" x2="65" y2="158" stroke="#9E9E9E" stroke-width="1.5"/>
+  <line x1="150" y1="148" x2="150" y2="152" stroke="#9E9E9E" stroke-width="1.5"/>
+  <line x1="150" y1="164" x2="150" y2="168" stroke="#9E9E9E" stroke-width="1.5"/>
+  <line x1="140" y1="158" x2="144" y2="158" stroke="#9E9E9E" stroke-width="1.5"/>
+  <line x1="156" y1="158" x2="160" y2="158" stroke="#9E9E9E" stroke-width="1.5"/>
+  <!-- SCHOOL BUS text -->
+  <rect x="75" y="110" width="60" height="16" rx="3" fill="#E65100"/>
+  <text x="105" y="122" text-anchor="middle" fill="#FFD54F" font-size="9" font-weight="bold" font-family="Arial">SCHOOL BUS</text>
+  <!-- Cute windshield face -->
+  <rect x="172" y="68" width="15" height="22" rx="4" fill="#BBDEFB"/>
+  <circle cx="176" cy="78" r="2" fill="#E65100"/>
+  <circle cx="184" cy="78" r="2" fill="#E65100"/>
+  <path d="M177 84 Q180 87 183 84" fill="none" stroke="#E65100" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Stop sign on side -->
+  <rect x="10" y="100" width="8" height="5" rx="1" fill="#E53935"/>
+</svg>

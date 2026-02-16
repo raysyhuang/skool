@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Pink circle -->
+  <circle cx="100" cy="100" r="70" fill="#FF69B4" stroke="#FF1493" stroke-width="3"/>
+  <!-- Sparkle 1 -->
+  <path d="M70 55 L73 65 L80 60 L75 68 L85 70 L75 72 L80 80 L73 75 L70 85 L67 75 L60 80 L65 72 L55 70 L65 68 L60 60 L67 65 Z" fill="white" opacity="0.7"/>
+  <!-- Sparkle 2 -->
+  <path d="M130 40 L132 48 L138 44 L134 50 L142 52 L134 54 L138 60 L132 56 L130 64 L128 56 L122 60 L126 54 L118 52 L126 50 L122 44 L128 48 Z" fill="white" opacity="0.5"/>
+  <!-- Sparkle 3 -->
+  <path d="M125 110 L127 116 L131 113 L129 118 L134 119 L129 121 L131 126 L127 123 L125 128 L123 123 L119 126 L121 121 L116 119 L121 118 L119 113 L123 116 Z" fill="white" opacity="0.6"/>
+</svg>

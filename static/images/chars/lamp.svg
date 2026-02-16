@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Light glow (outer) -->
+  <circle cx="100" cy="72" r="60" fill="#FFF9C4" opacity="0.3"/>
+  <!-- Light glow (inner) -->
+  <circle cx="100" cy="72" r="42" fill="#FFEE58" opacity="0.25"/>
+  <!-- Light rays -->
+  <line x1="100" y1="10" x2="100" y2="2" stroke="#FFD54F" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="138" y1="20" x2="145" y2="12" stroke="#FFD54F" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="62" y1="20" x2="55" y2="12" stroke="#FFD54F" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="155" y1="50" x2="164" y2="46" stroke="#FFD54F" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="45" y1="50" x2="36" y2="46" stroke="#FFD54F" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Lamp shade -->
+  <path d="M55 55 L70 28 L130 28 L145 55 Q140 112 125 117 L75 117 Q60 112 55 55Z" fill="#FFEB3B"/>
+  <path d="M58 58 L72 33 L128 33 L142 58 Q138 108 123 113 L77 113 Q62 108 58 58Z" fill="#FDD835"/>
+  <!-- Shade highlight -->
+  <path d="M70 40 L78 33 L96 33 L88 55" stroke="#FFF176" stroke-width="3" fill="none" opacity="0.6"/>
+  <!-- Shade bottom rim -->
+  <ellipse cx="100" cy="117" rx="26" ry="4" fill="#F9A825" opacity="0.5"/>
+  <!-- Arm -->
+  <rect x="96" y="117" width="8" height="35" rx="2" fill="#757575"/>
+  <!-- Flexible neck -->
+  <path d="M100 152 Q94 160 100 168 Q106 176 100 182" stroke="#757575" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- Base -->
+  <ellipse cx="100" cy="186" rx="42" ry="10" fill="#616161"/>
+  <ellipse cx="100" cy="184" rx="42" ry="10" fill="#757575"/>
+  <!-- Base highlight -->
+  <ellipse cx="92" cy="182" rx="18" ry="5" fill="#9E9E9E" opacity="0.4"/>
+</svg>

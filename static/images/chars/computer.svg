@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Laptop base -->
+  <path d="M20 135 L180 135 L190 170 L10 170Z" fill="#78909C"/>
+  <path d="M25 135 L175 135 L183 165 L17 165Z" fill="#90A4AE"/>
+  <!-- Keyboard area -->
+  <rect x="40" y="138" width="120" height="22" rx="2" fill="#607D8B"/>
+  <!-- Key rows -->
+  <rect x="45" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="55" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="65" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="75" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="85" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="95" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="105" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="115" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="125" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="135" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="145" y="140" width="8" height="5" rx="1" fill="#78909C"/>
+  <rect x="55" y="148" width="90" height="5" rx="1" fill="#78909C"/>
+  <!-- Trackpad -->
+  <rect x="80" y="155" width="40" height="6" rx="2" fill="#546E7A"/>
+  <!-- Screen -->
+  <path d="M25 30 L175 30 L175 135 L25 135Z" fill="#37474F" rx="5"/>
+  <rect x="30" y="35" width="140" height="95" rx="3" fill="#BBDEFB"/>
+  <!-- Screen content -->
+  <circle cx="100" cy="70" r="20" fill="#42A5F5"/>
+  <text x="100" y="77" text-anchor="middle" font-size="20" fill="white" font-family="Arial">:)</text>
+  <rect x="60" y="100" width="80" height="8" rx="3" fill="#90CAF9"/>
+  <rect x="70" y="112" width="60" height="8" rx="3" fill="#90CAF9"/>
+</svg>

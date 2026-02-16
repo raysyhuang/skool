@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Plate -->
+  <ellipse cx="100" cy="155" rx="85" ry="25" fill="#BDBDBD"/>
+  <ellipse cx="100" cy="150" rx="85" ry="25" fill="#E0E0E0"/>
+  <ellipse cx="100" cy="150" rx="70" ry="18" fill="#EEEEEE"/>
+  <!-- Dumpling 1 -->
+  <path d="M45 120 Q45 95 75 95 Q105 95 105 120 Q75 130 45 120Z" fill="#FFF9C4"/>
+  <path d="M50 118 Q55 110 60 118 Q65 110 70 118 Q75 110 80 118 Q85 110 90 118 Q95 110 100 118" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <!-- Dumpling 2 -->
+  <path d="M95 125 Q95 100 125 100 Q155 100 155 125 Q125 135 95 125Z" fill="#FFF9C4"/>
+  <path d="M100 123 Q105 115 110 123 Q115 115 120 123 Q125 115 130 123 Q135 115 140 123 Q145 115 150 123" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <!-- Dumpling 3 (top) -->
+  <path d="M70 105 Q70 80 100 80 Q130 80 130 105 Q100 115 70 105Z" fill="#FFF9C4"/>
+  <path d="M75 103 Q80 95 85 103 Q90 95 95 103 Q100 95 105 103 Q110 95 115 103 Q120 95 125 103" stroke="#FFE082" stroke-width="2" fill="none"/>
+  <!-- Cute eyes on front dumpling -->
+  <circle cx="85" cy="88" r="2" fill="#424242"/>
+  <circle cx="115" cy="88" r="2" fill="#424242"/>
+  <path d="M95 95 Q100 99 105 95" stroke="#E91E63" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

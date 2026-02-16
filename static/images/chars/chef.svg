@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#FFF8E1"/>
+
+  <!-- Body - white chef coat -->
+  <rect x="60" y="108" width="80" height="68" rx="15" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5"/>
+
+  <!-- Double-breasted buttons -->
+  <circle cx="88" cy="125" r="2.5" fill="#424242"/>
+  <circle cx="88" cy="140" r="2.5" fill="#424242"/>
+  <circle cx="112" cy="125" r="2.5" fill="#424242"/>
+  <circle cx="112" cy="140" r="2.5" fill="#424242"/>
+
+  <!-- Apron -->
+  <rect x="78" y="145" width="44" height="30" rx="5" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- Neckerchief -->
+  <polygon points="90,108 100,125 110,108" fill="#E53935"/>
+  <polygon points="95,108 100,118 105,108" fill="#C62828"/>
+
+  <!-- Neck -->
+  <rect x="90" y="93" width="20" height="20" rx="5" fill="#FDBCB4"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="72" r="33" fill="#FDBCB4"/>
+
+  <!-- Chef hat (toque) -->
+  <rect x="72" y="28" width="56" height="35" rx="12" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5"/>
+  <!-- Puffy top of hat -->
+  <circle cx="85" cy="28" r="14" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <circle cx="100" cy="24" r="15" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <circle cx="115" cy="28" r="14" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Hat band -->
+  <rect x="72" y="52" width="56" height="8" rx="3" fill="#FAFAFA" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- Eyes -->
+  <circle cx="87" cy="70" r="5" fill="#FFFFFF"/>
+  <circle cx="113" cy="70" r="5" fill="#FFFFFF"/>
+  <circle cx="88" cy="71" r="3" fill="#3E2723"/>
+  <circle cx="114" cy="71" r="3" fill="#3E2723"/>
+  <circle cx="89" cy="70" r="1" fill="#FFFFFF"/>
+  <circle cx="115" cy="70" r="1" fill="#FFFFFF"/>
+
+  <!-- Rosy cheeks -->
+  <circle cx="78" cy="80" r="6" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="122" cy="80" r="6" fill="#FFB6C1" opacity="0.5"/>
+
+  <!-- Big happy smile -->
+  <path d="M88,84 Q100,98 112,84" fill="none" stroke="#D84315" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Arms -->
+  <path d="M58,115 Q40,120 35,105" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+  <path d="M142,115 Q158,108 162,95" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Hand holding spatula/spoon -->
+  <circle cx="35" cy="103" r="8" fill="#FDBCB4"/>
+  <!-- Spatula -->
+  <rect x="24" y="72" width="5" height="35" rx="2" fill="#795548"/>
+  <rect x="20" y="62" width="13" height="14" rx="3" fill="#78909C"/>
+
+  <!-- Hand holding frying pan -->
+  <circle cx="162" cy="93" r="8" fill="#FDBCB4"/>
+  <!-- Frying pan handle -->
+  <rect x="158" y="78" width="6" height="20" rx="2" fill="#795548" transform="rotate(-15,161,88)"/>
+  <!-- Pan -->
+  <ellipse cx="158" cy="72" rx="18" ry="8" fill="#616161" transform="rotate(-15,158,72)"/>
+  <ellipse cx="158" cy="71" rx="15" ry="6" fill="#757575" transform="rotate(-15,158,71)"/>
+
+  <!-- Little steam from pan -->
+  <path d="M150,58 Q148,50 152,45" fill="none" stroke="#BDBDBD" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <path d="M158,55 Q156,47 160,42" fill="none" stroke="#BDBDBD" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <path d="M166,58 Q164,50 168,45" fill="none" stroke="#BDBDBD" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+</svg>

@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#EDE7F6"/>
+
+  <!-- Body - white lab coat -->
+  <rect x="58" y="105" width="84" height="70" rx="15" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="1.5"/>
+
+  <!-- Shirt underneath - purple -->
+  <rect x="80" y="105" width="40" height="25" rx="5" fill="#7C4DFF"/>
+
+  <!-- Coat lapels -->
+  <polygon points="78,105 92,125 85,105" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+  <polygon points="122,105 108,125 115,105" fill="#F5F5F5" stroke="#E0E0E0" stroke-width="1"/>
+
+  <!-- Pocket -->
+  <rect x="65" y="135" width="22" height="18" rx="4" fill="#FAFAFA" stroke="#E0E0E0" stroke-width="1"/>
+  <!-- Pens in pocket -->
+  <rect x="70" y="130" width="3" height="12" rx="1" fill="#E53935"/>
+  <rect x="76" y="131" width="3" height="11" rx="1" fill="#2196F3"/>
+  <rect x="82" y="130" width="3" height="12" rx="1" fill="#4CAF50"/>
+
+  <!-- Neck -->
+  <rect x="90" y="90" width="20" height="20" rx="5" fill="#FDBCB4"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="68" r="33" fill="#FDBCB4"/>
+
+  <!-- Wild/messy hair (scientist!) -->
+  <ellipse cx="100" cy="45" rx="35" ry="20" fill="#5D4037"/>
+  <circle cx="68" cy="50" r="10" fill="#5D4037"/>
+  <circle cx="132" cy="50" r="10" fill="#5D4037"/>
+  <circle cx="75" cy="40" r="8" fill="#5D4037"/>
+  <circle cx="125" cy="40" r="8" fill="#5D4037"/>
+  <circle cx="85" cy="33" r="9" fill="#5D4037"/>
+  <circle cx="115" cy="33" r="9" fill="#5D4037"/>
+  <circle cx="100" cy="30" r="10" fill="#5D4037"/>
+
+  <!-- Glasses -->
+  <circle cx="85" cy="66" r="11" fill="none" stroke="#424242" stroke-width="2.5"/>
+  <circle cx="115" cy="66" r="11" fill="none" stroke="#424242" stroke-width="2.5"/>
+  <!-- Glasses bridge -->
+  <line x1="96" y1="66" x2="104" y2="66" stroke="#424242" stroke-width="2.5"/>
+  <!-- Glasses arms -->
+  <line x1="74" y1="64" x2="67" y2="60" stroke="#424242" stroke-width="2"/>
+  <line x1="126" y1="64" x2="133" y2="60" stroke="#424242" stroke-width="2"/>
+  <!-- Lens shine -->
+  <circle cx="80" cy="62" r="3" fill="#FFFFFF" opacity="0.3"/>
+  <circle cx="110" cy="62" r="3" fill="#FFFFFF" opacity="0.3"/>
+
+  <!-- Eyes behind glasses -->
+  <circle cx="85" cy="67" r="4" fill="#FFFFFF"/>
+  <circle cx="115" cy="67" r="4" fill="#FFFFFF"/>
+  <circle cx="86" cy="68" r="2.5" fill="#3E2723"/>
+  <circle cx="116" cy="68" r="2.5" fill="#3E2723"/>
+  <circle cx="87" cy="67" r="1" fill="#FFFFFF"/>
+  <circle cx="117" cy="67" r="1" fill="#FFFFFF"/>
+
+  <!-- Rosy cheeks -->
+  <circle cx="76" cy="78" r="5" fill="#FFB6C1" opacity="0.5"/>
+  <circle cx="124" cy="78" r="5" fill="#FFB6C1" opacity="0.5"/>
+
+  <!-- Excited smile -->
+  <path d="M90,82 Q100,94 110,82" fill="none" stroke="#D84315" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Left arm -->
+  <path d="M56,112 Q38,118 32,140" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="32" cy="140" r="8" fill="#FDBCB4"/>
+
+  <!-- Right arm holding beaker -->
+  <path d="M144,112 Q160,120 158,140" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="158" cy="140" r="8" fill="#FDBCB4"/>
+
+  <!-- Beaker/Flask -->
+  <path d="M148,115 L145,108 L145,90 L165,90 L165,108 L162,115 Z" fill="#E1F5FE" stroke="#42A5F5" stroke-width="2" opacity="0.8"/>
+  <!-- Flask neck -->
+  <rect x="150" y="82" width="10" height="12" rx="1" fill="#E1F5FE" stroke="#42A5F5" stroke-width="2"/>
+  <!-- Liquid in flask -->
+  <path d="M148,115 L145,108 L165,108 L162,115 Z" fill="#7C4DFF" opacity="0.5"/>
+  <!-- Bubbles -->
+  <circle cx="152" cy="105" r="2" fill="#CE93D8" opacity="0.7"/>
+  <circle cx="158" cy="100" r="3" fill="#CE93D8" opacity="0.6"/>
+  <circle cx="155" cy="95" r="1.5" fill="#CE93D8" opacity="0.8"/>
+
+  <!-- Atom symbol floating near head -->
+  <ellipse cx="45" cy="60" rx="12" ry="5" fill="none" stroke="#7C4DFF" stroke-width="1.5" opacity="0.6"/>
+  <ellipse cx="45" cy="60" rx="12" ry="5" fill="none" stroke="#7C4DFF" stroke-width="1.5" opacity="0.6" transform="rotate(60,45,60)"/>
+  <ellipse cx="45" cy="60" rx="12" ry="5" fill="none" stroke="#7C4DFF" stroke-width="1.5" opacity="0.6" transform="rotate(120,45,60)"/>
+  <circle cx="45" cy="60" r="2" fill="#7C4DFF" opacity="0.6"/>
+</svg>

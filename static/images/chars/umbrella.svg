@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Canopy -->
+  <path d="M15 100 Q15 25 100 20 Q185 25 185 100" fill="#FF6B6B" stroke="#CC4444" stroke-width="3"/>
+  <!-- Scalloped edge -->
+  <path d="M15 100 Q30 85 50 100 Q65 85 80 100 Q95 85 110 100 Q125 85 140 100 Q155 85 170 100 Q185 85 185 100" fill="#FF6B6B" stroke="#CC4444" stroke-width="2"/>
+  <!-- Ribs -->
+  <line x1="100" y1="20" x2="50" y2="100" stroke="#CC4444" stroke-width="1.5" opacity="0.5"/>
+  <line x1="100" y1="20" x2="100" y2="100" stroke="#CC4444" stroke-width="1.5" opacity="0.5"/>
+  <line x1="100" y1="20" x2="150" y2="100" stroke="#CC4444" stroke-width="1.5" opacity="0.5"/>
+  <!-- Handle -->
+  <line x1="100" y1="95" x2="100" y2="170" stroke="#8B5E3C" stroke-width="5" stroke-linecap="round"/>
+  <!-- Hook -->
+  <path d="M100 170 Q100 185 115 185 Q130 185 130 175" fill="none" stroke="#8B5E3C" stroke-width="5" stroke-linecap="round"/>
+  <!-- Tip -->
+  <circle cx="100" cy="18" r="3" fill="#FFD700"/>
+</svg>
