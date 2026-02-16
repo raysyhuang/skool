@@ -1,10 +1,20 @@
+import os
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
 
+def _resolve_db_url() -> str:
+    """Get database URL from environment, fixing Heroku's postgres:// prefix."""
+    url = os.environ.get("DATABASE_URL", "sqlite:///./skool.db")
+    # Heroku uses postgres:// but SQLAlchemy 2.0 requires postgresql://
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql://", 1)
+    return url
+
+
 class Settings(BaseSettings):
     # Database
-    database_url: str = "sqlite:///./skool.db"
+    database_url: str = _resolve_db_url()
 
     # Session
     secret_key: str = "change-me-in-production"
