@@ -20,6 +20,51 @@ QUESTION_MODES = [
     "true_or_false", "fill_in_blank", "pinyin_to_char",
 ]
 
+# Confusable groups: meanings whose icons look too similar for a 4-year-old.
+# Distractors are never drawn from the same group as the correct answer.
+_CONFUSABLE_GROUPS: list[set[str]] = [
+    {"red", "blue", "green", "yellow", "white", "black", "pink", "orange"},
+    {"up", "down", "left", "right"},
+    {"run", "walk", "jump", "swim"},
+    {"eat", "drink"},
+    {"happy", "sad", "cry", "laugh", "love"},
+    {"person", "dad", "mom", "baby", "friend", "teacher", "brother", "sister", "grandpa", "grandma"},
+    {"big", "small", "long", "short"},
+    {"fast", "slow"},
+    {"hot", "cold"},
+    {"rice", "cooked rice", "noodles", "beef noodle soup", "soup"},
+    {"dumplings", "steamed bun"},
+    {"water", "rain", "sea/ocean", "river"},
+    {"ball", "soccer", "basketball"},
+    {"cat", "dog"},
+    {"bird", "chicken", "penguin", "parrot"},
+    {"write", "read"},
+    {"bowl", "cup", "tea", "juice", "milk", "cola"},
+    {"bed", "table", "chair"},
+    {"car", "bus", "train", "bike", "subway"},
+    {"bug", "ant", "bee", "butterfly"},
+    {"horse", "cow", "sheep", "pig", "elephant", "bear", "tiger"},
+    {"fish", "frog", "dolphin", "whale", "turtle", "shrimp"},
+    {"chopsticks", "spoon"},
+    {"sit", "stand"},
+    {"sing", "dance"},
+    {"house", "school", "hospital", "restaurant", "supermarket"},
+]
+
+# Build a reverse lookup: meaning → set of confusable meanings
+_CONFUSABLE_LOOKUP: dict[str, set[str]] = {}
+for _group in _CONFUSABLE_GROUPS:
+    for _meaning in _group:
+        _CONFUSABLE_LOOKUP[_meaning] = _group
+
+
+def _exclude_confusable(correct_char: Character, candidates: list[Character]) -> list[Character]:
+    """Filter out candidates whose meaning is in the same confusable group as correct_char."""
+    group = _CONFUSABLE_LOOKUP.get(correct_char.meaning)
+    if not group:
+        return candidates
+    return [c for c in candidates if c.meaning not in group]
+
 
 def select_characters(db: Session, user_id: int, count: int = 5, theme: str = "racing") -> list[Character]:
     """Select characters weighted by inverse mastery. Low mastery = high frequency."""
@@ -122,7 +167,11 @@ def generate_image_options(db: Session, correct_char: Character, count: int = 2)
         .all()
     )
 
-    distractors = random.sample(all_chars, min(count, len(all_chars)))
+    # Exclude visually confusable icons from distractors
+    filtered = _exclude_confusable(correct_char, all_chars)
+    # Fall back to unfiltered pool if not enough candidates remain
+    pool = filtered if len(filtered) >= count else all_chars
+    distractors = random.sample(pool, min(count, len(pool)))
 
     # Use image_url if available, fall back to meaning
     correct_option = correct_char.image_url or correct_char.meaning
@@ -231,7 +280,7 @@ def _generate_true_or_false(db: Session, char: Character) -> dict:
         shown_meaning = char.meaning
         shown_image = char.image_url
     else:
-        # Pick a random wrong character
+        # Pick a random wrong character, avoiding confusable icons
         others = (
             db.query(Character)
             .filter(Character.id != char.id)
@@ -239,6 +288,10 @@ def _generate_true_or_false(db: Session, char: Character) -> dict:
         if use_image:
             others = others.filter(Character.image_url.isnot(None))
         others = others.all()
+        # Exclude confusable meanings so wrong answer is clearly different
+        filtered_others = _exclude_confusable(char, others)
+        if filtered_others:
+            others = filtered_others
         if others:
             wrong = random.choice(others)
             shown_meaning = wrong.meaning
