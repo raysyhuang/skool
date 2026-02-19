@@ -484,6 +484,16 @@
                 logicHint = 'Look at the difference between each number!';
             } else if (mode === 'analogy') {
                 logicHint = 'How are the first two words related?';
+            } else if (mode === 'color_match') {
+                logicHint = 'Look at the colors carefully!';
+            } else if (mode === 'counting_objects') {
+                logicHint = 'Count them one by one!';
+            } else if (mode === 'sequence_completion') {
+                logicHint = 'Look at the pattern \u2014 what comes next?';
+            } else if (mode === 'comparison') {
+                logicHint = 'Think about real life!';
+            } else if (mode === 'before_after') {
+                logicHint = 'Think about the order!';
             }
             if (tPinyin) tPinyin.textContent = logicHint;
             if (tMeaning) tMeaning.textContent = '';
