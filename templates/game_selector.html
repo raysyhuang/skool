@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - Pick a Game!{% endblock %}
+
+{% block theme_css %}
+<style>
+    :root {
+        --bg: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        --chinese: linear-gradient(145deg, #ff6b35, #e55a2b);
+        --math: linear-gradient(145deg, #00b894, #00a381);
+        --logic: linear-gradient(145deg, #6c5ce7, #5a4bd4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%; height: 100%;
+        overflow: hidden;
+        font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    body {
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100dvh;
+    }
+
+    .stars {
+        position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+    }
+    .stars span {
+        position: absolute;
+        font-size: 28px;
+        animation: float 6s ease-in-out infinite;
+        opacity: 0.5;
+    }
+    .stars span:nth-child(1) { left: 10%; top: 15%; animation-delay: 0s; }
+    .stars span:nth-child(2) { left: 25%; top: 70%; animation-delay: 1s; }
+    .stars span:nth-child(3) { left: 55%; top: 20%; animation-delay: 2s; }
+    .stars span:nth-child(4) { left: 80%; top: 60%; animation-delay: 0.5s; }
+    .stars span:nth-child(5) { left: 40%; top: 85%; animation-delay: 3s; }
+    .stars span:nth-child(6) { left: 70%; top: 10%; animation-delay: 1.5s; }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
+
+    .selector-container {
+        position: relative; z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(20px, 3vh, 32px);
+        padding: 24px;
+        width: 100%;
+        max-width: 900px;
+    }
+
+    .greeting-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .greeting-avatar {
+        width: clamp(48px, 8vw, 64px);
+        height: clamp(48px, 8vw, 64px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 1px 2px 3px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .greeting-avatar.avatar-boy { background: linear-gradient(135deg, #74b9ff, #0984e3); }
+    .greeting-avatar.avatar-girl { background: linear-gradient(135deg, #fd79a8, #e84393); }
+
+    .greeting-text {
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 800;
+        color: #fff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+    }
+
+    .sessions-info {
+        font-size: clamp(16px, 2.5vw, 22px);
+        color: rgba(255,255,255,0.85);
+        font-weight: 600;
+    }
+
+    .game-grid {
+        display: flex;
+        gap: clamp(16px, 2.5vw, 28px);
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .game-card {
+        width: clamp(160px, 26vw, 240px);
+        height: clamp(180px, 28vw, 260px);
+        border: none;
+        border-radius: 32px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(8px, 1.5vw, 16px);
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    .game-card:active { transform: scale(0.94); }
+    .game-card:hover {
+        transform: scale(1.04);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    }
+    .game-card.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .game-card.chinese { background: var(--chinese); }
+    .game-card.math    { background: var(--math); }
+    .game-card.logic   { background: var(--logic); }
+
+    .game-emoji {
+        font-size: clamp(56px, 10vw, 88px);
+        line-height: 1;
+        filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+    }
+
+    .game-label {
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 800;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .back-btn {
+        position: fixed;
+        bottom: clamp(16px, 3vh, 32px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        background: rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.4);
+        border-radius: 20px;
+        padding: 12px 28px;
+        color: #fff;
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 700;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    .back-btn:active { transform: translateX(-50%) scale(0.95); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stars">
+    <span>&#11088;</span><span>&#127775;</span><span>&#10024;</span><span>&#127752;</span>
+    <span>&#127775;</span><span>&#11088;</span>
+</div>
+
+<div class="selector-container">
+    <div class="greeting-row">
+        <div class="greeting-avatar {% if user.name == 'Ellie' %}avatar-girl{% else %}avatar-boy{% endif %}">{{ user.name[0] }}</div>
+        <span class="greeting-text">Hi {{ user.name }}!</span>
+    </div>
+
+    {% if remaining_sessions >= 0 %}
+    <div class="sessions-info">
+        {% if remaining_sessions == 0 %}
+            No more games today &#128564;
+        {% elif remaining_sessions == 1 %}
+            1 game left today
+        {% else %}
+            {{ remaining_sessions }} games left today
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="game-grid">
+        <button class="game-card chinese {% if not can_play %}disabled{% endif %}" onclick="pickGame('chinese')" type="button">
+            <span class="game-emoji">&#128218;</span>
+            <span class="game-label">Chinese</span>
+        </button>
+        <button class="game-card math {% if not can_play %}disabled{% endif %}" onclick="pickGame('math')" type="button">
+            <span class="game-emoji">&#128290;</span>
+            <span class="game-label">Math</span>
+        </button>
+        <button class="game-card logic {% if not can_play %}disabled{% endif %}" onclick="pickGame('logic')" type="button">
+            <span class="game-emoji">&#129513;</span>
+            <span class="game-label">Logic</span>
+        </button>
+    </div>
+</div>
+
+<button class="back-btn" onclick="window.location.href='/login'" type="button">&#128100; Switch Player</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.pickGame = function(gameType) {
+        window.location.href = '/game/' + gameType;
+    };
+</script>
+{% endblock %}

@@ -7,6 +7,8 @@ from app.models.session import GameSession, SessionQuestion
 from app.services.question_generator import select_characters, generate_image_options, generate_options, generate_question, pick_question_mode
 from app.services.spaced_repetition import update_mastery
 from app.services.rewards import award_points
+from app.services.math_generator import generate_math_questions
+from app.services.logic_generator import generate_logic_questions
 from app.config import get_settings
 
 
@@ -23,7 +25,7 @@ def can_start_session(user: User) -> bool:
     return user.sessions_today < limit
 
 
-def create_session(db: Session, user: User) -> GameSession:
+def create_session(db: Session, user: User, game_type: str = "chinese") -> GameSession:
     """Create a new game session with 5 questions."""
     user.reset_daily_if_needed()
     settings = get_settings()
@@ -31,18 +33,35 @@ def create_session(db: Session, user: User) -> GameSession:
     if settings.max_sessions_per_day > 0 and user.sessions_today >= settings.max_sessions_per_day:
         raise SessionLimitReached("Daily session limit reached. Come back tomorrow!")
 
-    # Select characters and create session
+    game_session = GameSession(user_id=user.id, game_type=game_type)
+    db.add(game_session)
+    db.flush()
+
+    if game_type == "chinese":
+        _create_chinese_questions(db, game_session, user, settings)
+    elif game_type == "math":
+        _create_math_questions(db, game_session, user, settings)
+    elif game_type == "logic":
+        _create_logic_questions(db, game_session, user, settings)
+    else:
+        raise ValueError(f"Unknown game type: {game_type}")
+
+    # Update user session count
+    user.sessions_today += 1
+    user.last_played_date = date.today()
+
+    db.commit()
+    return game_session
+
+
+def _create_chinese_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
+    """Create Chinese character questions (original logic)."""
     theme = user.theme or "racing"
     characters = select_characters(db, user.id, count=settings.questions_per_session, theme=theme)
 
     if not characters:
         raise ValueError("No characters available for this user.")
 
-    game_session = GameSession(user_id=user.id)
-    db.add(game_session)
-    db.flush()  # Get the session ID
-
-    # Create questions with mixed modes for variety
     for i, char in enumerate(characters, 1):
         mode = pick_question_mode(theme, char)
         q_data = generate_question(db, char, mode, count=settings.distractors_per_question)
@@ -54,17 +73,44 @@ def create_session(db: Session, user: User) -> GameSession:
             correct_answer=q_data["correct_answer"],
             options=json.dumps(q_data["options"]),
             question_mode=mode,
-            selected_answer=None,
-            is_correct=None,
         )
         db.add(question)
 
-    # Update user session count
-    user.sessions_today += 1
-    user.last_played_date = date.today()
 
-    db.commit()
-    return game_session
+def _create_math_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
+    """Create math questions based on user age."""
+    age = user.age or 5
+    math_qs = generate_math_questions(age, count=settings.questions_per_session)
+
+    for i, mq in enumerate(math_qs, 1):
+        question = SessionQuestion(
+            session_id=game_session.id,
+            character_id=None,
+            question_number=i,
+            correct_answer=mq["correct_answer"],
+            options=json.dumps(mq["options"]),
+            question_mode=mq["mode"],
+            prompt_data=mq["prompt_data"],
+        )
+        db.add(question)
+
+
+def _create_logic_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
+    """Create logic questions based on user age."""
+    age = user.age or 5
+    logic_qs = generate_logic_questions(age, count=settings.questions_per_session)
+
+    for i, lq in enumerate(logic_qs, 1):
+        question = SessionQuestion(
+            session_id=game_session.id,
+            character_id=None,
+            question_number=i,
+            correct_answer=lq["correct_answer"],
+            options=json.dumps(lq["options"]),
+            question_mode=lq["mode"],
+            prompt_data=lq["prompt_data"],
+        )
+        db.add(question)
 
 
 def submit_answer(db: Session, user: User, question_id: int, selected_answer: str) -> dict:
@@ -85,8 +131,9 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
     question.is_correct = is_correct
     question.answered_at = datetime.now(timezone.utc)
 
-    # Update mastery
-    update_mastery(db, user.id, question.character_id, is_correct)
+    # Update mastery (only for Chinese questions with a character_id)
+    if question.character_id is not None:
+        update_mastery(db, user.id, question.character_id, is_correct)
 
     # Award points
     settings = get_settings()

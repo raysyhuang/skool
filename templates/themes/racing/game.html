@@ -130,6 +130,7 @@
     window.sessionId      = {{ session.id }};
     window.totalQuestions  = {{ total_questions }};
     window.initialPoints  = {{ user.points }};
+    window.gameType       = '{{ game_type|default("chinese") }}';
 </script>
 
 {# ── Load JS modules in order ── #}

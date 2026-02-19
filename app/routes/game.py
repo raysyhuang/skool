@@ -82,8 +82,34 @@ def _build_questions_json(questions) -> list[dict]:
     return result
 
 
-@router.get("/")
-def game_page(request: Request, db: Session = Depends(get_db)):
+def _build_generic_questions_json(questions) -> list[dict]:
+    """Build questions data for math/logic games (no Character relationship)."""
+    result = []
+    for q in questions:
+        mode = q.question_mode or "unknown"
+        opts = json.loads(q.options)
+        pd = json.loads(q.prompt_data) if q.prompt_data else {}
+        entry = {
+            "id": q.id,
+            "question_number": q.question_number,
+            "character": pd.get("expression", ""),
+            "pinyin": pd.get("prompt_text", ""),
+            "meaning": pd.get("prompt_text", ""),
+            "image_url": None,
+            "options": opts,
+            "correct_answer": q.correct_answer,
+            "mode": mode,
+            # Math/logic specific fields
+            "expression": pd.get("expression", ""),
+            "prompt_text": pd.get("prompt_text", ""),
+            "prompt_image": pd.get("prompt_image"),
+        }
+        result.append(entry)
+    return result
+
+
+def _start_game_session(request: Request, db: Session, game_type: str):
+    """Shared logic for starting a game session of any type."""
     user = get_current_user(request, db)
     if not user:
         return RedirectResponse(url="/login", status_code=303)
@@ -97,31 +123,83 @@ def game_page(request: Request, db: Session = Depends(get_db)):
             "user": user,
         })
 
-    # Create a new session
     try:
-        session = create_session(db, user)
+        session = create_session(db, user, game_type=game_type)
     except SessionLimitReached:
         return templates.TemplateResponse(resolve_theme_template(user.theme, "limit_reached.html"), {
             "request": request,
             "user": user,
         })
 
-    # Get first question
     questions = session.questions
     first_q = questions[0]
     options = json.loads(first_q.options)
+
+    # Build questions JSON — Chinese uses character relationship, math/logic use prompt_data
+    if game_type == "chinese":
+        questions_json = json.dumps(_build_questions_json(questions))
+        character = first_q.character
+    else:
+        questions_json = json.dumps(_build_generic_questions_json(questions))
+        # Dummy character object for Jinja SSR (racing.js overwrites immediately)
+        pd = json.loads(first_q.prompt_data) if first_q.prompt_data else {}
+        character = type("DummyChar", (), {
+            "character": pd.get("expression", ""),
+            "pinyin": pd.get("prompt_text", ""),
+            "meaning": pd.get("prompt_text", ""),
+            "image_url": None,
+        })()
 
     return templates.TemplateResponse(resolve_theme_template(user.theme, "game.html"), {
         "request": request,
         "user": user,
         "session": session,
         "question": first_q,
-        "character": first_q.character,
+        "character": character,
         "options": options,
         "question_number": first_q.question_number,
         "total_questions": len(questions),
-        "questions_json": json.dumps(_build_questions_json(questions)),
+        "questions_json": questions_json,
+        "game_type": game_type,
     })
+
+
+@router.get("/")
+def game_page(request: Request, db: Session = Depends(get_db)):
+    """Game selector page — pick Chinese, Math, or Logic."""
+    user = get_current_user(request, db)
+    if not user:
+        return RedirectResponse(url="/login", status_code=303)
+
+    user.reset_daily_if_needed()
+    db.commit()
+
+    from app.config import get_settings
+    settings = get_settings()
+    limit = settings.max_sessions_per_day
+    remaining = max(0, limit - user.sessions_today) if limit > 0 else -1  # -1 = unlimited
+
+    return templates.TemplateResponse("game_selector.html", {
+        "request": request,
+        "user": user,
+        "remaining_sessions": remaining,
+        "can_play": can_start_session(user),
+    })
+
+
+@router.get("/chinese")
+def chinese_game(request: Request, db: Session = Depends(get_db)):
+    return _start_game_session(request, db, "chinese")
+
+
+@router.get("/math")
+def math_game(request: Request, db: Session = Depends(get_db)):
+    return _start_game_session(request, db, "math")
+
+
+@router.get("/logic")
+def logic_game(request: Request, db: Session = Depends(get_db)):
+    return _start_game_session(request, db, "logic")
 
 
 class AnswerRequest(BaseModel):

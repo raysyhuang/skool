@@ -40,6 +40,7 @@
     var sessionId      = root.sessionId       || 0;
     var totalQuestions  = root.totalQuestions  || questions.length || 5;
     var points         = root.initialPoints   || 0;
+    var gameType       = root.gameType        || 'chinese';
 
 
     /* ──────────────────────────────────────────────
@@ -101,6 +102,8 @@
         answering = false;
 
         /* -- Prompt area (character display + pinyin) -- */
+        var isMathLogic = (gameType === 'math' || gameType === 'logic');
+
         if (charDisplay) {
             charDisplay.style.animation = 'none';
             void charDisplay.offsetWidth;
@@ -111,7 +114,19 @@
             charDisplay.style.textTransform = '';
             charDisplay.innerHTML = '';
 
-            if (mode === 'image_to_char') {
+            if (isMathLogic) {
+                /* Math/Logic: show expression or emoji visual */
+                var expr = q.expression || q.prompt_text || q.character || '';
+                var img = q.prompt_image;
+                if (img && /[\u{1F300}-\u{1FAFF}]/u.test(img)) {
+                    /* Emoji visual (counting, patterns) */
+                    charDisplay.innerHTML = '<span style="font-size:clamp(36px,7vw,64px);line-height:1.4;word-break:break-all;">' + img + '</span>';
+                } else {
+                    /* Text expression (arithmetic, analogies) */
+                    charDisplay.textContent = expr;
+                    charDisplay.style.fontSize = 'clamp(36px, 7vw, 72px)';
+                }
+            } else if (mode === 'image_to_char') {
                 /* Show the image as the prompt */
                 charDisplay.innerHTML = '<img src="' + q.image_url + '" alt="' + q.meaning + '" style="width:clamp(80px,14vw,140px);height:clamp(80px,14vw,140px);object-fit:contain;">';
             } else if (mode === 'meaning_to_char') {
@@ -140,7 +155,11 @@
         }
 
         if (pinyinDisplay) {
-            if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char' || mode === 'audio_to_char') {
+            if (isMathLogic) {
+                /* Show prompt text underneath expression */
+                var pt = q.prompt_text || q.pinyin || '';
+                pinyinDisplay.innerHTML = '<span style="font-size:clamp(20px,4vw,32px);color:#636e72;font-weight:600;">' + pt + '</span>';
+            } else if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char' || mode === 'audio_to_char') {
                 /* Hide pinyin — it's the clue or already shown */
                 pinyinDisplay.textContent = '';
             } else if (mode === 'true_or_false') {
@@ -210,8 +229,8 @@
                     } else {
                         var span = document.createElement('span');
                         span.className = 'option-label';
-                        /* Chinese character options get bigger font */
-                        if (mode === 'image_to_char' || mode === 'meaning_to_char' ||
+                        /* Bigger font for character picks and math/logic */
+                        if (isMathLogic || mode === 'image_to_char' || mode === 'meaning_to_char' ||
                             mode === 'pinyin_to_char' || mode === 'fill_in_blank' ||
                             mode === 'audio_to_char') {
                             span.style.fontSize = 'clamp(32px, 6vw, 52px)';
@@ -225,14 +244,16 @@
             }
         }
 
-        /* -- Auto TTS -- */
-        setTimeout(function () {
-            if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char') {
-                /* Don't speak — let them figure it out */
-            } else {
-                root.SkoolTTS.speakChinese(q.character);
-            }
-        }, 300);
+        /* -- Auto TTS (skip for math/logic) -- */
+        if (!isMathLogic) {
+            setTimeout(function () {
+                if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char') {
+                    /* Don't speak — let them figure it out */
+                } else {
+                    root.SkoolTTS.speakChinese(q.character);
+                }
+            }, 300);
+        }
     }
 
 
@@ -425,19 +446,36 @@
         var tImage = document.getElementById('teachImage');
         var tBtn = document.getElementById('teachGotIt');
 
-        if (tChar) tChar.textContent = q.character;
-        if (tPinyin) tPinyin.textContent = q.pinyin;
-        if (tMeaning) tMeaning.textContent = q.meaning;
-        if (tImage) {
-            if (q.image_url) {
-                tImage.innerHTML = '<img src="' + q.image_url + '" alt="' + q.meaning + '">';
-            } else {
-                tImage.textContent = q.meaning;
+        if (gameType === 'math') {
+            /* Math: show solved expression */
+            var expr = (q.expression || '').replace('?', q.correct_answer);
+            if (tChar) tChar.textContent = '\uD83E\uDDEE';
+            if (tPinyin) tPinyin.textContent = expr;
+            if (tMeaning) tMeaning.textContent = 'Answer: ' + q.correct_answer;
+            if (tImage) tImage.textContent = '';
+        } else if (gameType === 'logic') {
+            /* Logic: show the correct answer */
+            if (tChar) tChar.textContent = '\uD83E\uDDE9';
+            if (tPinyin) tPinyin.textContent = q.prompt_text || q.expression || '';
+            if (tMeaning) tMeaning.textContent = 'Answer: ' + q.correct_answer;
+            if (tImage) tImage.textContent = '';
+        } else {
+            if (tChar) tChar.textContent = q.character;
+            if (tPinyin) tPinyin.textContent = q.pinyin;
+            if (tMeaning) tMeaning.textContent = q.meaning;
+            if (tImage) {
+                if (q.image_url) {
+                    tImage.innerHTML = '<img src="' + q.image_url + '" alt="' + q.meaning + '">';
+                } else {
+                    tImage.textContent = q.meaning;
+                }
             }
         }
 
-        /* Speak the character */
-        root.SkoolTTS.speakChinese(q.character);
+        /* Speak the character (only for Chinese) */
+        if (gameType === 'chinese') {
+            root.SkoolTTS.speakChinese(q.character);
+        }
 
         /* Show panel */
         panel.classList.add('active');
@@ -597,8 +635,10 @@
         /* Victory fanfare */
         if (root.SkoolMusic) root.SkoolMusic.playFinish();
 
-        /* Speak congratulation */
-        root.SkoolTTS.speakChinese('\u592A\u68D2\u4E86');    /* "tai bang le!" */
+        /* Speak congratulation (Chinese TTS only for Chinese game) */
+        if (gameType === 'chinese') {
+            root.SkoolTTS.speakChinese('\u592A\u68D2\u4E86');    /* "tai bang le!" */
+        }
 
         /* Call complete API, then redirect */
         root.SkoolAPI.completeSession(sessionId)
@@ -662,8 +702,10 @@
         /* Render first question */
         renderQuestion(0);
 
-        /* Auto-speak the first character (handles iOS gesture requirement) */
-        root.SkoolTTS.autoSpeak(questions[0].character);
+        /* Auto-speak the first character (handles iOS gesture requirement, Chinese only) */
+        if (gameType === 'chinese') {
+            root.SkoolTTS.autoSpeak(questions[0].character);
+        }
     }
 
     /* Wait for DOM */
