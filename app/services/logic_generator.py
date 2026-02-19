@@ -12,8 +12,9 @@ def generate_logic_questions(age: int, count: int = 5) -> list[dict]:
         modes = ["pattern_next", "odd_one_out", "size_order", "matching_pairs"]
         weights = [30, 30, 20, 20]
     else:
-        modes = ["number_pattern", "analogy", "comparison", "sequence_next"]
-        weights = [30, 30, 20, 20]
+        # Grade 2 level: mix young-kid visual modes with simple older-kid modes
+        modes = ["pattern_next", "odd_one_out", "number_pattern", "analogy"]
+        weights = [25, 25, 25, 25]
 
     questions = []
     for _ in range(count):
@@ -23,7 +24,7 @@ def generate_logic_questions(age: int, count: int = 5) -> list[dict]:
     return questions
 
 
-# ── Young kids (age ≤ 5) ──
+# ── Young kids (age <= 5) ──
 
 _COLOR_EMOJIS = [
     ("🔴", "🔵"), ("🟢", "🟡"), ("🔴", "🟢"), ("🔵", "🟡"),
@@ -63,7 +64,6 @@ _ODD_ONE_OUT_SETS = [
     (["🚗", "🚌", "🚂"], "🐶", "vehicles"),
     (["⭐", "🌙", "☀️"], "🎈", "sky things"),
     (["👟", "👢", "🩴"], "🎩", "footwear"),
-    (["🖊️", "✏️", "🖍️"], "🍕", "writing tools"),
     (["🎸", "🥁", "🎹"], "📚", "instruments"),
     (["🐘", "🦁", "🐻"], "✈️", "animals"),
     (["🍕", "🍔", "🌮"], "🎾", "food"),
@@ -81,7 +81,7 @@ def _gen_odd_one_out() -> dict:
     return _build(
         mode="odd_one_out",
         expression=expression,
-        prompt_text="Which one doesn't belong?",
+        prompt_text="Which one is different?",
         prompt_image=expression,
         correct_answer=odd,
         options=options,
@@ -133,31 +133,21 @@ def _gen_matching_pairs() -> dict:
     return _build(
         mode="matching_pairs",
         expression=expression,
-        prompt_text=f"{item} goes with?",
+        prompt_text=item + " goes with?",
         prompt_image=item,
         correct_answer=correct,
         options=options,
     )
 
 
-# ── Older kids (age ≥ 6) ──
+# ── Older kids (age >= 6) — grade 2 level ──
 
 def _gen_number_pattern() -> dict:
-    pattern_type = random.choice(["arithmetic", "geometric", "squares"])
-    if pattern_type == "arithmetic":
-        start = random.randint(1, 20)
-        step = random.randint(2, 5)
-        seq = [start + step * i for i in range(5)]
-        ans = seq[-1] + step
-    elif pattern_type == "geometric":
-        start = random.randint(1, 4)
-        ratio = random.choice([2, 3])
-        seq = [start * (ratio ** i) for i in range(5)]
-        ans = seq[-1] * ratio
-    else:
-        start = random.randint(1, 5)
-        seq = [(start + i) ** 2 for i in range(5)]
-        ans = (start + 5) ** 2
+    # Simple arithmetic sequences only (no geometric/squares)
+    start = random.randint(1, 10)
+    step = random.randint(1, 3)
+    seq = [start + step * i for i in range(4)]
+    ans = seq[-1] + step
 
     display = ", ".join(str(n) for n in seq)
     expression = display + ", ?"
@@ -176,73 +166,25 @@ _ANALOGIES = [
     ("Hot", "Cold", "Big", "Small", ["Small", "Fast", "Tall"]),
     ("Day", "Night", "Sun", "Moon", ["Moon", "Star", "Cloud"]),
     ("Up", "Down", "Left", "Right", ["Right", "Back", "Over"]),
-    ("Fast", "Slow", "Loud", "Quiet", ["Quiet", "Soft", "Dark"]),
     ("Happy", "Sad", "Light", "Dark", ["Dark", "Bright", "Heavy"]),
     ("Cat", "Kitten", "Dog", "Puppy", ["Puppy", "Bone", "Bark"]),
-    ("Water", "Ice", "Rain", "Snow", ["Snow", "Cloud", "Fog"]),
-    ("Fire", "Hot", "Ice", "Cold", ["Cold", "White", "Hard"]),
-    ("Book", "Read", "Song", "Sing", ["Sing", "Dance", "Write"]),
     ("Bird", "Fly", "Fish", "Swim", ["Swim", "Walk", "Run"]),
+    ("Open", "Close", "On", "Off", ["Off", "Up", "In"]),
+    ("Hand", "Glove", "Foot", "Shoe", ["Shoe", "Hat", "Sock"]),
 ]
 
 def _gen_analogy() -> dict:
     a, b, c, correct, opts = random.choice(_ANALOGIES)
-    expression = f"{a} is to {b} as {c} is to ?"
+    expression = a + " : " + b + " = " + c + " : ?"
+    prompt = a + " is to " + b + " as " + c + " is to ?"
     options = list(opts)
     random.shuffle(options)
     return _build(
         mode="analogy",
         expression=expression,
-        prompt_text=expression,
+        prompt_text=prompt,
         prompt_image=None,
         correct_answer=correct,
-        options=options,
-    )
-
-
-_NAMES = ["Alex", "Sam", "Jo"]
-
-def _gen_comparison() -> dict:
-    names = random.sample(_NAMES, 3)
-    a, b, c = names
-    # A > B > C — who is biggest?
-    expression = f"{a} > {b} and {b} > {c}"
-    prompt_text = f"If {a} > {b} and {b} > {c}, which is biggest?"
-    options = list(names)
-    random.shuffle(options)
-    return _build(
-        mode="comparison",
-        expression=expression,
-        prompt_text=prompt_text,
-        prompt_image=None,
-        correct_answer=a,
-        options=options,
-    )
-
-
-def _gen_sequence_next() -> dict:
-    seq_type = random.choice(["fibonacci", "doubling", "triangular"])
-    if seq_type == "fibonacci":
-        seq = [1, 1, 2, 3, 5]
-        ans = 8
-    elif seq_type == "doubling":
-        start = random.choice([1, 2, 3])
-        seq = [start * (2 ** i) for i in range(5)]
-        ans = seq[-1] * 2
-    else:
-        # Triangular: 1, 3, 6, 10, 15, 21
-        seq = [n * (n + 1) // 2 for n in range(1, 6)]
-        ans = 6 * 7 // 2  # 21
-
-    display = ", ".join(str(n) for n in seq)
-    expression = display + ", ?"
-    options = _make_num_distractors_list(ans)
-    return _build(
-        mode="sequence_next",
-        expression=expression,
-        prompt_text="What comes next?",
-        prompt_image=None,
-        correct_answer=str(ans),
         options=options,
     )
 
@@ -294,6 +236,4 @@ _GENERATORS = {
     "matching_pairs": _gen_matching_pairs,
     "number_pattern": _gen_number_pattern,
     "analogy": _gen_analogy,
-    "comparison": _gen_comparison,
-    "sequence_next": _gen_sequence_next,
 }

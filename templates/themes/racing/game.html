@@ -126,7 +126,7 @@
 {% block scripts %}
 {# ── Set globals that racing.js expects ── #}
 <script>
-    window.questionsData  = JSON.parse('{{ questions_json | safe }}');
+    window.questionsData  = {{ questions_json | safe }};
     window.sessionId      = {{ session.id }};
     window.totalQuestions  = {{ total_questions }};
     window.initialPoints  = {{ user.points }};
