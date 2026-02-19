@@ -447,16 +447,21 @@
 
         if (gameType === 'math') {
             /* Math hints — encourage without revealing the answer */
+            /* Parse operands from expression (e.g. "3 + 5 = ?") */
+            var nums = (q.expression || '').match(/\d+/g) || [];
+            var a = nums[0] || '';
+            var b = nums[1] || '';
+
             if (tChar) tChar.textContent = '\uD83E\uDDEE';
             var mathHint = 'Try again carefully!';
             if (mode === 'counting') {
                 mathHint = 'Count again carefully!';
             } else if (mode === 'addition_simple' || mode === 'addition_easy') {
-                mathHint = 'Try counting up from ' + (q.operand_a || '') + '!';
+                mathHint = 'Try counting up from ' + a + '!';
             } else if (mode === 'subtraction_simple' || mode === 'subtraction_easy') {
-                mathHint = 'Try counting down from ' + (q.operand_a || '') + '!';
+                mathHint = 'Try counting down from ' + a + '!';
             } else if (mode === 'multiplication_easy') {
-                mathHint = 'Think: ' + (q.operand_a || '') + ' groups of ' + (q.operand_b || '') + '!';
+                mathHint = 'Think: ' + a + ' groups of ' + b + '!';
             } else if (mode === 'missing_number_easy') {
                 mathHint = 'What number makes it work?';
             }
