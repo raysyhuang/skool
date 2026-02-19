@@ -405,17 +405,10 @@
                     /* Mark wrong button red */
                     btn.classList.add('wrong');
 
-                    /* Highlight the correct answer with a glow so they can see it */
-                    for (var j = 0; j < allBtns.length; j++) {
-                        if (allBtns[j].dataset.answer === q.correct_answer) {
-                            allBtns[j].classList.add('correct');
-                        }
-                    }
-
                     triggerCarShake();
                     showScreenFlash('wrong');
 
-                    /* Show teaching panel */
+                    /* Show hint panel (don't reveal the answer) */
                     showTeachingPanel(q);
 
                     /* After teaching panel is dismissed, let them retry */
@@ -439,53 +432,126 @@
         var panel = document.getElementById('teachingPanel');
         if (!panel) return;
 
-        /* Fill in the teaching content */
+        /* Fill in hint content (don't reveal the answer!) */
         var tChar = document.getElementById('teachChar');
         var tPinyin = document.getElementById('teachPinyin');
         var tMeaning = document.getElementById('teachMeaning');
         var tImage = document.getElementById('teachImage');
+        var tArrow = document.querySelector('.teaching-arrow');
         var tBtn = document.getElementById('teachGotIt');
+        var mode = q.mode || '';
+
+        /* Hide answer-revealing elements by default */
+        if (tImage) tImage.style.display = 'none';
+        if (tArrow) tArrow.style.display = 'none';
 
         if (gameType === 'math') {
-            /* Math: show solved expression */
-            var expr = (q.expression || '').replace('?', q.correct_answer);
+            /* Math hints — encourage without revealing the answer */
             if (tChar) tChar.textContent = '\uD83E\uDDEE';
-            if (tPinyin) tPinyin.textContent = expr;
-            if (tMeaning) tMeaning.textContent = 'Answer: ' + q.correct_answer;
-            if (tImage) tImage.textContent = '';
-        } else if (gameType === 'logic') {
-            /* Logic: show the correct answer */
-            if (tChar) tChar.textContent = '\uD83E\uDDE9';
-            if (tPinyin) tPinyin.textContent = q.prompt_text || q.expression || '';
-            if (tMeaning) tMeaning.textContent = 'Answer: ' + q.correct_answer;
-            if (tImage) tImage.textContent = '';
-        } else {
-            if (tChar) tChar.textContent = q.character;
-            if (tPinyin) tPinyin.textContent = q.pinyin;
-            if (tMeaning) tMeaning.textContent = q.meaning;
-            if (tImage) {
-                if (q.image_url) {
-                    tImage.innerHTML = '<img src="' + q.image_url + '" alt="' + q.meaning + '">';
-                } else {
-                    tImage.textContent = q.meaning;
-                }
+            var mathHint = 'Try again carefully!';
+            if (mode === 'counting') {
+                mathHint = 'Count again carefully!';
+            } else if (mode === 'addition_simple' || mode === 'addition_easy') {
+                mathHint = 'Try counting up from ' + (q.operand_a || '') + '!';
+            } else if (mode === 'subtraction_simple' || mode === 'subtraction_easy') {
+                mathHint = 'Try counting down from ' + (q.operand_a || '') + '!';
+            } else if (mode === 'multiplication_easy') {
+                mathHint = 'Think: ' + (q.operand_a || '') + ' groups of ' + (q.operand_b || '') + '!';
+            } else if (mode === 'missing_number_easy') {
+                mathHint = 'What number makes it work?';
             }
-        }
+            if (tPinyin) tPinyin.textContent = mathHint;
+            if (tMeaning) tMeaning.textContent = '';
 
-        /* Speak the character (only for Chinese) */
-        if (gameType === 'chinese') {
-            root.SkoolTTS.speakChinese(q.character);
+        } else if (gameType === 'logic') {
+            /* Logic hints — nudge toward the pattern */
+            if (tChar) tChar.textContent = '\uD83E\uDDE9';
+            var logicHint = 'Think carefully!';
+            if (mode === 'pattern_next') {
+                logicHint = 'Look at the pattern \u2014 what repeats?';
+            } else if (mode === 'odd_one_out') {
+                logicHint = 'Three are the same kind. One is different!';
+            } else if (mode === 'size_order') {
+                logicHint = 'Think about real life \u2014 which is the biggest?';
+            } else if (mode === 'matching_pairs') {
+                logicHint = 'What goes together?';
+            } else if (mode === 'number_pattern') {
+                logicHint = 'Look at the difference between each number!';
+            } else if (mode === 'analogy') {
+                logicHint = 'How are the first two words related?';
+            }
+            if (tPinyin) tPinyin.textContent = logicHint;
+            if (tMeaning) tMeaning.textContent = '';
+
+        } else {
+            /* Chinese hints — mode-specific clues without revealing the character */
+            if (mode === 'char_to_image') {
+                /* They see the character, hint = TTS + pinyin */
+                if (tChar) tChar.textContent = '\uD83D\uDD0A';
+                if (tPinyin) tPinyin.textContent = q.pinyin;
+                if (tMeaning) tMeaning.textContent = 'Listen and look at the pinyin!';
+                root.SkoolTTS.speakChinese(q.character);
+
+            } else if (mode === 'image_to_char') {
+                /* They see an image, hint = show the meaning text */
+                if (tChar) tChar.textContent = '\uD83D\uDCA1';
+                if (tPinyin) tPinyin.textContent = 'This means: ' + q.meaning;
+                if (tMeaning) tMeaning.textContent = '';
+
+            } else if (mode === 'char_to_meaning') {
+                /* They see the character, hint = TTS + pinyin */
+                if (tChar) tChar.textContent = '\uD83D\uDD0A';
+                if (tPinyin) tPinyin.textContent = q.pinyin;
+                if (tMeaning) tMeaning.textContent = 'Listen carefully!';
+                root.SkoolTTS.speakChinese(q.character);
+
+            } else if (mode === 'meaning_to_char') {
+                /* They see the meaning, hint = pinyin */
+                if (tChar) tChar.textContent = '\uD83D\uDCA1';
+                if (tPinyin) tPinyin.textContent = q.pinyin;
+                if (tMeaning) tMeaning.textContent = '';
+
+            } else if (mode === 'fill_in_blank') {
+                /* Hint = play TTS of the full word */
+                if (tChar) tChar.textContent = '\uD83D\uDD0A';
+                if (tPinyin) tPinyin.textContent = 'Listen to the word!';
+                if (tMeaning) tMeaning.textContent = '';
+                root.SkoolTTS.speakChinese(q.character);
+
+            } else if (mode === 'pinyin_to_char') {
+                /* They see pinyin, hint = meaning */
+                if (tChar) tChar.textContent = '\uD83D\uDCA1';
+                if (tPinyin) tPinyin.textContent = 'This means: ' + q.meaning;
+                if (tMeaning) tMeaning.textContent = '';
+
+            } else if (mode === 'audio_to_char') {
+                /* Hint = replay audio + show pinyin */
+                if (tChar) tChar.textContent = '\uD83D\uDD0A';
+                if (tPinyin) tPinyin.textContent = q.pinyin;
+                if (tMeaning) tMeaning.textContent = 'Listen again!';
+                root.SkoolTTS.speakChinese(q.character);
+
+            } else {
+                /* Fallback: show pinyin as hint */
+                if (tChar) tChar.textContent = '\uD83D\uDCA1';
+                if (tPinyin) tPinyin.textContent = q.pinyin;
+                if (tMeaning) tMeaning.textContent = '';
+            }
         }
 
         /* Show panel */
         panel.classList.add('active');
 
-        /* "Got it!" button → re-render question for retry (wrong options removed) */
+        /* "Try again!" button → re-render question for retry */
         function onGotIt(e) {
             e.preventDefault();
             panel.classList.remove('active');
             tBtn.removeEventListener('click', onGotIt);
             tBtn.removeEventListener('touchend', onGotIt);
+
+            /* Restore hidden elements for next time */
+            if (tImage) tImage.style.display = '';
+            if (tArrow) tArrow.style.display = '';
 
             /* Re-render the same question for retry */
             renderQuestion(currentIndex);
