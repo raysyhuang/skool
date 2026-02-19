@@ -1,8 +1,10 @@
 from contextlib import asynccontextmanager
 
+from pathlib import Path
+
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import get_settings
@@ -32,6 +34,15 @@ def create_app() -> FastAPI:
     # Routes
     app.include_router(auth.router)
     app.include_router(game.router)
+
+    # Service worker must be served from root scope
+    @app.get("/sw.js")
+    def service_worker():
+        return FileResponse(
+            Path("static/sw.js"),
+            media_type="application/javascript",
+            headers={"Service-Worker-Allowed": "/"},
+        )
 
     # Root redirect
     @app.get("/")
