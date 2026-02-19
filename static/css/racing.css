@@ -124,6 +124,19 @@ body.racing-theme {
 .logout-btn:active {
     background: rgba(255, 255, 255, 0.4);
 }
+.logout-btn.user-avatar {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    border: 2px solid rgba(255,255,255,0.6);
+}
+.logout-btn.avatar-girl {
+    background: linear-gradient(135deg, #e84393, #fd79a8);
+}
+.logout-btn.avatar-boy {
+    background: linear-gradient(135deg, #0984e3, #74b9ff);
+}
 
 /* ── Progress bar ── */
 .progress-bar-track {
