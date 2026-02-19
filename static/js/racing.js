@@ -126,6 +126,9 @@
                 /* Show word with blank */
                 charDisplay.textContent = q.display_word || q.character;
                 charDisplay.style.fontSize = 'clamp(60px, 12vw, 120px)';
+            } else if (mode === 'audio_to_char') {
+                /* Show a tappable speaker emoji — pure listening mode */
+                charDisplay.innerHTML = '<span class="audio-speaker-btn" onclick="speakCharacter()" style="cursor:pointer;font-size:clamp(80px,16vw,140px);user-select:none;">\uD83D\uDD0A</span>';
             } else if (mode === 'pinyin_to_char') {
                 /* Show pinyin as prompt */
                 charDisplay.textContent = q.pinyin;
@@ -137,7 +140,7 @@
         }
 
         if (pinyinDisplay) {
-            if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char') {
+            if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char' || mode === 'audio_to_char') {
                 /* Hide pinyin — it's the clue or already shown */
                 pinyinDisplay.textContent = '';
             } else if (mode === 'true_or_false') {
@@ -209,7 +212,8 @@
                         span.className = 'option-label';
                         /* Chinese character options get bigger font */
                         if (mode === 'image_to_char' || mode === 'meaning_to_char' ||
-                            mode === 'pinyin_to_char' || mode === 'fill_in_blank') {
+                            mode === 'pinyin_to_char' || mode === 'fill_in_blank' ||
+                            mode === 'audio_to_char') {
                             span.style.fontSize = 'clamp(32px, 6vw, 52px)';
                         }
                         span.textContent = opt;

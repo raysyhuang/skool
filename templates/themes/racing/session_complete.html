@@ -271,13 +271,13 @@
 
     {# Action buttons #}
     {% if can_play_again %}
-    <a href="/game/" style="text-decoration: none;">
+    <a href="javascript:void(0)" onclick="window.location.href='/game/'" style="text-decoration: none;">
         <button class="action-btn race-again" type="button">
             &#128663; Race Again!
         </button>
     </a>
     {% else %}
-    <a href="/logout" style="text-decoration: none;">
+    <a href="javascript:void(0)" onclick="fetch('/logout',{redirect:'manual'}).then(function(){window.location.href='/login'}).catch(function(){window.location.href='/login'})" style="text-decoration: none;">
         <button class="action-btn come-back" type="button">
             &#128564; Come Back Tomorrow!
         </button>

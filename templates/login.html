@@ -166,17 +166,21 @@
     </div>
 </div>
 
-{# Hidden form for submission #}
-<form class="hidden-form" id="loginForm" method="POST" action="/login">
-    <input type="hidden" name="user_id" id="formUserId">
-</form>
 {% endblock %}
 
 {% block scripts %}
 <script>
     window.startGame = function(userId) {
-        document.getElementById('formUserId').value = userId;
-        document.getElementById('loginForm').submit();
+        fetch('/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'user_id=' + encodeURIComponent(userId),
+            redirect: 'manual'
+        }).then(function() {
+            window.location.href = '/game/';
+        }).catch(function() {
+            window.location.href = '/game/';
+        });
     };
 </script>
 {% endblock %}

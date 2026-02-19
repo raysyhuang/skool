@@ -24,7 +24,7 @@
         <span>&#11088;</span>
         <span id="pointsDisplay">{{ user.points }}</span>
     </div>
-    <a href="/logout" class="logout-btn" aria-label="Switch user">&#128100;</a>
+    <a href="javascript:void(0)" onclick="fetch('/logout',{redirect:'manual'}).then(function(){window.location.href='/login'}).catch(function(){window.location.href='/login'})" class="logout-btn" aria-label="Switch user">&#128100;</a>
 </div>
 
 {# ── Progress bar ── #}

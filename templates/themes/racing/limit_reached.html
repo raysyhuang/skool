@@ -226,7 +226,7 @@
         </div>
     </div>
 
-    <a href="/logout" style="text-decoration: none;">
+    <a href="javascript:void(0)" onclick="fetch('/logout',{redirect:'manual'}).then(function(){window.location.href='/login'}).catch(function(){window.location.href='/login'})" style="text-decoration: none;">
         <button class="back-btn" type="button">
             &#128075; See You Tomorrow!
         </button>

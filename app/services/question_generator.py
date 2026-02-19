@@ -12,12 +12,12 @@ from app.config import get_settings
 #   "image_to_char"   — show image, pick correct character
 #   "char_to_meaning" — show character, pick correct English  (default for daughter)
 #   "meaning_to_char" — show English word, pick correct character
-#   "true_or_false"   — show character + meaning (maybe wrong), tap True/False
 #   "fill_in_blank"   — show compound word with one char blanked, pick missing char
 #   "pinyin_to_char"  — show pinyin, pick correct character
+#   "audio_to_char"   — listen to audio, pick correct character
 QUESTION_MODES = [
     "char_to_image", "image_to_char", "char_to_meaning", "meaning_to_char",
-    "true_or_false", "fill_in_blank", "pinyin_to_char",
+    "fill_in_blank", "pinyin_to_char", "audio_to_char",
 ]
 
 # Confusable groups: meanings whose icons look too similar for a 4-year-old.
@@ -133,7 +133,7 @@ def pick_question_mode(theme: str, char: Character) -> str:
         candidates += ["meaning_to_char"] * 20
         if is_compound:
             candidates += ["fill_in_blank"] * 20
-        candidates += ["true_or_false"] * 20
+        candidates += ["audio_to_char"] * 20
         candidates += ["pinyin_to_char"] * 15
 
     if not candidates:
@@ -252,8 +252,17 @@ def generate_question(db: Session, char: Character, mode: str, count: int = 2) -
             "options": options,
             "option_type": "character",
         }
-    elif mode == "true_or_false":
-        return _generate_true_or_false(db, char)
+    elif mode == "audio_to_char":
+        options = generate_character_options(db, char, count)
+        return {
+            "mode": mode,
+            "prompt": char.character,
+            "prompt_type": "audio",
+            "pinyin": char.pinyin,
+            "correct_answer": char.character,
+            "options": options,
+            "option_type": "character",
+        }
     elif mode == "fill_in_blank":
         return _generate_fill_in_blank(db, char, count)
     elif mode == "pinyin_to_char":
@@ -269,53 +278,6 @@ def generate_question(db: Session, char: Character, mode: str, count: int = 2) -
         }
     else:
         raise ValueError(f"Unknown question mode: {mode}")
-
-
-def _generate_true_or_false(db: Session, char: Character) -> dict:
-    """Generate a true/false question: show character + image or meaning (maybe wrong)."""
-    is_true = random.choice([True, False])
-    use_image = bool(char.image_url)
-
-    if is_true:
-        shown_meaning = char.meaning
-        shown_image = char.image_url
-    else:
-        # Pick a random wrong character, avoiding confusable icons
-        others = (
-            db.query(Character)
-            .filter(Character.id != char.id)
-        )
-        if use_image:
-            others = others.filter(Character.image_url.isnot(None))
-        others = others.all()
-        # Exclude confusable meanings so wrong answer is clearly different
-        filtered_others = _exclude_confusable(char, others)
-        if filtered_others:
-            others = filtered_others
-        if others:
-            wrong = random.choice(others)
-            shown_meaning = wrong.meaning
-            shown_image = wrong.image_url
-        else:
-            shown_meaning = char.meaning
-            shown_image = char.image_url
-            is_true = True
-
-    correct_answer = "true" if is_true else "false"
-    # Encode shown_meaning and shown_image as trailing elements for DB storage
-    # Format: ["true", "false", shown_meaning, shown_image_or_empty]
-    return {
-        "mode": "true_or_false",
-        "prompt": char.character,
-        "prompt_type": "character",
-        "pinyin": char.pinyin,
-        "shown_meaning": shown_meaning,
-        "shown_image": shown_image,
-        "is_true": is_true,
-        "correct_answer": correct_answer,
-        "options": ["true", "false", shown_meaning, shown_image or ""],
-        "option_type": "boolean",
-    }
 
 
 def _generate_fill_in_blank(db: Session, char: Character, count: int = 2) -> dict:
