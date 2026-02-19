@@ -24,7 +24,7 @@
         <span>&#11088;</span>
         <span id="pointsDisplay">{{ user.points }}</span>
     </div>
-    <a href="javascript:void(0)" onclick="fetch('/logout',{redirect:'manual'}).then(function(){window.location.href='/login'}).catch(function(){window.location.href='/login'})" class="logout-btn user-avatar {% if user.name == 'Ellie' %}avatar-girl{% else %}avatar-boy{% endif %}" aria-label="Switch user">{{ user.name[0] }}</a>
+    <a href="javascript:void(0)" onclick="window.location.href='/login'" class="logout-btn user-avatar {% if user.name == 'Ellie' %}avatar-girl{% else %}avatar-boy{% endif %}" aria-label="Switch user">{{ user.name[0] }}</a>
 </div>
 
 {# ── Progress bar ── #}
