@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - Garage{% endblock %}
+
+{% block theme_css %}
+<style>
+    :root {
+        --bg: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #6c5ce7 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%; height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    body {
+        background: var(--bg);
+        min-height: 100dvh;
+        padding: 20px;
+        padding-bottom: 80px;
+    }
+
+    .store-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .store-title {
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+    }
+    .coin-display {
+        font-size: clamp(18px, 3vw, 24px);
+        color: rgba(255,255,255,0.9);
+        font-weight: 700;
+        margin-top: 8px;
+    }
+
+    .category-section {
+        max-width: 800px;
+        margin: 0 auto 24px;
+    }
+    .category-title {
+        font-size: clamp(20px, 3.5vw, 28px);
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 12px;
+    }
+
+    .items-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 12px;
+    }
+
+    .item-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 16px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        position: relative;
+    }
+    .item-card.owned {
+        border: 3px solid #00b894;
+    }
+    .item-card.equipped {
+        border: 3px solid #fdcb6e;
+        box-shadow: 0 4px 20px rgba(253,203,110,0.4);
+    }
+
+    .item-emoji {
+        font-size: clamp(36px, 7vw, 52px);
+    }
+    .item-name {
+        font-size: clamp(13px, 2vw, 16px);
+        font-weight: 700;
+        color: #2d3436;
+        text-align: center;
+    }
+
+    .item-btn {
+        width: 100%;
+        padding: 8px;
+        border: none;
+        border-radius: 12px;
+        font-size: clamp(13px, 2vw, 16px);
+        font-weight: 800;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        min-height: 40px;
+    }
+    .item-btn.buy {
+        background: linear-gradient(135deg, #ff6b35, #e55a2b);
+        color: #fff;
+    }
+    .item-btn.equip {
+        background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        color: #fff;
+    }
+    .item-btn.equipped-label {
+        background: #fdcb6e;
+        color: #2d3436;
+        pointer-events: none;
+    }
+    .item-btn:active { transform: scale(0.95); }
+
+    .owned-check {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font-size: 18px;
+    }
+
+    .back-link {
+        position: fixed;
+        bottom: clamp(16px, 3vh, 32px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        background: rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.4);
+        border-radius: 20px;
+        padding: 12px 28px;
+        color: #fff;
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .back-link:active { transform: translateX(-50%) scale(0.95); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="store-header">
+    <h1 class="store-title">&#128722; Garage</h1>
+    <div class="coin-display">&#129689; <span id="coinCount">{{ user.coins }}</span> coins</div>
+</div>
+
+{% for cat_key, items in categories.items() %}
+<div class="category-section">
+    <h2 class="category-title">{{ cat_labels.get(cat_key, cat_key) }}</h2>
+    <div class="items-grid">
+        {% for item in items %}
+        <div class="item-card {% if item.equipped %}equipped{% elif item.owned %}owned{% endif %}" id="card-{{ item.key }}">
+            {% if item.owned %}
+            <span class="owned-check">&#9989;</span>
+            {% endif %}
+            <span class="item-emoji">{{ item.emoji }}</span>
+            <span class="item-name">{{ item.name }}</span>
+
+            {% if item.equipped %}
+            <button class="item-btn equipped-label" type="button">Equipped</button>
+            {% elif item.owned %}
+            <button class="item-btn equip" type="button" onclick="equipItem('{{ item.key }}')">Equip</button>
+            {% else %}
+            <button class="item-btn buy" type="button" onclick="buyItem('{{ item.key }}', {{ item.price }})">&#129689; {{ item.price }}</button>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+<a class="back-link" href="/game/">&#8592; Back</a>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/common.js') }}"></script>
+<script>
+    function buyItem(key, price) {
+        var coins = parseInt(document.getElementById('coinCount').textContent);
+        if (coins < price) {
+            alert('Not enough coins!');
+            return;
+        }
+        SkoolAPI.buyStoreItem(key).then(function(data) {
+            document.getElementById('coinCount').textContent = data.coins;
+            window.location.reload();
+        }).catch(function(err) {
+            alert(err.message || 'Purchase failed');
+        });
+    }
+
+    function equipItem(key) {
+        SkoolAPI.equipItem(key).then(function() {
+            window.location.reload();
+        }).catch(function(err) {
+            alert(err.message || 'Equip failed');
+        });
+    }
+</script>
+{% endblock %}

@@ -10,6 +10,9 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.config import get_settings
 from app.database import engine, Base
 from app.routes import auth, game
+from app.routes import dashboard as dashboard_routes
+from app.routes import store as store_routes
+from app.routes import story as story_routes
 
 
 def create_app() -> FastAPI:
@@ -17,16 +20,17 @@ def create_app() -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        try:
-            Base.metadata.create_all(bind=engine, checkfirst=True)
-        except Exception:
-            pass  # Tables already exist (created by seed script)
+        Base.metadata.create_all(bind=engine, checkfirst=True)
         yield
 
     app = FastAPI(title="Skool - Chinese Character Learning", lifespan=lifespan)
 
     # Session middleware for cookie-based auth
-    app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=settings.secret_key,
+        session_cookie=settings.session_cookie_name,
+    )
 
     # Static files
     app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -34,6 +38,9 @@ def create_app() -> FastAPI:
     # Routes
     app.include_router(auth.router)
     app.include_router(game.router)
+    app.include_router(dashboard_routes.router)
+    app.include_router(store_routes.router)
+    app.include_router(story_routes.router)
 
     # Service worker must be served from root scope
     @app.get("/sw.js")

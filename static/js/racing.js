@@ -49,6 +49,7 @@
 
     var currentIndex = 0;       /* index into questions[] */
     var answering    = false;   /* lock to prevent double-tap */
+    var carLevel     = root.carLevel || 0;
 
 
     /* ──────────────────────────────────────────────
@@ -101,8 +102,101 @@
         var mode = q.mode || 'char_to_image';
         answering = false;
 
+        /* Record question start time for speed bonus */
+        root.SkoolAPI.apiFetch('/game/start-question/' + q.id, { method: 'POST' }).catch(function() {});
+
+        /* ── 3-Step Learning Flow for low-mastery Chinese chars ── */
+        if (gameType === 'chinese' && q.mastery !== undefined && q.mastery < 2) {
+            _showLearningStep(q, function() {
+                _renderQuestionInner(idx);
+            });
+            return;
+        }
+
+        _renderQuestionInner(idx);
+    }
+
+
+    /* ──────────────────────────────────────────────
+       3-Step Learning Flow (Chinese low-mastery)
+       ────────────────────────────────────────────── */
+
+    function _showLearningStep(q, onDone) {
+        var panel = document.getElementById('teachingPanel');
+        if (!panel) { onDone(); return; }
+
+        var tChar = document.getElementById('teachChar');
+        var tPinyin = document.getElementById('teachPinyin');
+        var tMeaning = document.getElementById('teachMeaning');
+        var tImage = document.getElementById('teachImage');
+        var tArrow = document.querySelector('.teaching-arrow');
+        var tBtn = document.getElementById('teachGotIt');
+        var header = panel.querySelector('.teaching-header');
+
+        if (header) header.textContent = 'Let\'s learn! \uD83D\uDCDA';
+
+        if (tChar) tChar.textContent = q.character;
+        if (tPinyin) tPinyin.textContent = q.pinyin;
+        if (tMeaning) tMeaning.textContent = q.meaning;
+        if (tImage) tImage.style.display = 'none';
+        if (tArrow) tArrow.style.display = 'none';
+        if (tBtn) tBtn.textContent = '\u25B6 Ready!';
+
+        /* Auto-speak */
+        root.SkoolTTS.speakChinese(q.character);
+
+        /* Show Hanzi Writer if available */
+        var hanziContainer = document.getElementById('hanziWriterLearn');
+        if (!hanziContainer) {
+            hanziContainer = document.createElement('div');
+            hanziContainer.id = 'hanziWriterLearn';
+            hanziContainer.style.cssText = 'width:120px;height:120px;margin:8px auto;';
+            var body = panel.querySelector('.teaching-body');
+            if (body) body.appendChild(hanziContainer);
+        }
+        hanziContainer.innerHTML = '';
+        hanziContainer.style.display = 'block';
+
+        if (root.HanziWriter && q.character && q.character.length === 1) {
+            try {
+                var writer = root.HanziWriter.create(hanziContainer, q.character, {
+                    width: 120, height: 120,
+                    padding: 5,
+                    strokeAnimationSpeed: 1,
+                    delayBetweenStrokes: 200,
+                    showOutline: true,
+                });
+                writer.animateCharacter();
+            } catch(e) { /* Hanzi Writer may not support all chars */ }
+        }
+
+        panel.classList.add('active');
+
+        function onReady(e) {
+            e.preventDefault();
+            panel.classList.remove('active');
+            tBtn.removeEventListener('click', onReady);
+            tBtn.removeEventListener('touchend', onReady);
+            if (header) header.textContent = 'Hmm, not quite! \uD83E\uDD14';
+            if (tBtn) tBtn.textContent = '\uD83D\uDCAA Try again!';
+            hanziContainer.style.display = 'none';
+            if (tImage) tImage.style.display = '';
+            if (tArrow) tArrow.style.display = '';
+            onDone();
+        }
+        tBtn.addEventListener('click', onReady);
+        tBtn.addEventListener('touchend', onReady, { passive: false });
+    }
+
+
+    function _renderQuestionInner(idx) {
+        var q = questions[idx];
+        if (!q) return;
+
+        var mode = q.mode || 'char_to_image';
+
         /* -- Prompt area (character display + pinyin) -- */
-        var isMathLogic = (gameType === 'math' || gameType === 'logic');
+        var isMathLogic = (gameType === 'math' || gameType === 'logic' || gameType === 'english');
 
         if (charDisplay) {
             charDisplay.style.animation = 'none';
@@ -322,9 +416,6 @@
        Submit an answer
        ────────────────────────────────────────────── */
 
-    /* Track whether the API was already called for this question (first attempt only) */
-    var apiCalledForQuestion = {};
-
     function selectAnswer(btn) {
         if (answering) return;          /* block double-tap */
         answering = true;
@@ -333,7 +424,6 @@
         var selected = btn.dataset.answer;
         var q = questions[currentIndex];
         var isCorrect = (selected === q.correct_answer);
-        var isFirstAttempt = !apiCalledForQuestion[q.id];
 
         /* Disable all buttons immediately */
         var allBtns = optionsRow.querySelectorAll('.option-btn');
@@ -341,14 +431,8 @@
             allBtns[i].classList.add('disabled');
         }
 
-        /* Only call API on first attempt (scoring happens server-side once) */
-        var apiPromise;
-        if (isFirstAttempt) {
-            apiCalledForQuestion[q.id] = true;
-            apiPromise = root.SkoolAPI.postAnswer(q.id, selected);
-        } else {
-            apiPromise = Promise.resolve({ is_correct: isCorrect, points_earned: 0 });
-        }
+        /* Call API for every attempt; backend handles scoring/state transitions. */
+        var apiPromise = root.SkoolAPI.postAnswer(q.id, selected);
 
         apiPromise
             .then(function (data) {
@@ -365,7 +449,7 @@
                     /* Highlight correct button */
                     btn.classList.add('correct');
 
-                    /* Update points (only meaningful on first attempt) */
+                    /* Update points earned on this attempt */
                     points += (data.points_earned || 0);
                     if (pointsDisplay) {
                         pointsDisplay.textContent = points;
@@ -375,10 +459,20 @@
                         }, 250);
                     }
 
+                    /* Show bonus multiplier text */
+                    if (data.bonus === 'lucky_star') {
+                        showBonusText('\u2B50 LUCKY STAR! 3x! \u2B50');
+                        spawnConfetti(25);
+                    } else if (data.bonus === 'speed_bonus') {
+                        showBonusText('\u26A1 SPEED BONUS!');
+                        spawnConfetti(15);
+                    } else {
+                        spawnConfetti(10);
+                    }
+
                     triggerCarBoost();
                     showFeedback(true);
                     showScreenFlash('correct');
-                    spawnConfetti(10);
 
                     /* Move car forward */
                     moveCarToStop(currentIndex + 1);
@@ -460,10 +554,18 @@
                 mathHint = 'Try counting up from ' + a + '!';
             } else if (mode === 'subtraction_simple' || mode === 'subtraction_easy') {
                 mathHint = 'Try counting down from ' + a + '!';
-            } else if (mode === 'multiplication_easy') {
+            } else if (mode === 'multiplication_easy' || mode === 'multiplication_medium') {
                 mathHint = 'Think: ' + a + ' groups of ' + b + '!';
-            } else if (mode === 'missing_number_easy') {
+            } else if (mode === 'missing_number_easy' || mode === 'missing_number_medium') {
                 mathHint = 'What number makes it work?';
+            } else if (mode === 'addition_medium') {
+                mathHint = 'Break it into hundreds, tens, and ones!';
+            } else if (mode === 'subtraction_medium') {
+                mathHint = 'Break it into hundreds, tens, and ones!';
+            } else if (mode === 'division_basic') {
+                mathHint = 'How many groups of ' + b + ' fit in ' + a + '?';
+            } else if (mode === 'fractions_compare') {
+                mathHint = 'Think about slicing a pizza!';
             }
             if (tPinyin) tPinyin.textContent = mathHint;
             if (tMeaning) tMeaning.textContent = '';
@@ -496,6 +598,30 @@
                 logicHint = 'Think about the order!';
             }
             if (tPinyin) tPinyin.textContent = logicHint;
+            if (tMeaning) tMeaning.textContent = '';
+
+        } else if (gameType === 'english') {
+            /* English hints */
+            if (tChar) tChar.textContent = '\uD83D\uDCD6';
+            var engHint = 'Try again!';
+            if (mode === 'letter_sound') {
+                engHint = 'Say the letter out loud!';
+            } else if (mode === 'beginning_sound') {
+                engHint = 'Say the word slowly \u2014 what\u2019s the first sound?';
+            } else if (mode === 'rhyme_match') {
+                engHint = 'Rhyming words sound the same at the end!';
+            } else if (mode === 'cvc_blend') {
+                engHint = 'Say each sound, then blend them together fast!';
+            } else if (mode === 'sight_word_spell') {
+                engHint = 'Look carefully at each letter!';
+            } else if (mode === 'vocabulary_match') {
+                engHint = 'Think about what this word means in a sentence!';
+            } else if (mode === 'antonym_match') {
+                engHint = 'Opposites! Think of the reverse!';
+            } else if (mode === 'prefix_suffix') {
+                engHint = 'What does the prefix mean?';
+            }
+            if (tPinyin) tPinyin.textContent = engHint;
             if (tMeaning) tMeaning.textContent = '';
 
         } else {
@@ -618,6 +744,26 @@
     /* ──────────────────────────────────────────────
        Feedback overlay  (big text: "great!" / "try again")
        ────────────────────────────────────────────── */
+
+    /* ──────────────────────────────────────────────
+       Bonus text overlay (Lucky Star, Speed Bonus)
+       ────────────────────────────────────────────── */
+
+    function showBonusText(text) {
+        var el = document.createElement('div');
+        el.style.cssText = 'position:fixed;top:30%;left:50%;transform:translate(-50%,-50%);' +
+            'font-size:clamp(32px,7vw,56px);font-weight:900;color:#fdcb6e;z-index:300;' +
+            'text-shadow:2px 4px 8px rgba(0,0,0,0.4);pointer-events:none;white-space:nowrap;';
+        el.textContent = text;
+        document.body.appendChild(el);
+        el.animate([
+            { transform: 'translate(-50%,-50%) scale(0.5)', opacity: 0 },
+            { transform: 'translate(-50%,-50%) scale(1.3)', opacity: 1, offset: 0.3 },
+            { transform: 'translate(-50%,-80%) scale(1)', opacity: 0 }
+        ], { duration: 1500, easing: 'ease-out', fill: 'forwards' });
+        setTimeout(function() { el.remove(); }, 1600);
+    }
+
 
     function showFeedback(correct) {
         if (!feedbackOverlay || !feedbackMsg) return;

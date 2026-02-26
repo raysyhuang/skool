@@ -158,11 +158,44 @@
        Expose on window
        ────────────────────────────────────────────── */
 
+    /**
+     * Buy a streak freeze.
+     * POST /game/buy-streak-freeze
+     */
+    function buyStreakFreeze() {
+        return apiFetch('/game/buy-streak-freeze', { method: 'POST' });
+    }
+
+    /**
+     * Buy a store item.
+     * POST /game/store/buy
+     */
+    function buyStoreItem(itemKey) {
+        return apiFetch('/game/store/buy', {
+            method: 'POST',
+            body: { item_key: itemKey }
+        });
+    }
+
+    /**
+     * Equip a store item.
+     * POST /game/store/equip
+     */
+    function equipItem(itemKey) {
+        return apiFetch('/game/store/equip', {
+            method: 'POST',
+            body: { item_key: itemKey }
+        });
+    }
+
     root.SkoolAPI = {
         getCSRFToken: getCSRFToken,
         apiFetch: apiFetch,
         postAnswer: postAnswer,
-        completeSession: completeSession
+        completeSession: completeSession,
+        buyStreakFreeze: buyStreakFreeze,
+        buyStoreItem: buyStoreItem,
+        equipItem: equipItem,
     };
 
 })(window);

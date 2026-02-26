@@ -37,6 +37,21 @@ class Settings(BaseSettings):
     rmb_per_coins: int = 10        # 10 coins = 20 RMB
     rmb_payout: float = 20.0
 
+    # Variable rewards
+    perfect_bonus_multiplier: int = 2   # 2x points for perfect session
+    lucky_star_chance: float = 0.10     # 10% chance of lucky star
+    lucky_star_multiplier: int = 3      # 3x multiplier on lucky star
+    speed_bonus_threshold_seconds: int = 5  # answer within 5s for +1 bonus
+
+    # Car evolution tiers (coins required)
+    car_tier_thresholds: list[int] = [0, 5, 15, 30, 50]
+
+    # Quest / season
+    quest_stages_per_season: int = 5
+    quest_sessions_per_stage: int = 3
+    quest_stage_bonus_coins: int = 1
+    quest_season_bonus_coins: int = 5
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 

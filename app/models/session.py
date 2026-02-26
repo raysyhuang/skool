@@ -35,6 +35,7 @@ class SessionQuestion(Base):
     selected_answer = Column(String, nullable=True)
     is_correct = Column(Boolean, nullable=True)
     answered_at = Column(DateTime, nullable=True)
+    started_at = Column(DateTime, nullable=True)  # for speed bonus tracking
 
     session = relationship("GameSession", back_populates="questions")
     character = relationship("Character")

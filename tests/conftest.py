@@ -1,3 +1,5 @@
+import random
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -6,6 +8,14 @@ from app.database import Base, get_db
 from app.models import *  # noqa: register all models
 from app.models.user import User
 from app.models.character import Character
+
+
+@pytest.fixture(autouse=True)
+def _deterministic_random():
+    """Seed random so tests are deterministic (no lucky star surprises)."""
+    random.seed(42)
+    yield
+    random.seed()
 from app.main import create_app
 
 

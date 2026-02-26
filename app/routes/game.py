@@ -35,8 +35,15 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User | 
     return db.query(User).filter_by(id=user_id).first()
 
 
-def _build_questions_json(questions) -> list[dict]:
+def _build_questions_json(questions, db=None, user_id=None) -> list[dict]:
     """Build the questions data list for the frontend, including extra fields for new modes."""
+    # Get mastery map if db provided
+    mastery_map = {}
+    if db and user_id:
+        from app.models.progress import UserCharacterProgress
+        progress = db.query(UserCharacterProgress).filter_by(user_id=user_id).all()
+        mastery_map = {p.character_id: p.mastery_score for p in progress}
+
     result = []
     for q in questions:
         mode = q.question_mode or "char_to_image"
@@ -51,6 +58,7 @@ def _build_questions_json(questions) -> list[dict]:
             "options": opts,
             "correct_answer": q.correct_answer,
             "mode": mode,
+            "mastery": mastery_map.get(q.character_id, 0),
         }
         # Extra fields are encoded in the options JSON for special modes
         # For true_or_false: correct_answer is "true"/"false", options are ["true","false"]
@@ -130,6 +138,9 @@ def _start_game_session(request: Request, db: Session, game_type: str):
             "request": request,
             "user": user,
         })
+    except ValueError as e:
+        request.session["game_error"] = str(e)
+        return RedirectResponse(url="/game/", status_code=303)
 
     questions = session.questions
     first_q = questions[0]
@@ -137,7 +148,7 @@ def _start_game_session(request: Request, db: Session, game_type: str):
 
     # Build questions JSON — Chinese uses character relationship, math/logic use prompt_data
     if game_type == "chinese":
-        questions_json = json.dumps(_build_questions_json(questions))
+        questions_json = json.dumps(_build_questions_json(questions, db=db, user_id=user.id))
         character = first_q.character
     else:
         questions_json = json.dumps(_build_generic_questions_json(questions))
@@ -150,6 +161,8 @@ def _start_game_session(request: Request, db: Session, game_type: str):
             "image_url": None,
         })()
 
+    car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
+
     return templates.TemplateResponse(resolve_theme_template(user.theme, "game.html"), {
         "request": request,
         "user": user,
@@ -161,7 +174,45 @@ def _start_game_session(request: Request, db: Session, game_type: str):
         "total_questions": len(questions),
         "questions_json": questions_json,
         "game_type": game_type,
+        "car_info": car_info,
     })
+
+
+def _get_today_points(db: Session, user_id: int) -> int:
+    """Sum points earned today."""
+    from app.models.rewards import PointsLedger
+    from datetime import date as date_cls
+    today = date_cls.today()
+    entries = db.query(PointsLedger).filter_by(user_id=user_id).all()
+    return sum(e.change for e in entries if e.created_at and e.created_at.date() == today)
+
+
+def _get_motivational_message(streak: int) -> str:
+    """Pick a motivational message based on streak."""
+    from datetime import datetime as dt
+    hour = dt.now().hour
+    if streak >= 7:
+        msgs = ["You're on FIRE!", "Unstoppable!", "Champion mode!"]
+    elif streak >= 3:
+        msgs = ["Great streak!", "Keep it going!", "You're crushing it!"]
+    elif hour < 12:
+        msgs = ["Good morning!", "Rise and shine!", "Let's learn!"]
+    elif hour < 18:
+        msgs = ["Good afternoon!", "Keep learning!", "You've got this!"]
+    else:
+        msgs = ["Good evening!", "Night owl learner!", "One more game?"]
+    import random
+    return random.choice(msgs)
+
+
+# Car tier display info
+CAR_TIERS = [
+    {"emoji": "\U0001F3CE\uFE0F", "name": "Go-kart"},     # 0 coins
+    {"emoji": "\U0001F697", "name": "Sedan"},               # 5 coins
+    {"emoji": "\U0001F3CE\uFE0F", "name": "Sports Car"},   # 15 coins
+    {"emoji": "\U0001F3C1", "name": "Race Car"},             # 30 coins
+    {"emoji": "\U0001F680", "name": "F1 Car"},               # 50 coins
+]
 
 
 @router.get("/")
@@ -178,12 +229,45 @@ def game_page(request: Request, db: Session = Depends(get_db)):
     settings = get_settings()
     limit = settings.max_sessions_per_day
     remaining = max(0, limit - user.sessions_today) if limit > 0 else -1  # -1 = unlimited
+    game_error = request.session.pop("game_error", None)
+
+    today_points = _get_today_points(db, user.id)
+    motivational = _get_motivational_message(user.streak)
+
+    # Car tier info
+    car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
+    next_tier_idx = min(user.car_level + 1, len(settings.car_tier_thresholds) - 1)
+    coins_to_next_car = max(0, settings.car_tier_thresholds[next_tier_idx] - user.coins) if user.car_level < len(CAR_TIERS) - 1 else 0
+
+    # Achievement count
+    from app.services.achievements import get_earned_badges
+    badge_count = len(get_earned_badges(db, user.id))
+
+    # Quest progress
+    from app.models.quest import QuestProgress
+    qp = db.query(QuestProgress).filter_by(user_id=user.id).first()
+    quest_info = None
+    if qp:
+        quest_info = {
+            "season": qp.season,
+            "stage": qp.stage,
+            "sessions_in_stage": qp.sessions_in_stage,
+            "sessions_needed": settings.quest_sessions_per_stage,
+        }
 
     return templates.TemplateResponse("game_selector.html", {
         "request": request,
         "user": user,
         "remaining_sessions": remaining,
         "can_play": can_start_session(user),
+        "game_error": game_error,
+        "today_points": today_points,
+        "motivational": motivational,
+        "car_info": car_info,
+        "coins_to_next_car": coins_to_next_car,
+        "badge_count": badge_count,
+        "quest_info": quest_info,
+        "car_tiers": CAR_TIERS,
     })
 
 
@@ -200,6 +284,11 @@ def math_game(request: Request, db: Session = Depends(get_db)):
 @router.get("/logic")
 def logic_game(request: Request, db: Session = Depends(get_db)):
     return _start_game_session(request, db, "logic")
+
+
+@router.get("/english")
+def english_game(request: Request, db: Session = Depends(get_db)):
+    return _start_game_session(request, db, "english")
 
 
 class AnswerRequest(BaseModel):
@@ -256,12 +345,123 @@ def session_complete_page(
     session = db.query(GameSession).filter_by(id=session_id, user_id=user.id).first()
     if not session:
         return RedirectResponse(url="/game/", status_code=303)
+    if not session.completed_at:
+        return RedirectResponse(url="/game/", status_code=303)
+
+    from app.config import get_settings
+    settings = get_settings()
+    total_questions = len(session.questions)
+    accuracy = round(session.total_correct / total_questions * 100) if total_questions else 0
+    is_perfect = session.total_correct == total_questions
+    stars_mod = user.stars % settings.coins_per_stars
+    stars_progress_pct = round(stars_mod / settings.coins_per_stars * 100)
+    car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
 
     return templates.TemplateResponse(resolve_theme_template(user.theme, "session_complete.html"), {
         "request": request,
         "user": user,
         "session": session,
         "can_play_again": can_start_session(user),
+        "total_questions": total_questions,
+        "accuracy": accuracy,
+        "is_perfect": is_perfect,
+        "stars_progress_pct": stars_progress_pct,
+        "stars_to_next_coin": settings.coins_per_stars - stars_mod,
+        "car_info": car_info,
+    })
+
+
+@router.post("/buy-streak-freeze")
+def buy_streak_freeze_route(request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user:
+        return JSONResponse({"error": "Not logged in"}, status_code=401)
+    from app.services.rewards import buy_streak_freeze
+    success = buy_streak_freeze(db, user)
+    if not success:
+        return JSONResponse({"error": "Not enough coins"}, status_code=400)
+    db.commit()
+    return JSONResponse({
+        "success": True,
+        "coins": user.coins,
+        "streak_freezes": user.streak_freezes,
+    })
+
+
+@router.post("/start-question/{question_id}")
+def start_question(question_id: int, request: Request, db: Session = Depends(get_db)):
+    """Record when a question is first shown (for speed bonus)."""
+    user = get_current_user(request, db)
+    if not user:
+        return JSONResponse({"error": "Not logged in"}, status_code=401)
+    from datetime import datetime, timezone
+    q = db.query(SessionQuestion).filter_by(id=question_id).first()
+    if q and not q.started_at:
+        q.started_at = datetime.now(timezone.utc)
+        db.commit()
+    return JSONResponse({"ok": True})
+
+
+@router.get("/achievements")
+def achievements_page(request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user:
+        return RedirectResponse(url="/login", status_code=303)
+
+    from app.services.achievements import BADGES, get_earned_badges
+    earned = get_earned_badges(db, user.id)
+
+    badges_list = []
+    for key, badge in BADGES.items():
+        badges_list.append({
+            "key": key,
+            "name": badge["name"],
+            "description": badge["description"],
+            "emoji": badge["emoji"],
+            "earned": key in earned,
+        })
+
+    return templates.TemplateResponse("achievements.html", {
+        "request": request,
+        "user": user,
+        "badges": badges_list,
+        "earned_count": len(earned),
+        "total_count": len(BADGES),
+    })
+
+
+@router.get("/quest")
+def quest_map_page(request: Request, db: Session = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user:
+        return RedirectResponse(url="/login", status_code=303)
+
+    from app.models.quest import QuestProgress
+    from app.config import get_settings
+    settings = get_settings()
+
+    qp = db.query(QuestProgress).filter_by(user_id=user.id).first()
+    if not qp:
+        qp = QuestProgress(user_id=user.id, season=1, stage=1, sessions_in_stage=0)
+        db.add(qp)
+        db.commit()
+
+    stages = []
+    for i in range(1, settings.quest_stages_per_season + 1):
+        if i < qp.stage:
+            status = "complete"
+        elif i == qp.stage:
+            status = "current"
+        else:
+            status = "locked"
+        stages.append({"number": i, "status": status})
+
+    return templates.TemplateResponse("quest_map.html", {
+        "request": request,
+        "user": user,
+        "quest": qp,
+        "stages": stages,
+        "sessions_needed": settings.quest_sessions_per_stage,
     })
 
 

@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - {{ story.title }}{% endblock %}
+
+{% block theme_css %}
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%; height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    body {
+        background: linear-gradient(180deg, #ffeaa7 0%, #fdcb6e 50%, #ff6b35 100%);
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        padding-bottom: 80px;
+    }
+
+    .story-card {
+        background: #fff;
+        border-radius: 32px;
+        padding: clamp(24px, 4vw, 40px);
+        width: clamp(340px, 80vw, 600px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .story-title {
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 900;
+        color: #2d3436;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .sentence {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .sentence-zh {
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 800;
+        color: #2d3436;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        line-height: 1.4;
+    }
+    .sentence-zh:active {
+        color: #6c5ce7;
+    }
+
+    .char-tap {
+        display: inline;
+        cursor: pointer;
+        transition: color 0.15s;
+    }
+    .char-tap:hover, .char-tap:active {
+        color: #6c5ce7;
+    }
+
+    .sentence-pinyin {
+        font-size: clamp(14px, 2.5vw, 18px);
+        color: #636e72;
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    .sentence-en {
+        font-size: clamp(14px, 2.5vw, 18px);
+        color: #b2bec3;
+        font-style: italic;
+        margin-top: 2px;
+    }
+
+    .divider {
+        height: 2px;
+        background: #ecf0f1;
+        margin: 24px 0;
+        border-radius: 1px;
+    }
+
+    .quiz-section {
+        text-align: center;
+    }
+    .quiz-question {
+        font-size: clamp(18px, 3vw, 24px);
+        font-weight: 800;
+        color: #2d3436;
+        margin-bottom: 16px;
+    }
+    .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .quiz-btn {
+        padding: 14px 20px;
+        border: 3px solid #dfe6e9;
+        border-radius: 16px;
+        background: #fff;
+        font-size: clamp(16px, 2.5vw, 22px);
+        font-weight: 700;
+        color: #2d3436;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        min-height: 52px;
+        transition: border-color 0.2s, background 0.2s;
+    }
+    .quiz-btn:active { transform: scale(0.97); }
+    .quiz-btn.correct {
+        border-color: #00b894;
+        background: #dff9f0;
+    }
+    .quiz-btn.wrong {
+        border-color: #d63031;
+        background: #ffe0de;
+    }
+
+    .quiz-result {
+        font-size: clamp(20px, 3.5vw, 28px);
+        font-weight: 800;
+        margin-top: 16px;
+        display: none;
+    }
+    .quiz-result.show { display: block; }
+    .quiz-result.win { color: #00b894; }
+    .quiz-result.lose { color: #d63031; }
+
+    .back-link {
+        position: fixed;
+        bottom: clamp(16px, 3vh, 32px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        background: rgba(255,255,255,0.3);
+        border: 2px solid rgba(255,255,255,0.5);
+        border-radius: 20px;
+        padding: 12px 28px;
+        color: #fff;
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .back-link:active { transform: translateX(-50%) scale(0.95); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="story-card">
+    <h1 class="story-title">&#128214; {{ story.title }}</h1>
+
+    {% for sentence in story.sentences %}
+    <div class="sentence">
+        <div class="sentence-zh" onclick="speakSentence('{{ sentence.zh }}')">
+            {% for ch in sentence.zh %}
+            <span class="char-tap" onclick="event.stopPropagation(); speakChar('{{ ch }}')">{{ ch }}</span>
+            {% endfor %}
+        </div>
+        <div class="sentence-pinyin">{{ sentence.pinyin }}</div>
+        <div class="sentence-en">{{ sentence.en }}</div>
+    </div>
+    {% endfor %}
+
+    <div class="divider"></div>
+
+    <div class="quiz-section">
+        <div class="quiz-question">{{ story.question.text }}</div>
+        <div class="quiz-options" id="quizOptions">
+            {% for opt in story.question.options %}
+            <button class="quiz-btn" type="button"
+                    onclick="checkAnswer(this, '{{ opt }}', '{{ story.question.answer }}')"
+            >{{ opt }}</button>
+            {% endfor %}
+        </div>
+        <div class="quiz-result" id="quizResult"></div>
+    </div>
+</div>
+
+<a class="back-link" href="/game/stories/">&#8592; Back</a>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function speakSentence(text) {
+        if ('speechSynthesis' in window) {
+            var u = new SpeechSynthesisUtterance(text);
+            u.lang = 'zh-CN';
+            u.rate = 0.8;
+            window.speechSynthesis.speak(u);
+        }
+    }
+
+    function speakChar(ch) {
+        if ('speechSynthesis' in window) {
+            var u = new SpeechSynthesisUtterance(ch);
+            u.lang = 'zh-CN';
+            u.rate = 0.7;
+            window.speechSynthesis.speak(u);
+        }
+    }
+
+    var answered = false;
+    function checkAnswer(btn, selected, correct) {
+        if (answered) return;
+        answered = true;
+
+        var result = document.getElementById('quizResult');
+        if (selected === correct) {
+            btn.classList.add('correct');
+            result.textContent = '\u2705 Correct!';
+            result.className = 'quiz-result show win';
+        } else {
+            btn.classList.add('wrong');
+            result.textContent = '\u274C The answer is: ' + correct;
+            result.className = 'quiz-result show lose';
+            /* Highlight correct */
+            var btns = document.querySelectorAll('.quiz-btn');
+            for (var i = 0; i < btns.length; i++) {
+                if (btns[i].textContent === correct) {
+                    btns[i].classList.add('correct');
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -116,7 +116,7 @@
 
         {# Car #}
         <div class="car-sprite" id="carSprite" style="left: 4%;">
-            &#128663;
+            {{ car_info.emoji }}
         </div>
     </div>
     <div class="grass-strip-bottom"></div>
@@ -131,7 +131,11 @@
     window.totalQuestions  = {{ total_questions }};
     window.initialPoints  = {{ user.points }};
     window.gameType       = '{{ game_type|default("chinese") }}';
+    window.carLevel       = {{ user.car_level|default(0) }};
 </script>
+
+{# ── Hanzi Writer for stroke order animation ── #}
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
 
 {# ── Load JS modules in order ── #}
 <script src="{{ url_for('static', path='js/common.js') }}"></script>

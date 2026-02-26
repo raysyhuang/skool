@@ -17,7 +17,8 @@
 
     html, body {
         width: 100%; height: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
         touch-action: manipulation;
         -webkit-user-select: none;
@@ -30,6 +31,7 @@
         align-items: center;
         justify-content: center;
         min-height: 100dvh;
+        padding: 20px;
     }
 
     /* ── Confetti ── */
@@ -52,12 +54,12 @@
         position: relative; z-index: 1;
         background: #fff;
         border-radius: 36px;
-        padding: clamp(28px, 5vw, 48px);
+        padding: clamp(24px, 4vw, 40px);
         width: clamp(340px, 70vw, 600px);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: clamp(16px, 3vh, 28px);
+        gap: clamp(14px, 2.5vh, 24px);
         box-shadow: 0 20px 60px rgba(0,0,0,0.35);
         animation: cardSlideUp 0.6s ease-out;
     }
@@ -84,16 +86,50 @@
     }
 
     .complete-title {
-        font-size: clamp(32px, 6vw, 52px);
+        font-size: clamp(28px, 5vw, 44px);
         font-weight: 900;
         color: var(--dark);
         text-align: center;
     }
 
+    .personal-best {
+        background: linear-gradient(135deg, #fdcb6e, #e17055);
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 12px;
+        font-size: clamp(14px, 2.5vw, 18px);
+        font-weight: 800;
+        animation: badgePop 0.5s ease-out;
+    }
+    @keyframes badgePop {
+        0% { transform: scale(0); }
+        60% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    /* ── Animated accuracy ── */
+    .accuracy-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+    .accuracy-value {
+        font-size: clamp(48px, 10vw, 80px);
+        font-weight: 900;
+        color: var(--green);
+        font-variant-numeric: tabular-nums;
+    }
+    .accuracy-label {
+        font-size: clamp(14px, 2.5vw, 18px);
+        font-weight: 600;
+        color: #636e72;
+    }
+
     /* Stats row */
     .stats-row {
         display: flex;
-        gap: clamp(12px, 2vw, 24px);
+        gap: clamp(10px, 2vw, 20px);
         flex-wrap: wrap;
         justify-content: center;
     }
@@ -103,9 +139,9 @@
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        padding: clamp(12px, 2vw, 20px);
-        border-radius: 20px;
-        min-width: clamp(90px, 16vw, 130px);
+        padding: clamp(10px, 2vw, 16px);
+        border-radius: 18px;
+        min-width: clamp(80px, 14vw, 120px);
     }
     .stat-card.score {
         background: linear-gradient(135deg, var(--green), #55efc4);
@@ -118,18 +154,70 @@
     }
 
     .stat-emoji {
-        font-size: clamp(28px, 5vw, 40px);
+        font-size: clamp(24px, 4vw, 36px);
     }
     .stat-value {
-        font-size: clamp(28px, 5vw, 44px);
+        font-size: clamp(24px, 4vw, 36px);
         font-weight: 900;
         color: #fff;
         text-shadow: 1px 2px 4px rgba(0,0,0,0.2);
     }
     .stat-label {
-        font-size: clamp(14px, 2.5vw, 18px);
+        font-size: clamp(12px, 2vw, 16px);
         font-weight: 600;
         color: rgba(255,255,255,0.9);
+    }
+
+    /* ── XP Breakdown ── */
+    .xp-breakdown {
+        width: 100%;
+        max-width: 300px;
+    }
+    .xp-breakdown h3 {
+        font-size: clamp(14px, 2.5vw, 18px);
+        color: var(--dark);
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    .xp-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 4px 0;
+        font-size: clamp(13px, 2vw, 16px);
+        color: #636e72;
+        font-weight: 600;
+    }
+    .xp-row .xp-val {
+        color: var(--green);
+        font-weight: 800;
+    }
+
+    /* ── Stars progress bar ── */
+    .coin-progress-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+        max-width: 300px;
+    }
+    .coin-progress-label {
+        font-size: clamp(13px, 2vw, 16px);
+        color: #636e72;
+        font-weight: 600;
+    }
+    .coin-progress-track {
+        width: 100%;
+        height: 12px;
+        background: #ecf0f1;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .coin-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #fdcb6e, #ff6b35);
+        border-radius: 6px;
+        transition: width 1.5s ease-out;
     }
 
     /* Rewards row */
@@ -143,21 +231,66 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        font-size: clamp(22px, 4vw, 32px);
+        font-size: clamp(20px, 3.5vw, 28px);
         font-weight: 800;
         color: var(--dark);
     }
     .reward-item .emoji {
+        font-size: clamp(24px, 4vw, 36px);
+    }
+
+    /* ── Badges earned ── */
+    .new-badges {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    .badge-earned {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+        padding: 10px 20px;
+        border-radius: 16px;
+        animation: badgeDrop 0.6s ease-out;
+        box-shadow: 0 4px 16px rgba(253,203,110,0.4);
+    }
+    @keyframes badgeDrop {
+        0% { transform: translateY(-30px) scale(0.5); opacity: 0; }
+        60% { transform: translateY(5px) scale(1.1); }
+        100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .badge-emoji {
         font-size: clamp(28px, 5vw, 40px);
+    }
+    .badge-text {
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 800;
+        color: var(--dark);
+    }
+
+    /* Car level up */
+    .car-levelup {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+        padding: 10px 20px;
+        border-radius: 16px;
+        color: #fff;
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 800;
+        animation: badgeDrop 0.8s ease-out;
     }
 
     /* Action button */
     .action-btn {
-        min-width: clamp(220px, 40vw, 340px);
-        min-height: clamp(64px, 10vw, 80px);
+        min-width: clamp(200px, 36vw, 300px);
+        min-height: clamp(60px, 9vw, 72px);
         border: none;
         border-radius: 24px;
-        font-size: clamp(22px, 4vw, 32px);
+        font-size: clamp(20px, 3.5vw, 28px);
         font-weight: 800;
         color: #fff;
         cursor: pointer;
@@ -218,7 +351,7 @@
 <div class="complete-card">
     <div class="trophy-section">
         <span class="trophy-emoji">
-            {% if session.total_correct == total_questions|default(5) %}
+            {% if is_perfect %}
                 &#127942;
             {% else %}
                 &#127937;
@@ -227,18 +360,29 @@
     </div>
 
     <h1 class="complete-title">
-        {% if session.total_correct == session.questions|length %}
+        {% if is_perfect %}
             &#127775; Perfect Race! &#127775;
         {% else %}
             Race Complete!
         {% endif %}
     </h1>
 
+    {# Personal best badge #}
+    {% if user.streak > 0 and user.streak >= user.best_streak %}
+    <div class="personal-best">&#127775; Personal Best Streak!</div>
+    {% endif %}
+
+    {# ── Animated accuracy ── #}
+    <div class="accuracy-section">
+        <div class="accuracy-value" id="accuracyValue">0%</div>
+        <div class="accuracy-label">Accuracy</div>
+    </div>
+
     {# Stats #}
     <div class="stats-row">
         <div class="stat-card score">
             <span class="stat-emoji">&#9989;</span>
-            <span class="stat-value">{{ session.total_correct }}/{{ session.questions|length }}</span>
+            <span class="stat-value">{{ session.total_correct }}/{{ total_questions }}</span>
             <span class="stat-label">Correct</span>
         </div>
         <div class="stat-card points">
@@ -250,6 +394,16 @@
             <span class="stat-emoji">&#128293;</span>
             <span class="stat-value">{{ user.streak }}</span>
             <span class="stat-label">Day Streak</span>
+        </div>
+    </div>
+
+    {# ── Coin progress bar ── #}
+    <div class="coin-progress-section">
+        <div class="coin-progress-label">
+            &#127775; {{ user.stars }} stars &middot; {{ stars_to_next_coin }} to next &#129689;
+        </div>
+        <div class="coin-progress-track">
+            <div class="coin-progress-fill" id="coinProgressFill" style="width: 0%;"></div>
         </div>
     </div>
 
@@ -269,11 +423,17 @@
         </div>
     </div>
 
+    {# ── New badges ── #}
+    <div class="new-badges" id="newBadges"></div>
+
+    {# ── Car level up ── #}
+    <div id="carLevelUp" style="display:none;"></div>
+
     {# Action buttons #}
     {% if can_play_again %}
     <a href="javascript:void(0)" onclick="window.location.href='/game/'" style="text-decoration: none;">
         <button class="action-btn race-again" type="button">
-            &#128663; Race Again!
+            {{ car_info.emoji }} Race Again!
         </button>
     </a>
     {% else %}
@@ -308,9 +468,30 @@
         confettiBg.appendChild(piece);
     }
 
+    /* ── Animated accuracy counter ── */
+    var targetAccuracy = {{ accuracy }};
+    var accuracyEl = document.getElementById('accuracyValue');
+    var current = 0;
+    var step = Math.max(1, Math.floor(targetAccuracy / 30));
+    var timer = setInterval(function() {
+        current += step;
+        if (current >= targetAccuracy) {
+            current = targetAccuracy;
+            clearInterval(timer);
+        }
+        accuracyEl.textContent = current + '%';
+    }, 30);
+
+    /* ── Coin progress bar animation ── */
+    var coinFill = document.getElementById('coinProgressFill');
+    setTimeout(function() {
+        coinFill.style.width = '{{ stars_progress_pct }}%';
+    }, 500);
+
     /* ── Perfect score burst ── */
     var totalCorrect = {{ session.total_correct }};
-    if (totalCorrect === 5) {
+    var totalQs = {{ total_questions }};
+    if (totalCorrect === totalQs) {
         var burst = document.getElementById('perfectBurst');
         burst.classList.add('active');
         var starEmojis = ['\u2B50', '\u{1F31F}', '\u2728', '\u{1F3C6}', '\u{1F389}'];
@@ -318,7 +499,6 @@
             var star = document.createElement('div');
             star.className = 'flying-star';
             star.textContent = starEmojis[Math.floor(Math.random() * starEmojis.length)];
-            /* Start from center */
             star.style.left = '50%';
             star.style.top = '50%';
             var angle = (j / 20) * 2 * Math.PI;
@@ -344,7 +524,7 @@
     /* ── Celebration sound (TTS) ── */
     if ('speechSynthesis' in window) {
         setTimeout(function() {
-            var msg = totalCorrect === 5 ? '\u592A\u68D2\u4E86\uFF01' : '\u5B8C\u6210\uFF01';
+            var msg = totalCorrect === totalQs ? '\u592A\u68D2\u4E86\uFF01' : '\u5B8C\u6210\uFF01';
             var utter = new SpeechSynthesisUtterance(msg);
             utter.lang = 'zh-CN';
             utter.rate = 0.9;

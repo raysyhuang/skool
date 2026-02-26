@@ -41,3 +41,20 @@ def get_conversion_status(user: User) -> dict:
         "coins_to_next_rmb": settings.rmb_per_coins - (user.coins % settings.rmb_per_coins),
         "rmb_value": (user.coins // settings.rmb_per_coins) * settings.rmb_payout,
     }
+
+
+def buy_streak_freeze(db: Session, user: User) -> bool:
+    """Spend 1 coin to gain 1 streak freeze. Returns True on success."""
+    if user.coins < 1:
+        return False
+    user.coins -= 1
+    user.streak_freezes += 1
+    entry = PointsLedger(
+        user_id=user.id,
+        change=0,
+        reason="buy_streak_freeze",
+        balance_after=user.points,
+    )
+    db.add(entry)
+    db.flush()
+    return True

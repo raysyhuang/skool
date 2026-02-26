@@ -9,13 +9,15 @@
         --chinese: linear-gradient(145deg, #ff6b35, #e55a2b);
         --math: linear-gradient(145deg, #00b894, #00a381);
         --logic: linear-gradient(145deg, #6c5ce7, #5a4bd4);
+        --english: linear-gradient(145deg, #fdcb6e, #e17055);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
         width: 100%; height: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
         touch-action: manipulation;
         -webkit-user-select: none;
@@ -27,8 +29,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         min-height: 100dvh;
+        padding-bottom: 80px;
     }
 
     .stars {
@@ -57,12 +59,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: clamp(20px, 3vh, 32px);
-        padding: 24px;
+        gap: clamp(14px, 2vh, 24px);
+        padding: 20px 24px;
         width: 100%;
         max-width: 900px;
     }
 
+    /* ── Greeting row ── */
     .greeting-row {
         display: flex;
         align-items: center;
@@ -92,31 +95,147 @@
         text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
     }
 
+    /* ── Streak + motivational ── */
+    .streak-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .streak-badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.2);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: clamp(16px, 2.5vw, 22px);
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .streak-flame {
+        font-size: clamp(20px, 3vw, 28px);
+        display: inline-block;
+    }
+    .streak-flame.hot {
+        animation: flamePulse 0.6s ease-in-out infinite;
+    }
+    @keyframes flamePulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+    }
+
+    .freeze-badge {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(116,185,255,0.3);
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: clamp(14px, 2vw, 18px);
+        font-weight: 600;
+        color: #fff;
+    }
+
+    .motivational {
+        font-size: clamp(16px, 2.5vw, 20px);
+        color: rgba(255,255,255,0.9);
+        font-weight: 600;
+        text-align: center;
+    }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .stat-pill {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255,255,255,0.2);
+        padding: 6px 14px;
+        border-radius: 16px;
+        font-size: clamp(14px, 2.2vw, 18px);
+        font-weight: 700;
+        color: #fff;
+    }
+
+    /* ── Car display ── */
+    .car-display {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+    .car-emoji {
+        font-size: clamp(40px, 7vw, 64px);
+        animation: carBob 2s ease-in-out infinite;
+    }
+    @keyframes carBob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+    .car-progress {
+        width: clamp(120px, 20vw, 200px);
+        height: 8px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .car-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #fdcb6e, #ff6b35);
+        border-radius: 4px;
+        transition: width 0.5s;
+    }
+    .car-label {
+        font-size: clamp(12px, 1.8vw, 14px);
+        color: rgba(255,255,255,0.7);
+        font-weight: 600;
+    }
+
     .sessions-info {
         font-size: clamp(16px, 2.5vw, 22px);
         color: rgba(255,255,255,0.85);
         font-weight: 600;
     }
 
+    .game-error {
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 700;
+        color: #fff;
+        background: rgba(214, 48, 49, 0.88);
+        padding: 10px 16px;
+        border-radius: 14px;
+        text-align: center;
+        max-width: 540px;
+    }
+
     .game-grid {
         display: flex;
-        gap: clamp(16px, 2.5vw, 28px);
+        gap: clamp(12px, 2vw, 24px);
         flex-wrap: wrap;
         justify-content: center;
         width: 100%;
     }
 
     .game-card {
-        width: clamp(160px, 26vw, 240px);
-        height: clamp(180px, 28vw, 260px);
+        width: clamp(140px, 22vw, 200px);
+        height: clamp(160px, 24vw, 220px);
         border: none;
-        border-radius: 32px;
+        border-radius: 28px;
         cursor: pointer;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: clamp(8px, 1.5vw, 16px);
+        gap: clamp(6px, 1vw, 12px);
         transition: transform 0.2s, box-shadow 0.2s;
         box-shadow: 0 8px 30px rgba(0,0,0,0.25);
         -webkit-tap-highlight-color: transparent;
@@ -135,19 +254,47 @@
     .game-card.chinese { background: var(--chinese); }
     .game-card.math    { background: var(--math); }
     .game-card.logic   { background: var(--logic); }
+    .game-card.english { background: var(--english); }
 
     .game-emoji {
-        font-size: clamp(56px, 10vw, 88px);
+        font-size: clamp(48px, 8vw, 72px);
         line-height: 1;
         filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
     }
 
     .game-label {
-        font-size: clamp(24px, 4vw, 36px);
+        font-size: clamp(20px, 3.5vw, 30px);
         font-weight: 800;
         color: #fff;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
+
+    /* ── Quick links row ── */
+    .quick-links {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .quick-link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 20px;
+        padding: 10px 20px;
+        color: #fff;
+        font-size: clamp(14px, 2.2vw, 18px);
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        transition: background 0.2s;
+    }
+    .quick-link:active { transform: scale(0.95); }
+    .quick-link:hover { background: rgba(255,255,255,0.25); }
 
     .back-btn {
         position: fixed;
@@ -167,6 +314,28 @@
         touch-action: manipulation;
     }
     .back-btn:active { transform: translateX(-50%) scale(0.95); }
+
+    /* Quest progress mini */
+    .quest-mini {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: clamp(13px, 2vw, 16px);
+        color: rgba(255,255,255,0.8);
+        font-weight: 600;
+    }
+    .quest-dots {
+        display: flex;
+        gap: 4px;
+    }
+    .quest-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+    }
+    .quest-dot.filled {
+        background: #fdcb6e;
+    }
 </style>
 {% endblock %}
 
@@ -177,11 +346,78 @@
 </div>
 
 <div class="selector-container">
+    {# ── Greeting ── #}
     <div class="greeting-row">
         <div class="greeting-avatar {% if user.name == 'Ellie' %}avatar-girl{% else %}avatar-boy{% endif %}">{{ user.name[0] }}</div>
         <span class="greeting-text">Hi {{ user.name }}!</span>
     </div>
 
+    {# ── Streak + Freeze ── #}
+    <div class="streak-row">
+        {% if user.streak > 0 %}
+        <div class="streak-badge">
+            <span class="streak-flame {% if user.streak >= 3 %}hot{% endif %}">&#128293;</span>
+            <span>{{ user.streak }}-day streak!</span>
+        </div>
+        {% endif %}
+
+        {% if user.streak_freezes > 0 %}
+        <div class="freeze-badge">
+            <span>&#10052;&#65039;</span>
+            <span>{{ user.streak_freezes }}</span>
+        </div>
+        {% endif %}
+
+        {% if today_points > 0 %}
+        <div class="stat-pill">
+            <span>&#11088;</span>
+            <span>+{{ today_points }} today</span>
+        </div>
+        {% endif %}
+    </div>
+
+    {# ── Motivational ── #}
+    <div class="motivational">{{ motivational }}</div>
+
+    {# ── Stats bar ── #}
+    <div class="stats-bar">
+        <div class="stat-pill"><span>&#11088;</span> {{ user.points }}</div>
+        <div class="stat-pill"><span>&#127775;</span> {{ user.stars }}</div>
+        <div class="stat-pill"><span>&#129689;</span> {{ user.coins }}</div>
+        {% if badge_count > 0 %}
+        <div class="stat-pill"><span>&#127942;</span> {{ badge_count }}</div>
+        {% endif %}
+    </div>
+
+    {# ── Car display ── #}
+    <div class="car-display">
+        <span class="car-emoji">{{ car_info.emoji }}</span>
+        {% if coins_to_next_car > 0 %}
+        <div class="car-progress">
+            {% set max_coins = coins_to_next_car + user.coins %}
+            {% set pct = ((user.coins / max_coins) * 100) if max_coins > 0 else 0 %}
+            <div class="car-progress-fill" style="width: {{ pct|round }}%;"></div>
+        </div>
+        <span class="car-label">{{ car_info.name }} &#8226; {{ coins_to_next_car }} coins to next</span>
+        {% else %}
+        <span class="car-label">{{ car_info.name }} &#127775; Max Level!</span>
+        {% endif %}
+    </div>
+
+    {# ── Quest mini progress ── #}
+    {% if quest_info %}
+    <div class="quest-mini">
+        <span>&#127937;</span>
+        Season {{ quest_info.season }} &middot; Stage {{ quest_info.stage }}
+        <div class="quest-dots">
+            {% for i in range(quest_info.sessions_needed) %}
+            <div class="quest-dot {% if i < quest_info.sessions_in_stage %}filled{% endif %}"></div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# ── Sessions remaining ── #}
     {% if remaining_sessions >= 0 %}
     <div class="sessions-info">
         {% if remaining_sessions == 0 %}
@@ -194,6 +430,11 @@
     </div>
     {% endif %}
 
+    {% if game_error %}
+    <div class="game-error">{{ game_error }}</div>
+    {% endif %}
+
+    {# ── Game cards ── #}
     <div class="game-grid">
         <button class="game-card chinese {% if not can_play %}disabled{% endif %}" onclick="pickGame('chinese')" type="button">
             <span class="game-emoji">&#128218;</span>
@@ -207,6 +448,21 @@
             <span class="game-emoji">&#129513;</span>
             <span class="game-label">Logic</span>
         </button>
+        <button class="game-card english {% if not can_play %}disabled{% endif %}" onclick="pickGame('english')" type="button">
+            <span class="game-emoji">&#127468;&#127463;</span>
+            <span class="game-label">English</span>
+        </button>
+    </div>
+
+    {# ── Quick links ── #}
+    <div class="quick-links">
+        <a class="quick-link" href="/game/achievements">&#127942; Badges</a>
+        <a class="quick-link" href="/game/quest">&#127937; Quest</a>
+        <a class="quick-link" href="/game/store">&#128722; Garage</a>
+        <a class="quick-link" href="/game/stories/">&#128214; Stories</a>
+        {% if user.role == 'parent' %}
+        <a class="quick-link" href="/dashboard">&#128202; Dashboard</a>
+        {% endif %}
     </div>
 </div>
 

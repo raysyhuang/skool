@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - Badges{% endblock %}
+
+{% block theme_css %}
+<style>
+    :root {
+        --bg: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%; height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    body {
+        background: var(--bg);
+        min-height: 100dvh;
+        padding: 20px;
+        padding-bottom: 80px;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .page-title {
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+    }
+    .badge-count {
+        font-size: clamp(16px, 2.5vw, 22px);
+        color: rgba(255,255,255,0.85);
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    .badges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .badge-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 20px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        transition: transform 0.2s;
+    }
+    .badge-card.locked {
+        opacity: 0.5;
+        filter: grayscale(1);
+    }
+    .badge-card.earned {
+        border: 3px solid #fdcb6e;
+    }
+
+    .badge-icon {
+        font-size: clamp(40px, 8vw, 56px);
+    }
+    .badge-name {
+        font-size: clamp(14px, 2.5vw, 18px);
+        font-weight: 800;
+        color: #2d3436;
+        text-align: center;
+    }
+    .badge-desc {
+        font-size: clamp(11px, 1.8vw, 14px);
+        color: #636e72;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .back-link {
+        position: fixed;
+        bottom: clamp(16px, 3vh, 32px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        background: rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.4);
+        border-radius: 20px;
+        padding: 12px 28px;
+        color: #fff;
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .back-link:active { transform: translateX(-50%) scale(0.95); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">&#127942; Badges</h1>
+    <div class="badge-count">{{ earned_count }} / {{ total_count }} earned</div>
+</div>
+
+<div class="badges-grid">
+    {% for badge in badges %}
+    <div class="badge-card {% if badge.earned %}earned{% else %}locked{% endif %}">
+        <span class="badge-icon">{{ badge.emoji }}</span>
+        <span class="badge-name">{{ badge.name }}</span>
+        <span class="badge-desc">{{ badge.description }}</span>
+    </div>
+    {% endfor %}
+</div>
+
+<a class="back-link" href="/game/">&#8592; Back</a>
+{% endblock %}

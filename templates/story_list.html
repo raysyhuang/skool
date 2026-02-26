@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - Stories{% endblock %}
+
+{% block theme_css %}
+<style>
+    :root {
+        --bg: linear-gradient(135deg, #ff6b35 0%, #fdcb6e 50%, #ff6b35 100%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%; height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    body {
+        background: var(--bg);
+        min-height: 100dvh;
+        padding: 20px;
+        padding-bottom: 80px;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .page-title {
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 900;
+        color: #fff;
+        text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+    }
+    .page-subtitle {
+        font-size: clamp(14px, 2.5vw, 18px);
+        color: rgba(255,255,255,0.9);
+        font-weight: 600;
+        margin-top: 4px;
+    }
+
+    .stories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .story-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.2s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .story-card:active { transform: scale(0.95); }
+    .story-card.locked {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .story-icon {
+        font-size: clamp(40px, 8vw, 56px);
+    }
+    .story-title {
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 800;
+        color: #2d3436;
+        text-align: center;
+    }
+    .story-level {
+        font-size: clamp(11px, 1.8vw, 14px);
+        color: #636e72;
+        font-weight: 600;
+    }
+
+    .back-link {
+        position: fixed;
+        bottom: clamp(16px, 3vh, 32px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        background: rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.4);
+        border-radius: 20px;
+        padding: 12px 28px;
+        color: #fff;
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .back-link:active { transform: translateX(-50%) scale(0.95); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">&#128214; Stories</h1>
+    <div class="page-subtitle">Tap characters to hear them!</div>
+</div>
+
+<div class="stories-grid">
+    {% for story in stories %}
+    <a class="story-card {% if not story.unlocked %}locked{% endif %}"
+       href="{% if story.unlocked %}/game/stories/{{ story.id }}{% else %}#{% endif %}">
+        <span class="story-icon">{% if story.unlocked %}&#128214;{% else %}&#128274;{% endif %}</span>
+        <span class="story-title">{{ story.title }}</span>
+        <span class="story-level">
+            {% if story.unlocked %}
+                Level {{ story.min_mastery }}+
+            {% else %}
+                Needs mastery {{ story.min_mastery }}
+            {% endif %}
+        </span>
+    </a>
+    {% endfor %}
+</div>
+
+<a class="back-link" href="/game/">&#8592; Back</a>
+{% endblock %}

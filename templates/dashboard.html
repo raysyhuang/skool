@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block title %}Skool - Parent Dashboard{% endblock %}
+
+{% block theme_css %}
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+        width: 100%;
+        overflow-x: hidden;
+        font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+        background: #f5f6fa;
+        min-height: 100dvh;
+        padding: 20px;
+        padding-bottom: 80px;
+    }
+
+    .dash-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    .dash-title {
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 900;
+        color: #2d3436;
+    }
+
+    .child-section {
+        background: #fff;
+        border-radius: 24px;
+        padding: clamp(16px, 3vw, 32px);
+        margin-bottom: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .child-name {
+        font-size: clamp(22px, 4vw, 32px);
+        font-weight: 800;
+        color: #2d3436;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* ── Stats grid ── */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .stat-box {
+        background: #f5f6fa;
+        border-radius: 16px;
+        padding: 12px;
+        text-align: center;
+    }
+    .stat-box .val {
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 900;
+        color: #2d3436;
+    }
+    .stat-box .lbl {
+        font-size: 12px;
+        color: #636e72;
+        font-weight: 600;
+        margin-top: 2px;
+    }
+
+    /* ── Week chart ── */
+    .section-title {
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 800;
+        color: #2d3436;
+        margin-bottom: 10px;
+    }
+
+    .week-chart {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        height: 80px;
+        margin-bottom: 20px;
+    }
+    .day-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+    .day-bar {
+        width: 100%;
+        max-width: 40px;
+        border-radius: 6px 6px 0 0;
+        background: linear-gradient(180deg, #6c5ce7, #a29bfe);
+        min-height: 4px;
+        transition: height 0.5s;
+    }
+    .day-label {
+        font-size: 11px;
+        color: #636e72;
+        font-weight: 600;
+    }
+    .day-count {
+        font-size: 12px;
+        color: #2d3436;
+        font-weight: 800;
+    }
+
+    /* ── Mastery bars ── */
+    .mastery-chart {
+        display: flex;
+        gap: 6px;
+        align-items: flex-end;
+        height: 60px;
+        margin-bottom: 20px;
+    }
+    .mastery-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+    .mastery-bar {
+        width: 100%;
+        max-width: 50px;
+        border-radius: 6px 6px 0 0;
+        background: linear-gradient(180deg, #00b894, #55efc4);
+        min-height: 4px;
+    }
+    .mastery-label {
+        font-size: 11px;
+        color: #636e72;
+        font-weight: 600;
+    }
+
+    /* ── Weak chars table ── */
+    .weak-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .weak-table th {
+        text-align: left;
+        font-size: 12px;
+        color: #636e72;
+        font-weight: 700;
+        padding: 6px 8px;
+        border-bottom: 2px solid #ecf0f1;
+    }
+    .weak-table td {
+        padding: 8px;
+        font-size: 14px;
+        border-bottom: 1px solid #ecf0f1;
+    }
+    .weak-table .char-col {
+        font-size: 20px;
+        font-weight: 800;
+    }
+    .mastery-dot {
+        display: inline-block;
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #d63031;
+    }
+    .mastery-dot.m1 { background: #e17055; }
+    .mastery-dot.m2 { background: #fdcb6e; }
+    .mastery-dot.m3 { background: #ffeaa7; }
+    .mastery-dot.m4 { background: #55efc4; }
+    .mastery-dot.m5 { background: #00b894; }
+
+    .back-link {
+        position: fixed;
+        bottom: clamp(16px, 3vh, 32px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        background: #6c5ce7;
+        border-radius: 20px;
+        padding: 12px 28px;
+        color: #fff;
+        font-size: clamp(16px, 2.5vw, 20px);
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .back-link:active { transform: translateX(-50%) scale(0.95); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dash-header">
+    <h1 class="dash-title">&#128202; Parent Dashboard</h1>
+</div>
+
+{% for child in children %}
+<div class="child-section">
+    <div class="child-name">
+        <span>{% if child.user.name == 'Ellie' %}&#128135;{% else %}&#128102;{% endif %}</span>
+        {{ child.user.name }}
+    </div>
+
+    {# ── Stats ── #}
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="val">{{ child.total_sessions }}</div>
+            <div class="lbl">Sessions</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">{{ child.accuracy }}%</div>
+            <div class="lbl">Accuracy</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">{{ child.user.streak }}</div>
+            <div class="lbl">Streak</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">{{ child.user.points }}</div>
+            <div class="lbl">Points</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">{{ child.user.stars }}</div>
+            <div class="lbl">Stars</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">{{ child.user.coins }}</div>
+            <div class="lbl">Coins</div>
+        </div>
+    </div>
+
+    {# ── Week chart ── #}
+    <div class="section-title">Last 7 Days</div>
+    <div class="week-chart">
+        {% for day in child.week_data %}
+        <div class="day-col">
+            <span class="day-count">{{ day.count }}</span>
+            <div class="day-bar" style="height: {{ day.pct }}%;"></div>
+            <span class="day-label">{{ day.day }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    {# ── Mastery distribution ── #}
+    <div class="section-title">Mastery Distribution</div>
+    <div class="mastery-chart">
+        {% set max_mastery = namespace(val=1) %}
+        {% for bar in child.mastery_bars %}
+            {% if bar.count > max_mastery.val %}{% set max_mastery.val = bar.count %}{% endif %}
+        {% endfor %}
+        {% for bar in child.mastery_bars %}
+        <div class="mastery-col">
+            <div class="mastery-bar" style="height: {{ (bar.count / max_mastery.val * 100)|round }}%;"></div>
+            <span class="mastery-label">{{ bar.level }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    {# ── Weakest characters ── #}
+    {% if child.weakest %}
+    <div class="section-title">Needs Practice</div>
+    <table class="weak-table">
+        <thead>
+            <tr>
+                <th>Character</th>
+                <th>Pinyin</th>
+                <th>Meaning</th>
+                <th>Mastery</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in child.weakest[:8] %}
+            <tr>
+                <td class="char-col">{{ w.character }}</td>
+                <td>{{ w.pinyin }}</td>
+                <td>{{ w.meaning }}</td>
+                <td><span class="mastery-dot m{{ w.mastery }}"></span> {{ w.mastery }}/5</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endfor %}
+
+<a class="back-link" href="/game/">&#8592; Back</a>
+{% endblock %}
