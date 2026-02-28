@@ -135,6 +135,56 @@
 
     /* Hidden form */
     .hidden-form { display: none; }
+
+    /* ── Parent Login ── */
+    .parent-login-btn {
+        margin-top: 40px;
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.7);
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+    
+    .modal-overlay {
+        display: none;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6);
+        z-index: 1000;
+        align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    
+    .modal-content {
+        background: #fff;
+        padding: 32px;
+        border-radius: 24px;
+        text-align: center;
+        width: 90%; max-width: 400px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+    .modal-content h2 { margin-bottom: 20px; color: #2d3436; }
+    .pin-input {
+        font-size: 32px;
+        letter-spacing: 8px;
+        text-align: center;
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #dfe6e9;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+    .modal-btns { display: flex; gap: 12px; }
+    .modal-btn {
+        flex: 1; padding: 14px;
+        border: none; border-radius: 12px;
+        font-size: 18px; font-weight: bold; cursor: pointer;
+    }
+    .btn-cancel { background: #dfe6e9; color: #636e72; }
+    .btn-submit { background: #6c5ce7; color: #fff; }
+
+    .error-msg { color: #d63031; margin-bottom: 12px; font-weight: bold; display: none; }
 </style>
 {% endblock %}
 
@@ -164,8 +214,24 @@
         </button>
         {% endfor %}
     </div>
+
+    <button class="parent-login-btn" onclick="openParentLogin()">Parent Dashboard</button>
 </div>
 
+<!-- Parent Login Modal -->
+<div class="modal-overlay" id="parentModal">
+    <div class="modal-content">
+        <h2>Parent Login</h2>
+        <div class="error-msg" id="pinError">Invalid PIN</div>
+        <form method="POST" action="/login/parent">
+            <input type="password" name="pin" class="pin-input" id="pinInput" maxlength="4" pattern="\d{4}" required placeholder="••••">
+            <div class="modal-btns">
+                <button type="button" class="modal-btn btn-cancel" onclick="closeParentLogin()">Cancel</button>
+                <button type="submit" class="modal-btn btn-submit">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -182,5 +248,21 @@
             window.location.href = '/game/';
         });
     };
+
+    window.openParentLogin = function() {
+        document.getElementById('parentModal').classList.add('active');
+        setTimeout(function() { document.getElementById('pinInput').focus(); }, 100);
+    };
+
+    window.closeParentLogin = function() {
+        document.getElementById('parentModal').classList.remove('active');
+        document.getElementById('pinInput').value = '';
+    };
+
+    // Check for login error
+    if (window.location.search.includes('error=invalid_pin')) {
+        openParentLogin();
+        document.getElementById('pinError').style.display = 'block';
+    }
 </script>
 {% endblock %}

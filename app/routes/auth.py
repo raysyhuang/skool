@@ -36,6 +36,24 @@ def login(
     return response
 
 
+@router.post("/login/parent")
+def login_parent(
+    request: Request,
+    pin: str = Form(...),
+    db: Session = Depends(get_db),
+):
+    from app.models.user import User
+    parent = db.query(User).filter_by(role="parent", pin=pin).first()
+    if not parent:
+        return RedirectResponse(url="/login?error=invalid_pin", status_code=303)
+
+    response = RedirectResponse(url="/dashboard/", status_code=303)
+    request.session["user_id"] = parent.id
+    request.session["user_name"] = parent.name
+    request.session["theme"] = parent.theme
+    return response
+
+
 @router.get("/logout")
 def logout(request: Request):
     request.session.clear()

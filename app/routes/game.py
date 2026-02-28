@@ -466,11 +466,11 @@ def quest_map_page(request: Request, db: Session = Depends(get_db)):
 
 
 @router.get("/tts")
-async def tts_proxy(text: str = Query(..., max_length=50)):
+async def tts_proxy(text: str = Query(..., max_length=50), lang: str = Query("zh-CN", max_length=10)):
     """Proxy Google Translate TTS to avoid browser CORS/blocking issues."""
     url = (
         "https://translate.google.com/translate_tts"
-        f"?ie=UTF-8&tl=zh-CN&client=tw-ob&q={urllib.parse.quote(text)}"
+        f"?ie=UTF-8&tl={lang}&client=tw-ob&q={urllib.parse.quote(text)}"
     )
     try:
         async with httpx.AsyncClient() as client:

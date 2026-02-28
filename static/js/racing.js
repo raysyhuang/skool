@@ -51,6 +51,18 @@
     var answering    = false;   /* lock to prevent double-tap */
     var carLevel     = root.carLevel || 0;
 
+    /* ──────────────────────────────────────────────
+       Helpers
+       ────────────────────────────────────────────── */
+
+    function speakText(text) {
+        if (gameType === 'english') {
+            root.SkoolTTS.speakEnglish(text);
+        } else {
+            root.SkoolTTS.speakChinese(text);
+        }
+    }
+
 
     /* ──────────────────────────────────────────────
        DOM references (cached once on init)
@@ -143,7 +155,7 @@
         if (tBtn) tBtn.textContent = '\u25B6 Ready!';
 
         /* Auto-speak */
-        root.SkoolTTS.speakChinese(q.character);
+        speakText(q.character);
 
         /* Show Hanzi Writer if available */
         var hanziContainer = document.getElementById('hanziWriterLearn');
@@ -344,7 +356,7 @@
                 if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char') {
                     /* Don't speak — let them figure it out */
                 } else {
-                    root.SkoolTTS.speakChinese(q.character);
+                    speakText(q.character);
                 }
             }, 300);
         }
@@ -652,7 +664,7 @@
                 if (tChar) tChar.textContent = '\uD83D\uDD0A';
                 if (tPinyin) tPinyin.textContent = q.pinyin;
                 if (tMeaning) tMeaning.textContent = 'Listen and look at the pinyin!';
-                root.SkoolTTS.speakChinese(q.character);
+                speakText(q.character);
 
             } else if (mode === 'image_to_char') {
                 /* They see an image, hint = show the meaning text */
@@ -665,7 +677,7 @@
                 if (tChar) tChar.textContent = '\uD83D\uDD0A';
                 if (tPinyin) tPinyin.textContent = q.pinyin;
                 if (tMeaning) tMeaning.textContent = 'Listen carefully!';
-                root.SkoolTTS.speakChinese(q.character);
+                speakText(q.character);
 
             } else if (mode === 'meaning_to_char') {
                 /* They see the meaning, hint = pinyin */
@@ -678,7 +690,7 @@
                 if (tChar) tChar.textContent = '\uD83D\uDD0A';
                 if (tPinyin) tPinyin.textContent = 'Listen to the word!';
                 if (tMeaning) tMeaning.textContent = '';
-                root.SkoolTTS.speakChinese(q.character);
+                speakText(q.character);
 
             } else if (mode === 'pinyin_to_char') {
                 /* They see pinyin, hint = meaning */
@@ -691,7 +703,7 @@
                 if (tChar) tChar.textContent = '\uD83D\uDD0A';
                 if (tPinyin) tPinyin.textContent = q.pinyin;
                 if (tMeaning) tMeaning.textContent = 'Listen again!';
-                root.SkoolTTS.speakChinese(q.character);
+                speakText(q.character);
 
             } else {
                 /* Fallback: show pinyin as hint */
@@ -885,7 +897,7 @@
 
         /* Speak congratulation (Chinese TTS only for Chinese game) */
         if (gameType === 'chinese') {
-            root.SkoolTTS.speakChinese('\u592A\u68D2\u4E86');    /* "tai bang le!" */
+            speakText('\u592A\u68D2\u4E86');    /* "tai bang le!" */
         }
 
         /* Call complete API, then redirect */
@@ -913,7 +925,7 @@
     root.speakCharacter = function () {
         var q = questions[currentIndex];
         if (q) {
-            root.SkoolTTS.speakChinese(q.character);
+            speakText(q.character);
         }
     };
 
@@ -951,9 +963,11 @@
         /* Render first question */
         renderQuestion(0);
 
-        /* Auto-speak the first character (handles iOS gesture requirement, Chinese only) */
+        /* Auto-speak the first character (handles iOS gesture requirement) */
         if (gameType === 'chinese') {
-            root.SkoolTTS.autoSpeak(questions[0].character);
+            root.SkoolTTS.autoSpeak(questions[0].character, 'zh-CN');
+        } else if (gameType === 'english') {
+            root.SkoolTTS.autoSpeak(questions[0].character, 'en-US');
         }
     }
 
