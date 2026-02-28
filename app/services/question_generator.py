@@ -1,5 +1,6 @@
 import json
 import random
+from datetime import date, timedelta
 from sqlalchemy.orm import Session
 
 from app.models.character import Character
@@ -66,37 +67,62 @@ def _exclude_confusable(correct_char: Character, candidates: list[Character]) ->
     return [c for c in candidates if c.meaning not in group]
 
 
-def select_characters(db: Session, user_id: int, count: int = 5, theme: str = "racing") -> list[Character]:
-    """Select characters weighted by inverse mastery. Low mastery = high frequency."""
+def select_characters(
+    db: Session,
+    user_id: int,
+    count: int = 5,
+    theme: str = "racing",
+    character_ids: list[int] | None = None,
+) -> list[Character]:
+    """Select characters using SM-2 review priority buckets.
+
+    Priority:
+      1. Overdue (next_review_date <= today): weight=10
+      2. New (never seen, no progress): weight=6
+      3. Due soon (within 2 days): weight=3
+      4. Not yet due: weight=1
+
+    If character_ids is provided (drill mode), select only those characters.
+    """
     # Get all characters available for this user
     target_filter = ["son", "all"] if theme == "racing" else ["daughter", "all"]
     query = db.query(Character).filter(Character.target_users.in_(target_filter))
-    # For young kids (racing/son), only pick characters with images — all modes are picture-based
+    # For young kids (racing/son), only pick characters with images
     if theme == "racing":
         query = query.filter(Character.image_url.isnot(None))
+    if character_ids:
+        query = query.filter(Character.id.in_(character_ids))
     characters = query.all()
 
     if not characters:
         return []
 
     # Get progress for weighting
-    progress_map = {}
+    progress_map: dict[int, UserCharacterProgress] = {}
     progress_records = (
         db.query(UserCharacterProgress)
         .filter_by(user_id=user_id)
         .all()
     )
     for p in progress_records:
-        progress_map[p.character_id] = p.mastery_score
+        progress_map[p.character_id] = p
 
-    # Weight: unseen chars get weight 6, mastery 0 gets 6, mastery 5 gets 1
+    today = date.today()
+    soon = today + timedelta(days=2)
+
+    # Assign weights based on SM-2 review schedule
     weighted = []
     for char in characters:
-        mastery = progress_map.get(char.id, -1)
-        if mastery == -1:
-            weight = 6  # Never seen — highest priority
+        prog = progress_map.get(char.id)
+        if prog is None:
+            weight = 6   # New — never seen
+        elif prog.next_review_date is None or prog.next_review_date <= today:
+            weight = 10  # Overdue or no scheduled date
+        elif prog.next_review_date <= soon:
+            weight = 3   # Due soon (within 2 days)
         else:
-            weight = 6 - mastery  # mastery 0->6, mastery 5->1
+            weight = 1   # Not yet due
+
         weighted.append((char, max(weight, 1)))
 
     # Weighted random selection without replacement

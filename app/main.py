@@ -3,9 +3,10 @@ import logging
 
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -17,6 +18,8 @@ from app.routes import store as store_routes
 from app.routes import story as story_routes
 
 logger = logging.getLogger(__name__)
+
+_templates = Jinja2Templates(directory="templates")
 
 
 def _run_migrations(engine_instance):
@@ -36,6 +39,11 @@ def _run_migrations(engine_instance):
         ("users", "equipped_background", "VARCHAR", None),
         ("users", "equipped_trail", "VARCHAR", None),
         ("session_questions", "started_at", "TIMESTAMP", None),
+        # SM-2 spaced repetition columns
+        ("user_character_progress", "easiness_factor", "REAL", "2.5"),
+        ("user_character_progress", "sm2_interval", "INTEGER", "0"),
+        ("user_character_progress", "sm2_repetitions", "INTEGER", "0"),
+        ("user_character_progress", "next_review_date", "DATE", None),
     ]
 
     dialect = engine_instance.dialect.name  # "postgresql" or "sqlite"
@@ -106,12 +114,52 @@ def create_app() -> FastAPI:
             headers={"Service-Worker-Allowed": "/"},
         )
 
+    # Offline fallback page
+    @app.get("/offline")
+    def offline_page(request: Request):
+        return _templates.TemplateResponse("offline.html", {"request": request})
+
     # Root redirect
     @app.get("/")
     def root(request: Request):
         if request.session.get("user_id"):
             return RedirectResponse(url="/game/", status_code=303)
         return RedirectResponse(url="/login", status_code=303)
+
+    # ── Global exception handlers ──
+
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request: Request, exc: HTTPException):
+        is_api = request.url.path.startswith("/api/") or request.url.path.startswith("/game/answer") or request.url.path.startswith("/game/complete") or "application/json" in request.headers.get("accept", "")
+        if is_api:
+            return JSONResponse({"error": exc.detail}, status_code=exc.status_code)
+        if exc.status_code == 401:
+            return RedirectResponse(url="/login", status_code=303)
+        return HTMLResponse(
+            f"<html><body style='font-family:sans-serif;text-align:center;padding:60px;'>"
+            f"<h1>Oops! Something went wrong</h1>"
+            f"<p style='font-size:18px;color:#636e72;'>{exc.detail}</p>"
+            f"<a href='/game/' style='display:inline-block;margin-top:20px;padding:12px 24px;"
+            f"background:#6c5ce7;color:#fff;border-radius:12px;text-decoration:none;font-size:18px;'>Go Home</a>"
+            f"</body></html>",
+            status_code=exc.status_code,
+        )
+
+    @app.exception_handler(Exception)
+    async def general_exception_handler(request: Request, exc: Exception):
+        logger.exception("Unhandled error: %s", exc)
+        is_api = request.url.path.startswith("/api/") or request.url.path.startswith("/game/answer") or request.url.path.startswith("/game/complete") or "application/json" in request.headers.get("accept", "")
+        if is_api:
+            return JSONResponse({"error": "Something went wrong"}, status_code=500)
+        return HTMLResponse(
+            "<html><body style='font-family:sans-serif;text-align:center;padding:60px;'>"
+            "<h1>Oops! Something went wrong</h1>"
+            "<p style='font-size:18px;color:#636e72;'>Please try again.</p>"
+            "<a href='/game/' style='display:inline-block;margin-top:20px;padding:12px 24px;"
+            "background:#6c5ce7;color:#fff;border-radius:12px;text-decoration:none;font-size:18px;'>Go Home</a>"
+            "</body></html>",
+            status_code=500,
+        )
 
     return app
 

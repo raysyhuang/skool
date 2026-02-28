@@ -37,7 +37,7 @@ def can_start_session(user: User) -> bool:
     return user.sessions_today < limit
 
 
-def create_session(db: Session, user: User, game_type: str = "chinese") -> GameSession:
+def create_session(db: Session, user: User, game_type: str = "chinese", character_ids: list[int] | None = None) -> GameSession:
     """Create a new game session with 5 questions."""
     user.reset_daily_if_needed()
     settings = get_settings()
@@ -50,7 +50,7 @@ def create_session(db: Session, user: User, game_type: str = "chinese") -> GameS
     db.flush()
 
     if game_type == "chinese":
-        _create_chinese_questions(db, game_session, user, settings)
+        _create_chinese_questions(db, game_session, user, settings, character_ids=character_ids)
     elif game_type == "math":
         _create_math_questions(db, game_session, user, settings)
     elif game_type == "logic":
@@ -68,10 +68,10 @@ def create_session(db: Session, user: User, game_type: str = "chinese") -> GameS
     return game_session
 
 
-def _create_chinese_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
+def _create_chinese_questions(db: Session, game_session: GameSession, user: User, settings, character_ids: list[int] | None = None) -> None:
     """Create Chinese character questions (original logic)."""
     theme = user.theme or "racing"
-    characters = select_characters(db, user.id, count=settings.questions_per_session, theme=theme)
+    characters = select_characters(db, user.id, count=settings.questions_per_session, theme=theme, character_ids=character_ids)
 
     if not characters:
         raise ValueError("No characters available for this user.")
@@ -173,9 +173,9 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
     if not was_answered:
         question.is_correct = is_correct
 
-        # Update mastery on first answer attempt
+        # Update mastery on first answer attempt (SM-2 with quality)
         if question.character_id is not None:
-            update_mastery(db, user.id, question.character_id, is_correct)
+            update_mastery(db, user.id, question.character_id, is_correct, is_first_attempt=True)
 
         if is_correct:
             points = settings.points_correct
@@ -208,7 +208,7 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
             points = settings.points_correct
             session.total_correct += 1
             if question.character_id is not None:
-                update_mastery(db, user.id, question.character_id, True)
+                update_mastery(db, user.id, question.character_id, True, is_first_attempt=False)
             award_points(db, user, points, "correct_answer")
         else:
             question.is_correct = False

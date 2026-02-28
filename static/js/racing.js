@@ -510,6 +510,7 @@
             })
             .catch(function (err) {
                 console.error('[RacingGame] Answer error:', err);
+                root.SkoolAPI.showError('Could not submit answer. Tap to retry.');
                 answering = false;
                 for (var k = 0; k < allBtns.length; k++) {
                     allBtns[k].classList.remove('disabled');
@@ -896,6 +897,7 @@
             })
             .catch(function (err) {
                 console.error('[RacingGame] Complete error:', err);
+                root.SkoolAPI.showError('Could not save results. Don\'t worry, try again!');
                 /* Redirect anyway so the child isn't stuck */
                 setTimeout(function () {
                     root.location.href = '/game/session-complete/' + sessionId;

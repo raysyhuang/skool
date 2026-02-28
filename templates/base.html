@@ -27,7 +27,21 @@
 
     <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        navigator.serviceWorker.register('/sw.js').catch(function() {});
+        navigator.serviceWorker.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'SW_UPDATED') {
+                var banner = document.createElement('div');
+                banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;' +
+                    'background:#6c5ce7;color:#fff;padding:16px;text-align:center;' +
+                    'font-size:16px;font-weight:700;cursor:pointer;min-height:60px;' +
+                    'display:flex;align-items:center;justify-content:center;' +
+                    'font-family:-apple-system,sans-serif;';
+                banner.textContent = 'Update available! Tap to refresh.';
+                banner.addEventListener('click', function() { location.reload(); });
+                banner.addEventListener('touchend', function(e) { e.preventDefault(); location.reload(); });
+                document.body.appendChild(banner);
+            }
+        });
     }
     </script>
 </body>

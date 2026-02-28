@@ -75,7 +75,7 @@
         margin-top: 2px;
     }
 
-    /* ── Week chart ── */
+    /* ── Section title ── */
     .section-title {
         font-size: clamp(16px, 2.5vw, 20px);
         font-weight: 800;
@@ -83,6 +83,32 @@
         margin-bottom: 10px;
     }
 
+    /* ── Heatmap ── */
+    .heatmap-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 4px;
+        margin-bottom: 20px;
+    }
+    .heatmap-cell {
+        aspect-ratio: 1;
+        border-radius: 4px;
+        background: #ecf0f1;
+        position: relative;
+        min-width: 0;
+    }
+    .heatmap-cell.h1 { background: #a8e6cf; }
+    .heatmap-cell.h2 { background: #55efc4; }
+    .heatmap-cell.h3 { background: #00b894; }
+    .heatmap-cell .hm-label {
+        position: absolute;
+        bottom: 2px;
+        right: 3px;
+        font-size: 8px;
+        color: rgba(0,0,0,0.4);
+    }
+
+    /* ── Week chart ── */
     .week-chart {
         display: flex;
         gap: 8px;
@@ -115,6 +141,86 @@
         color: #2d3436;
         font-weight: 800;
     }
+
+    /* ── Session history ── */
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .history-table th {
+        text-align: left;
+        font-size: 12px;
+        color: #636e72;
+        font-weight: 700;
+        padding: 6px 8px;
+        border-bottom: 2px solid #ecf0f1;
+    }
+    .history-table td {
+        padding: 8px;
+        font-size: 14px;
+        border-bottom: 1px solid #ecf0f1;
+    }
+    .score-good { color: #00b894; font-weight: 700; }
+    .score-ok { color: #fdcb6e; font-weight: 700; }
+    .score-low { color: #d63031; font-weight: 700; }
+
+    /* ── Review schedule ── */
+    .review-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+    .review-card {
+        background: #f5f6fa;
+        border-radius: 12px;
+        padding: 12px;
+        text-align: center;
+    }
+    .review-card .rv-num {
+        font-size: clamp(24px, 4vw, 36px);
+        font-weight: 900;
+        color: #6c5ce7;
+    }
+    .review-card .rv-lbl {
+        font-size: 11px;
+        color: #636e72;
+        font-weight: 600;
+    }
+    .review-card.urgent .rv-num { color: #d63031; }
+    .due-chars-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+    .due-char-chip {
+        background: #fff3f3;
+        border: 1px solid #fab1a0;
+        border-radius: 10px;
+        padding: 4px 10px;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    /* ── Drill button ── */
+    .drill-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #e84393, #d63031);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 800;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        min-width: 60px;
+        min-height: 60px;
+    }
+    .drill-btn:active { transform: scale(0.96); }
+    .drill-btn:disabled { opacity: 0.5; cursor: default; }
 
     /* ── Mastery bars ── */
     .mastery-chart {
@@ -238,6 +344,17 @@
         </div>
     </div>
 
+    {# ── Activity Heatmap (30 days) ── #}
+    <div class="section-title">Activity Heatmap (30 days)</div>
+    <div class="heatmap-grid">
+        {% for cell in child.heatmap %}
+        <div class="heatmap-cell {% if cell.count >= 3 %}h3{% elif cell.count == 2 %}h2{% elif cell.count == 1 %}h1{% endif %}"
+             title="{{ cell.date }}: {{ cell.count }} sessions">
+            <span class="hm-label">{{ cell.day_label }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
     {# ── Week chart ── #}
     <div class="section-title">Last 7 Days</div>
     <div class="week-chart">
@@ -249,6 +366,65 @@
         </div>
         {% endfor %}
     </div>
+
+    {# ── Session History ── #}
+    {% if child.session_history %}
+    <div class="section-title">Recent Sessions</div>
+    <table class="history-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Score</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in child.session_history %}
+            {% set parts = s.score.split('/') %}
+            {% set correct = parts[0]|int %}
+            {% set total = parts[1]|int if parts|length > 1 else 5 %}
+            <tr>
+                <td>{{ s.date }}</td>
+                <td>{{ s.game_type }}</td>
+                <td class="{% if correct == total %}score-good{% elif correct >= total // 2 %}score-ok{% else %}score-low{% endif %}">
+                    {{ s.score }}
+                </td>
+                <td>{{ s.duration }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {# ── Review Schedule (SM-2) ── #}
+    <div class="section-title">Review Schedule</div>
+    <div class="review-cards">
+        <div class="review-card {% if child.review_schedule.due_today > 0 %}urgent{% endif %}">
+            <div class="rv-num">{{ child.review_schedule.due_today }}</div>
+            <div class="rv-lbl">Due Today</div>
+        </div>
+        <div class="review-card">
+            <div class="rv-num">{{ child.review_schedule.due_tomorrow }}</div>
+            <div class="rv-lbl">Tomorrow</div>
+        </div>
+        <div class="review-card">
+            <div class="rv-num">{{ child.review_schedule.due_this_week }}</div>
+            <div class="rv-lbl">This Week</div>
+        </div>
+    </div>
+    {% if child.review_schedule.due_chars %}
+    <div class="due-chars-row">
+        {% for c in child.review_schedule.due_chars %}
+        <span class="due-char-chip" title="{{ c.pinyin }} — {{ c.meaning }}">{{ c.character }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# ── Drill Button ── #}
+    <button class="drill-btn" onclick="startDrill({{ child.user.id }})" id="drill-btn-{{ child.user.id }}">
+        &#9889; Start Drill for {{ child.user.name }}
+    </button>
 
     {# ── Mastery distribution ── #}
     <div class="section-title">Mastery Distribution</div>
@@ -293,4 +469,34 @@
 {% endfor %}
 
 <a class="back-link" href="/game/">&#8592; Back</a>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function startDrill(childId) {
+    var btn = document.getElementById('drill-btn-' + childId);
+    if (btn) { btn.disabled = true; btn.textContent = 'Starting...'; }
+
+    fetch('/dashboard/drill/' + childId, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.error) {
+            alert(data.error);
+            if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Start Drill'; }
+        } else {
+            /* Redirect to game — session was created for the child */
+            alert('Drill session created with ' + data.characters + ' characters! Have ' + (childId === 1 ? 'them' : 'them') + ' log in to play.');
+            if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Start Drill'; }
+        }
+    })
+    .catch(function() {
+        alert('Something went wrong. Try again.');
+        if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Start Drill'; }
+    });
+}
+</script>
 {% endblock %}

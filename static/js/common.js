@@ -41,6 +41,93 @@
 
 
     /* ──────────────────────────────────────────────
+       Error Toast
+       ────────────────────────────────────────────── */
+
+    /**
+     * Show a red toast bar at top of screen. Auto-dismisses after 4s.
+     * Tap to dismiss early.
+     */
+    function showError(message) {
+        /* Remove existing toast if any */
+        var existing = document.getElementById('skool-error-toast');
+        if (existing) existing.remove();
+
+        var toast = document.createElement('div');
+        toast.id = 'skool-error-toast';
+        toast.textContent = message || 'Something went wrong';
+        toast.style.cssText =
+            'position:fixed;top:0;left:0;right:0;z-index:9999;' +
+            'min-height:60px;padding:16px 20px;' +
+            'background:#d63031;color:#fff;' +
+            'font-size:16px;font-weight:700;' +
+            'display:flex;align-items:center;justify-content:center;' +
+            'text-align:center;cursor:pointer;' +
+            'animation:skoolToastIn 0.3s ease-out;' +
+            'font-family:-apple-system,sans-serif;';
+        toast.addEventListener('click', function () { toast.remove(); });
+        toast.addEventListener('touchend', function (e) { e.preventDefault(); toast.remove(); });
+        document.body.appendChild(toast);
+
+        /* Inject keyframes if not already present */
+        if (!document.getElementById('skool-toast-style')) {
+            var style = document.createElement('style');
+            style.id = 'skool-toast-style';
+            style.textContent =
+                '@keyframes skoolToastIn{from{transform:translateY(-100%)}to{transform:translateY(0)}}' +
+                '@keyframes skoolToastOut{from{transform:translateY(0)}to{transform:translateY(-100%)}}';
+            document.head.appendChild(style);
+        }
+
+        setTimeout(function () {
+            if (toast.parentNode) {
+                toast.style.animation = 'skoolToastOut 0.3s ease-in forwards';
+                setTimeout(function () { if (toast.parentNode) toast.remove(); }, 300);
+            }
+        }, 4000);
+    }
+
+
+    /* ──────────────────────────────────────────────
+       IndexedDB Sync Queue (for offline POST requests)
+       ────────────────────────────────────────────── */
+
+    function _openSyncDB() {
+        return new Promise(function (resolve, reject) {
+            var request = indexedDB.open('skool_sync', 1);
+            request.onupgradeneeded = function () {
+                var db = request.result;
+                if (!db.objectStoreNames.contains('sync_queue')) {
+                    db.createObjectStore('sync_queue', { keyPath: 'id', autoIncrement: true });
+                }
+            };
+            request.onsuccess = function () { resolve(request.result); };
+            request.onerror = function () { reject(request.error); };
+        });
+    }
+
+    function _queueForSync(url, method, body) {
+        _openSyncDB().then(function (db) {
+            var tx = db.transaction('sync_queue', 'readwrite');
+            tx.objectStore('sync_queue').add({
+                url: url,
+                method: method,
+                body: body,
+                timestamp: Date.now()
+            });
+            tx.oncomplete = function () { db.close(); };
+        }).catch(function () { /* IndexedDB not available */ });
+
+        /* Register background sync */
+        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+            navigator.serviceWorker.ready.then(function (reg) {
+                reg.sync.register('sync-answers');
+            }).catch(function () { /* sync not supported */ });
+        }
+    }
+
+
+    /* ──────────────────────────────────────────────
        Fetch Wrapper
        ────────────────────────────────────────────── */
 
@@ -109,6 +196,15 @@
                 /* Network errors, JSON parse failures, etc. */
                 if (!err.status) {
                     console.error('[Skool API]', err);
+                    /* Queue POST requests for background sync when offline */
+                    var method = (options.method || 'GET').toUpperCase();
+                    if (method === 'POST' && options.body) {
+                        var bodyStr = typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
+                        _queueForSync(url, method, bodyStr);
+                        showError('Saved offline. Will sync when connected.');
+                    } else {
+                        showError('Network error. Check your connection.');
+                    }
                 }
                 throw err;
             });
@@ -196,6 +292,7 @@
         buyStreakFreeze: buyStreakFreeze,
         buyStoreItem: buyStoreItem,
         equipItem: equipItem,
+        showError: showError,
     };
 
 })(window);
