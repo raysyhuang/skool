@@ -187,7 +187,11 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
 
             # Speed bonus: answered within threshold
             if question.started_at and question.answered_at:
-                delta = (question.answered_at - question.started_at).total_seconds()
+                # Ensure both datetimes are naive for subtraction
+                # (PostgreSQL may return naive timestamps even when stored with tz)
+                a = question.answered_at.replace(tzinfo=None)
+                s = question.started_at.replace(tzinfo=None)
+                delta = (a - s).total_seconds()
                 if delta <= settings.speed_bonus_threshold_seconds:
                     points += 1
                     if not bonus_text:
