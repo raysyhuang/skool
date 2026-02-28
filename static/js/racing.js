@@ -596,6 +596,16 @@
                 logicHint = 'Think about real life!';
             } else if (mode === 'before_after') {
                 logicHint = 'Think about the order!';
+            } else if (mode === 'number_pattern_hard' || mode === 'sequence_hard') {
+                logicHint = 'Look for the rule \u2014 how does each number change?';
+            } else if (mode === 'analogy_hard' || mode === 'word_analogy') {
+                logicHint = 'Think about the relationship between the first pair!';
+            } else if (mode === 'logic_deduction') {
+                logicHint = 'Read the facts carefully \u2014 what MUST be true?';
+            } else if (mode === 'matrix_pattern') {
+                logicHint = 'Look at each row and column \u2014 what\u2019s the pattern?';
+            } else if (mode === 'odd_one_out_hard') {
+                logicHint = 'What category do three of them share?';
             }
             if (tPinyin) tPinyin.textContent = logicHint;
             if (tMeaning) tMeaning.textContent = '';
@@ -618,8 +628,18 @@
                 engHint = 'Think about what this word means in a sentence!';
             } else if (mode === 'antonym_match') {
                 engHint = 'Opposites! Think of the reverse!';
-            } else if (mode === 'prefix_suffix') {
-                engHint = 'What does the prefix mean?';
+            } else if (mode === 'prefix_suffix' || mode === 'prefix_suffix_hard') {
+                engHint = 'What does the prefix or suffix mean?';
+            } else if (mode === 'vocabulary_hard') {
+                engHint = 'Think about where you\u2019ve heard this word before!';
+            } else if (mode === 'context_clues') {
+                engHint = 'Read the sentence \u2014 which word makes sense?';
+            } else if (mode === 'homophone_pick') {
+                engHint = 'These words sound the same but are spelled differently!';
+            } else if (mode === 'synonym_match') {
+                engHint = 'Which word means the SAME thing?';
+            } else if (mode === 'sentence_complete') {
+                engHint = 'Read the sentence out loud \u2014 which sounds right?';
             }
             if (tPinyin) tPinyin.textContent = engHint;
             if (tMeaning) tMeaning.textContent = '';

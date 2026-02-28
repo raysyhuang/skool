@@ -137,6 +137,13 @@ def generate_english_questions(age: int, count: int = 5) -> list[dict]:
             "letter_sound", "beginning_sound", "rhyme_match", "cvc_blend",
         ]
         weights = [30, 30, 20, 20]
+    elif age >= 8:
+        # Grade 3-4: harder vocab, context clues, homophones, synonyms
+        modes = [
+            "vocabulary_hard", "context_clues", "homophone_pick",
+            "synonym_match", "prefix_suffix_hard", "sentence_complete",
+        ]
+        weights = [18, 20, 16, 16, 15, 15]
     else:
         modes = [
             "sight_word_spell", "vocabulary_match", "antonym_match",
@@ -356,6 +363,222 @@ def _gen_prefix_suffix(age: int) -> dict:
     )
 
 
+# ── Grade 3-4 (age >= 8) ──
+
+_VOCABULARY_HARD = [
+    ("consequence", "what happens because of something"),
+    ("ambitious", "having big goals"),
+    ("reluctant", "not wanting to do something"),
+    ("persevere", "to keep trying even when it's hard"),
+    ("abundant", "having a lot of something"),
+    ("cautious", "being very careful"),
+    ("contradict", "to say the opposite"),
+    ("demonstrate", "to show how something works"),
+    ("exaggerate", "to make something sound bigger than it is"),
+    ("genuine", "real and not fake"),
+    ("hesitate", "to pause before doing something"),
+    ("inevitable", "sure to happen"),
+    ("observe", "to watch carefully"),
+    ("predict", "to guess what will happen next"),
+    ("sufficient", "enough, as much as needed"),
+    ("resemble", "to look like something else"),
+    ("sympathy", "feeling sorry for someone"),
+    ("temporary", "lasting only a short time"),
+    ("urgent", "needing attention right now"),
+    ("vivid", "very bright and clear"),
+]
+
+def _gen_vocabulary_hard(age: int) -> dict:
+    word, definition = random.choice(_VOCABULARY_HARD)
+    correct = definition
+    other_defs = [d for w, d in _VOCABULARY_HARD if w != word]
+    random.shuffle(other_defs)
+    distractors = other_defs[:2]
+    options = [correct] + distractors
+    random.shuffle(options)
+    return _build(
+        mode="vocabulary_hard",
+        expression=f"📚 {word}",
+        prompt_text=f"What does '{word}' mean?",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+_CONTEXT_CLUES = [
+    ("The food was so ___ that everyone asked for seconds.", "delicious",
+     ["delicious", "disgusting", "tiny"]),
+    ("She felt ___ after running the whole race without stopping.", "exhausted",
+     ["exhausted", "energetic", "confused"]),
+    ("The magician's trick was so ___ that nobody could figure it out.", "mysterious",
+     ["mysterious", "obvious", "boring"]),
+    ("Be ___ when carrying the glass vase — it could break easily.", "careful",
+     ["careful", "careless", "quick"]),
+    ("The sunset was ___, with bright oranges and pinks filling the sky.", "spectacular",
+     ["spectacular", "dull", "scary"]),
+    ("He was ___ to share his toys because he wanted to keep them all.", "reluctant",
+     ["reluctant", "eager", "proud"]),
+    ("The ___ puppy wagged its tail and licked everyone's face.", "friendly",
+     ["friendly", "fierce", "sleepy"]),
+    ("After the storm, the streets were ___ with fallen branches.", "littered",
+     ["littered", "empty", "shiny"]),
+    ("The instructions were ___, so everyone understood what to do.", "clear",
+     ["clear", "confusing", "missing"]),
+    ("She showed great ___ by standing up to the bully.", "courage",
+     ["courage", "cowardice", "laziness"]),
+    ("The library was so ___ you could hear a pin drop.", "quiet",
+     ["quiet", "noisy", "crowded"]),
+    ("His ___ answer showed he had studied hard for the test.", "correct",
+     ["correct", "wrong", "funny"]),
+]
+
+def _gen_context_clues(age: int) -> dict:
+    sentence, correct, opts = random.choice(_CONTEXT_CLUES)
+    options = list(opts)
+    random.shuffle(options)
+    return _build(
+        mode="context_clues",
+        expression=sentence,
+        prompt_text="Which word fits best?",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+_HOMOPHONES = [
+    ("I went ___ the store.", "to", ["to", "too", "two"]),
+    ("___ going to be late!", "They're", ["They're", "Their", "There"]),
+    ("The dog wagged ___ tail.", "its", ["its", "it's", "is"]),
+    ("___ is a book on the table.", "There", ["There", "Their", "They're"]),
+    ("I have ___ apples.", "two", ["two", "to", "too"]),
+    ("That's ___ backpack.", "your", ["your", "you're", "yore"]),
+    ("___ coming to the party.", "You're", ["You're", "Your", "Yore"]),
+    ("The cat licked ___ paws.", "its", ["its", "it's", "is"]),
+    ("I ate ___ much cake.", "too", ["too", "to", "two"]),
+    ("___ house is very big.", "Their", ["Their", "There", "They're"]),
+    ("Can you ___ the bell ringing?", "hear", ["hear", "here", "hare"]),
+    ("Come over ___!", "here", ["here", "hear", "hare"]),
+    ("The ___ is shining brightly.", "sun", ["sun", "son", "sung"]),
+    ("She ___ the answer to the question.", "knew", ["knew", "new", "know"]),
+    ("I bought a ___ pair of shoes.", "new", ["new", "knew", "no"]),
+    ("The knight rode a white ___.", "horse", ["horse", "hoarse", "house"]),
+]
+
+def _gen_homophone_pick(age: int) -> dict:
+    sentence, correct, opts = random.choice(_HOMOPHONES)
+    options = list(opts)
+    random.shuffle(options)
+    return _build(
+        mode="homophone_pick",
+        expression=sentence,
+        prompt_text="Pick the right word!",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+_SYNONYMS = [
+    ("happy", "joyful", ["joyful", "angry", "tired"]),
+    ("big", "enormous", ["enormous", "tiny", "slow"]),
+    ("fast", "quick", ["quick", "slow", "heavy"]),
+    ("smart", "intelligent", ["intelligent", "silly", "weak"]),
+    ("scared", "frightened", ["frightened", "brave", "calm"]),
+    ("angry", "furious", ["furious", "peaceful", "sleepy"]),
+    ("pretty", "beautiful", ["beautiful", "ugly", "boring"]),
+    ("begin", "start", ["start", "finish", "pause"]),
+    ("fix", "repair", ["repair", "break", "ignore"]),
+    ("difficult", "challenging", ["challenging", "simple", "quick"]),
+    ("strange", "peculiar", ["peculiar", "normal", "plain"]),
+    ("destroy", "demolish", ["demolish", "build", "save"]),
+    ("ancient", "old", ["old", "modern", "fresh"]),
+    ("wealthy", "rich", ["rich", "poor", "sad"]),
+    ("brave", "courageous", ["courageous", "scared", "lazy"]),
+    ("silent", "quiet", ["quiet", "loud", "bright"]),
+]
+
+def _gen_synonym_match(age: int) -> dict:
+    word, correct, opts = random.choice(_SYNONYMS)
+    options = list(opts)
+    random.shuffle(options)
+    return _build(
+        mode="synonym_match",
+        expression=f"🔄 {word}",
+        prompt_text=f"Which word means the SAME as '{word}'?",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+_PREFIX_SUFFIX_HARD = [
+    ("care + ful", "careful", "full of care"),
+    ("hope + less", "hopeless", "without hope"),
+    ("enjoy + ment", "enjoyment", "the state of enjoying"),
+    ("dark + ness", "darkness", "the state of being dark"),
+    ("wonder + ful", "wonderful", "full of wonder"),
+    ("help + less", "helpless", "without help"),
+    ("excite + ment", "excitement", "the state of being excited"),
+    ("sad + ness", "sadness", "the state of being sad"),
+    ("thank + ful", "thankful", "full of thanks"),
+    ("power + less", "powerless", "without power"),
+    ("amaze + ment", "amazement", "the state of being amazed"),
+    ("kind + ness", "kindness", "the state of being kind"),
+    ("peace + ful", "peaceful", "full of peace"),
+    ("use + less", "useless", "without use"),
+    ("over + look", "overlook", "to look past / miss"),
+    ("out + run", "outrun", "to run faster than"),
+]
+
+def _gen_prefix_suffix_hard(age: int) -> dict:
+    parts, combined, meaning = random.choice(_PREFIX_SUFFIX_HARD)
+    correct = combined
+    others = [c for p, c, m in _PREFIX_SUFFIX_HARD if c != combined]
+    random.shuffle(others)
+    distractors = others[:2]
+    options = [correct] + distractors
+    random.shuffle(options)
+    return _build(
+        mode="prefix_suffix_hard",
+        expression=parts,
+        prompt_text=f"Put them together! ({meaning})",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+_SENTENCE_COMPLETE = [
+    ("The cat sat ___ the mat.", "on", ["on", "under", "into"]),
+    ("She is ___ than her brother.", "taller", ["taller", "tallest", "tall"]),
+    ("We ___ to the park yesterday.", "went", ["went", "go", "going"]),
+    ("This is the ___ movie I've ever seen!", "best", ["best", "better", "good"]),
+    ("He ___ his homework before dinner.", "finished", ["finished", "finishing", "finish"]),
+    ("The children were ___ in the garden.", "playing", ["playing", "played", "plays"]),
+    ("I have ___ seen that movie before.", "never", ["never", "ever", "always"]),
+    ("She sings ___ beautifully than anyone.", "more", ["more", "most", "much"]),
+    ("They ___ been waiting for an hour.", "have", ["have", "has", "had"]),
+    ("The book ___ written by a famous author.", "was", ["was", "were", "is"]),
+    ("We need to leave ___ we'll be late.", "or", ["or", "and", "but"]),
+    ("She ran fast, ___ she still missed the bus.", "but", ["but", "and", "so"]),
+]
+
+def _gen_sentence_complete(age: int) -> dict:
+    sentence, correct, opts = random.choice(_SENTENCE_COMPLETE)
+    options = list(opts)
+    random.shuffle(options)
+    return _build(
+        mode="sentence_complete",
+        expression=sentence,
+        prompt_text="Which word completes the sentence?",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
 # ── Helpers ──
 
 def _make_misspellings(word: str, count: int) -> list[str]:
@@ -418,12 +641,21 @@ def _build(mode: str, expression: str, prompt_text: str, prompt_image: str | Non
 
 
 _GENERATORS = {
+    # Young kids (age <= 5)
     "letter_sound": _gen_letter_sound,
     "beginning_sound": _gen_beginning_sound,
     "rhyme_match": _gen_rhyme_match,
     "cvc_blend": _gen_cvc_blend,
+    # Grade 2 (age 6-7)
     "sight_word_spell": _gen_sight_word_spell,
     "vocabulary_match": _gen_vocabulary_match,
     "antonym_match": _gen_antonym_match,
     "prefix_suffix": _gen_prefix_suffix,
+    # Grade 3-4 (age >= 8)
+    "vocabulary_hard": _gen_vocabulary_hard,
+    "context_clues": _gen_context_clues,
+    "homophone_pick": _gen_homophone_pick,
+    "synonym_match": _gen_synonym_match,
+    "prefix_suffix_hard": _gen_prefix_suffix_hard,
+    "sentence_complete": _gen_sentence_complete,
 }

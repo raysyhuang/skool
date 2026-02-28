@@ -60,6 +60,14 @@ def _run_migrations(engine_instance):
                 # Column already exists — safe to ignore
                 pass
 
+        # One-time data fix: update Ellie's age from 8 to 9
+        try:
+            conn.execute(text(
+                "UPDATE users SET age = 9 WHERE name = 'Ellie' AND age = 8"
+            ))
+        except Exception:
+            pass
+
 
 def create_app() -> FastAPI:
     settings = get_settings()

@@ -72,7 +72,7 @@ def seed():
         daughter = User(
             name="Ellie",
             pin="1111",
-            age=8,
+            age=9,
             theme="pony",
             role="child",
         )

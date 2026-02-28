@@ -12,6 +12,12 @@ def generate_logic_questions(age: int, count: int = 5) -> list[dict]:
         modes = ["pattern_next", "odd_one_out", "size_order", "matching_pairs",
                  "color_match", "counting_objects"]
         weights = [20, 20, 15, 15, 15, 15]
+    elif age >= 8:
+        # Grade 3-4 level: harder reasoning, multi-step, deduction
+        modes = ["number_pattern_hard", "analogy_hard", "logic_deduction",
+                 "matrix_pattern", "word_analogy", "sequence_hard",
+                 "odd_one_out_hard", "comparison"]
+        weights = [15, 15, 15, 15, 12, 12, 8, 8]
     else:
         # Grade 2 level: mix visual modes with intermediate reasoning modes
         modes = ["pattern_next", "odd_one_out", "number_pattern", "analogy",
@@ -386,6 +392,261 @@ def _make_num_distractors_list(correct: int) -> list[str]:
     return options
 
 
+# ── Grade 3-4 (age >= 8) ──
+
+def _gen_number_pattern_hard() -> dict:
+    """Harder number patterns: multiply, double+add, skip-count, triangular."""
+    pattern_type = random.choice(["multiply", "double_add", "skip_big", "square", "triangular"])
+    if pattern_type == "multiply":
+        base = random.randint(2, 5)
+        multiplier = random.randint(2, 4)
+        seq = [base * (multiplier ** i) for i in range(4)]
+        ans = base * (multiplier ** 4)
+    elif pattern_type == "double_add":
+        start = random.randint(1, 5)
+        add = random.randint(1, 3)
+        seq = [start]
+        for _ in range(3):
+            seq.append(seq[-1] * 2 + add)
+        ans = seq[-1] * 2 + add
+    elif pattern_type == "skip_big":
+        start = random.randint(5, 20)
+        step = random.choice([5, 7, 9, 11])
+        seq = [start + step * i for i in range(4)]
+        ans = seq[-1] + step
+    elif pattern_type == "square":
+        start = random.randint(1, 5)
+        seq = [(start + i) ** 2 for i in range(4)]
+        ans = (start + 4) ** 2
+    else:  # triangular: +1, +2, +3, +4...
+        start = random.randint(1, 5)
+        seq = [start]
+        for i in range(1, 4):
+            seq.append(seq[-1] + i + 1)
+        ans = seq[-1] + 5
+
+    display = ", ".join(str(n) for n in seq)
+    expression = display + ", ?"
+    options = _make_num_distractors_list(ans)
+    return _build(
+        mode="number_pattern_hard",
+        expression=expression,
+        prompt_text="What comes next?",
+        prompt_image=None,
+        correct_answer=str(ans),
+        options=options,
+    )
+
+
+_ANALOGIES_HARD = [
+    ("Finger", "Hand", "Toe", "Foot", ["Foot", "Leg", "Arm"]),
+    ("Page", "Book", "Brick", "Wall", ["Wall", "House", "Floor"]),
+    ("Petal", "Flower", "Branch", "Tree", ["Tree", "Leaf", "Root"]),
+    ("Player", "Team", "Student", "Class", ["Class", "School", "Teacher"]),
+    ("Chapter", "Novel", "Scene", "Movie", ["Movie", "Act", "Script"]),
+    ("Spoke", "Wheel", "Key", "Piano", ["Piano", "Guitar", "Lock"]),
+    ("Cub", "Bear", "Calf", "Cow", ["Cow", "Horse", "Sheep"]),
+    ("Carpenter", "Wood", "Sculptor", "Stone", ["Stone", "Clay", "Metal"]),
+    ("Author", "Book", "Director", "Film", ["Film", "Play", "Song"]),
+    ("Engine", "Car", "Heart", "Body", ["Body", "Brain", "Blood"]),
+    ("Feather", "Bird", "Scale", "Fish", ["Fish", "Snake", "Fur"]),
+    ("Oar", "Boat", "Pedal", "Bicycle", ["Bicycle", "Car", "Wheel"]),
+]
+
+def _gen_analogy_hard() -> dict:
+    a, b, c, correct, opts = random.choice(_ANALOGIES_HARD)
+    expression = f"{a} : {b} = {c} : ?"
+    prompt = f"{a} is to {b} as {c} is to ?"
+    options = list(opts)
+    random.shuffle(options)
+    return _build(
+        mode="analogy_hard",
+        expression=expression,
+        prompt_text=prompt,
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+_LOGIC_DEDUCTIONS = [
+    ("All dogs are animals. Rex is a dog.", "Rex is an animal",
+     ["Rex is an animal", "Rex is a cat", "Rex is not a dog"]),
+    ("If it rains, the ground gets wet. It is raining.", "The ground is wet",
+     ["The ground is wet", "The ground is dry", "It is sunny"]),
+    ("All squares are rectangles. This shape is a square.", "It is a rectangle",
+     ["It is a rectangle", "It is a circle", "It is a triangle"]),
+    ("Taller people can reach higher. Tom is taller than Sam.", "Tom can reach higher",
+     ["Tom can reach higher", "Sam can reach higher", "They reach the same"]),
+    ("Every bird has feathers. A penguin is a bird.", "A penguin has feathers",
+     ["A penguin has feathers", "A penguin can fly", "A penguin has fur"]),
+    ("Older students are in higher grades. Mia is older than Zoe.", "Mia is in a higher grade",
+     ["Mia is in a higher grade", "Zoe is in a higher grade", "They're in the same grade"]),
+    ("All fish live in water. A goldfish is a fish.", "A goldfish lives in water",
+     ["A goldfish lives in water", "A goldfish lives on land", "A goldfish can fly"]),
+    ("Heavier things sink. A rock is heavier than a feather.", "The rock sinks faster",
+     ["The rock sinks faster", "The feather sinks faster", "They sink the same"]),
+    ("If you study, you learn. Emma studied all week.", "Emma learned a lot",
+     ["Emma learned a lot", "Emma forgot everything", "Emma didn't study"]),
+    ("Colder temperatures make water freeze. It is -5°C.", "The water will freeze",
+     ["The water will freeze", "The water will boil", "The water stays the same"]),
+]
+
+def _gen_logic_deduction() -> dict:
+    premise, correct, opts = random.choice(_LOGIC_DEDUCTIONS)
+    options = list(opts)
+    random.shuffle(options)
+    return _build(
+        mode="logic_deduction",
+        expression=premise,
+        prompt_text="What must be true?",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+_MATRIX_PATTERNS = [
+    # (grid description, question, correct, options)
+    ("🔴🔵🔴\n🔵🔴🔵\n🔴🔵 ?", "Complete the grid", "🔴",
+     ["🔴", "🔵", "🟢"]),
+    ("1  2  3\n4  5  6\n7  8  ?", "Complete the grid", "9",
+     ["9", "10", "7"]),
+    ("⬆️ ➡️ ⬇️\n➡️ ⬇️ ⬆️\n⬇️ ⬆️ ?", "Complete the pattern", "➡️",
+     ["➡️", "⬆️", "⬇️"]),
+    ("2  4  6\n3  6  9\n4  8  ?", "Complete the grid", "12",
+     ["12", "10", "14"]),
+    ("🌑 🌓 🌕\n🌕 🌑 🌓\n🌓 🌕 ?", "Complete the pattern", "🌑",
+     ["🌑", "🌓", "🌕"]),
+    ("A  C  E\nB  D  F\nC  E  ?", "Complete the grid", "G",
+     ["G", "F", "H"]),
+    ("10 20 30\n20 30 40\n30 40 ?", "Complete the grid", "50",
+     ["50", "60", "45"]),
+    ("🟢🔴🟢\n🔴🟢🔴\n🟢🔴 ?", "Complete the grid", "🟢",
+     ["🟢", "🔴", "🟡"]),
+]
+
+def _gen_matrix_pattern() -> dict:
+    grid, prompt, correct, opts = random.choice(_MATRIX_PATTERNS)
+    options = list(opts)
+    random.shuffle(options)
+    return _build(
+        mode="matrix_pattern",
+        expression=grid,
+        prompt_text=prompt,
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+_WORD_ANALOGIES = [
+    ("Glove is to hand as sock is to ___", "foot", ["foot", "arm", "head"]),
+    ("Bark is to dog as meow is to ___", "cat", ["cat", "bird", "fish"]),
+    ("Pilot is to airplane as captain is to ___", "ship", ["ship", "car", "train"]),
+    ("Eyes are to seeing as ears are to ___", "hearing", ["hearing", "smelling", "tasting"]),
+    ("Knife is to cut as pen is to ___", "write", ["write", "eat", "draw"]),
+    ("Night is to moon as day is to ___", "sun", ["sun", "stars", "clouds"]),
+    ("Library is to books as museum is to ___", "art", ["art", "food", "sports"]),
+    ("Chef is to kitchen as teacher is to ___", "classroom", ["classroom", "hospital", "office"]),
+    ("Brush is to paint as needle is to ___", "sew", ["sew", "write", "cook"]),
+    ("Winter is to cold as summer is to ___", "hot", ["hot", "rainy", "windy"]),
+    ("Milk is to cow as egg is to ___", "chicken", ["chicken", "pig", "duck"]),
+    ("Keyboard is to type as microphone is to ___", "speak", ["speak", "read", "write"]),
+]
+
+def _gen_word_analogy() -> dict:
+    prompt, correct, opts = random.choice(_WORD_ANALOGIES)
+    options = list(opts)
+    random.shuffle(options)
+    return _build(
+        mode="word_analogy",
+        expression=prompt,
+        prompt_text="Complete the analogy",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+def _gen_sequence_hard() -> dict:
+    """Harder sequences: alternating operations, Fibonacci-like, decreasing."""
+    seq_type = random.choice(["alternating", "fibonacci", "decreasing", "prime_skip"])
+    if seq_type == "alternating":
+        # +2, +3, +2, +3...
+        a = random.randint(1, 3)
+        b = random.randint(4, 6)
+        start = random.randint(1, 10)
+        seq = [start]
+        for i in range(4):
+            seq.append(seq[-1] + (a if i % 2 == 0 else b))
+        correct = seq[-1] + (a if 4 % 2 == 0 else b)
+        seq_display = seq
+    elif seq_type == "fibonacci":
+        a, b = random.randint(1, 3), random.randint(2, 5)
+        seq = [a, b]
+        for _ in range(3):
+            seq.append(seq[-1] + seq[-2])
+        correct = seq[-1] + seq[-2]
+        seq_display = seq
+    elif seq_type == "decreasing":
+        start = random.randint(50, 100)
+        step = random.choice([3, 5, 7, 9])
+        seq = [start - step * i for i in range(5)]
+        correct = seq[-1] - step
+        seq_display = seq
+    else:  # prime_skip: skip counting by primes
+        primes_step = random.choice([2, 3, 5, 7])
+        start = random.randint(1, 10)
+        seq = [start + primes_step * i for i in range(5)]
+        correct = seq[-1] + primes_step
+        seq_display = seq
+
+    display = ", ".join(str(n) for n in seq_display)
+    expression = display + ", ?"
+    options = _make_num_distractors_list(correct)
+    return _build(
+        mode="sequence_hard",
+        expression=expression,
+        prompt_text="What comes next?",
+        prompt_image=None,
+        correct_answer=str(correct),
+        options=options,
+    )
+
+
+_ODD_ONE_OUT_HARD = [
+    (["Mercury", "Venus", "Mars"], "Paris", "planets vs city"),
+    (["Triangle", "Square", "Circle"], "Blue", "shapes vs color"),
+    (["Violin", "Cello", "Guitar"], "Drum", "string vs percussion"),
+    (["Oxygen", "Nitrogen", "Helium"], "Water", "elements vs compound"),
+    (["Shakespeare", "Dickens", "Austen"], "Einstein", "authors vs scientist"),
+    (["Atlantic", "Pacific", "Indian"], "Nile", "oceans vs river"),
+    (["Tulip", "Rose", "Daisy"], "Oak", "flowers vs tree"),
+    (["Emerald", "Ruby", "Sapphire"], "Gold", "gems vs metal"),
+    (["Piano", "Organ", "Keyboard"], "Trumpet", "keys vs brass"),
+    (["Simile", "Metaphor", "Alliteration"], "Addition", "literary vs math"),
+    (["Hiking", "Swimming", "Cycling"], "Chess", "physical vs mental"),
+    (["Jupiter", "Saturn", "Neptune"], "Moon", "planets vs satellite"),
+]
+
+def _gen_odd_one_out_hard() -> dict:
+    group_items, odd, category = random.choice(_ODD_ONE_OUT_HARD)
+    all_items = group_items + [odd]
+    random.shuffle(all_items)
+    expression = " · ".join(all_items)
+    options = list(all_items)
+    random.shuffle(options)
+    return _build(
+        mode="odd_one_out_hard",
+        expression=expression,
+        prompt_text="Which one doesn't belong?",
+        prompt_image=None,
+        correct_answer=odd,
+        options=options,
+    )
+
+
 def _build(mode: str, expression: str, prompt_text: str, prompt_image: str | None,
            correct_answer: str, options: list[str]) -> dict:
     prompt_data = json.dumps({
@@ -407,15 +668,25 @@ def _build(mode: str, expression: str, prompt_text: str, prompt_image: str | Non
 
 
 _GENERATORS = {
+    # Young kids (age <= 5)
     "pattern_next": _gen_pattern_next,
     "odd_one_out": _gen_odd_one_out,
     "size_order": _gen_size_order,
     "matching_pairs": _gen_matching_pairs,
     "color_match": _gen_color_match,
     "counting_objects": _gen_counting_objects,
+    # Grade 2 (age 6-7)
     "number_pattern": _gen_number_pattern,
     "analogy": _gen_analogy,
     "sequence_completion": _gen_sequence_completion,
     "comparison": _gen_comparison,
     "before_after": _gen_before_after,
+    # Grade 3-4 (age >= 8)
+    "number_pattern_hard": _gen_number_pattern_hard,
+    "analogy_hard": _gen_analogy_hard,
+    "logic_deduction": _gen_logic_deduction,
+    "matrix_pattern": _gen_matrix_pattern,
+    "word_analogy": _gen_word_analogy,
+    "sequence_hard": _gen_sequence_hard,
+    "odd_one_out_hard": _gen_odd_one_out_hard,
 }
