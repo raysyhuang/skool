@@ -469,8 +469,8 @@ _tts_cache: dict[str, bytes] = {}
 _VOICE_MAP = {
     "zh-CN": "zh-CN-XiaoxiaoNeural",   # warm, friendly female
     "zh":    "zh-CN-XiaoxiaoNeural",
-    "en-US": "en-US-AnaNeural",         # young female, good for kids
-    "en":    "en-US-AnaNeural",
+    "en-US": "en-US-AvaNeural",          # clear, warm native English
+    "en":    "en-US-AvaNeural",
 }
 
 
