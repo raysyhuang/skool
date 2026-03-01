@@ -1,7 +1,5 @@
 import json
 import os
-import urllib.parse
-import httpx
 from fastapi import APIRouter, Request, Depends, Query
 from fastapi.responses import RedirectResponse, JSONResponse, Response
 from fastapi.templating import Jinja2Templates
@@ -465,26 +463,53 @@ def quest_map_page(request: Request, db: Session = Depends(get_db)):
     })
 
 
+_tts_cache: dict[str, bytes] = {}
+
+# Voice mapping: natural-sounding Microsoft Neural voices
+_VOICE_MAP = {
+    "zh-CN": "zh-CN-XiaoxiaoNeural",   # warm, friendly female
+    "zh":    "zh-CN-XiaoxiaoNeural",
+    "en-US": "en-US-AnaNeural",         # young female, good for kids
+    "en":    "en-US-AnaNeural",
+}
+
+
 @router.get("/tts")
 async def tts_proxy(text: str = Query(..., max_length=50), lang: str = Query("zh-CN", max_length=10)):
-    """Proxy Google Translate TTS to avoid browser CORS/blocking issues."""
-    url = (
-        "https://translate.google.com/translate_tts"
-        f"?ie=UTF-8&tl={lang}&client=tw-ob&q={urllib.parse.quote(text)}"
-    )
+    """Generate TTS audio using Microsoft Edge neural voices via edge-tts."""
+    import edge_tts
+
+    cache_key = f"{lang}:{text}"
+    if cache_key in _tts_cache:
+        return Response(
+            content=_tts_cache[cache_key],
+            media_type="audio/mpeg",
+            headers={"Cache-Control": "public, max-age=86400"},
+        )
+
+    voice = _VOICE_MAP.get(lang, _VOICE_MAP.get(lang.split("-")[0], "zh-CN-XiaoxiaoNeural"))
+    # Slightly slower rate for kids, slightly higher pitch for warmth
+    rate = "-15%" if lang.startswith("zh") else "-10%"
+    pitch = "+5Hz" if lang.startswith("zh") else "+0Hz"
+
     try:
-        async with httpx.AsyncClient() as client:
-            resp = await client.get(url, headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                "Referer": "https://translate.google.com/",
-            }, timeout=5.0)
-        if resp.status_code == 200 and len(resp.content) > 100:
+        comm = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch)
+        audio_bytes = b""
+        async for chunk in comm.stream():
+            if chunk["type"] == "audio":
+                audio_bytes += chunk["data"]
+
+        if len(audio_bytes) > 100:
+            # Cache (cap at 2000 entries to prevent memory bloat)
+            if len(_tts_cache) < 2000:
+                _tts_cache[cache_key] = audio_bytes
             return Response(
-                content=resp.content,
+                content=audio_bytes,
                 media_type="audio/mpeg",
                 headers={"Cache-Control": "public, max-age=86400"},
             )
     except Exception:
         pass
+
     # Return empty audio on failure
     return Response(content=b"", media_type="audio/mpeg", status_code=204)
