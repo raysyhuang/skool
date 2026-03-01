@@ -474,10 +474,26 @@ _VOICE_MAP = {
 }
 
 
+def _clean_tts_text(text: str) -> str:
+    """Strip emojis, underscores, and other non-speakable characters from TTS input."""
+    import re
+    # Remove emojis and symbol blocks
+    cleaned = re.sub(r'[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE00-\uFE0F\u200D\u20E3\U000E0020-\U000E007F]', '', text)
+    # Remove underscores (fill-in-blank placeholders)
+    cleaned = re.sub(r'_+', '', cleaned)
+    # Collapse whitespace
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    return cleaned
+
+
 @router.get("/tts")
 async def tts_proxy(text: str = Query(..., max_length=50), lang: str = Query("zh-CN", max_length=10)):
     """Generate TTS audio using Microsoft Edge neural voices via edge-tts."""
     import edge_tts
+
+    text = _clean_tts_text(text)
+    if not text:
+        return Response(content=b"", media_type="audio/mpeg", status_code=204)
 
     cache_key = f"{lang}:{text}"
     if cache_key in _tts_cache:

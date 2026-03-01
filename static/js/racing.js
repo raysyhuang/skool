@@ -55,11 +55,24 @@
        Helpers
        ────────────────────────────────────────────── */
 
+    function cleanTextForTTS(text) {
+        if (!text) return '';
+        /* Strip emojis (surrogate pairs, variation selectors, ZWJ sequences) */
+        var cleaned = text.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '');
+        /* Strip underscores (fill-in-blank placeholders) */
+        cleaned = cleaned.replace(/_+/g, '');
+        /* Collapse whitespace */
+        cleaned = cleaned.replace(/\s+/g, ' ').trim();
+        return cleaned;
+    }
+
     function speakText(text) {
+        var clean = cleanTextForTTS(text);
+        if (!clean) return;
         if (gameType === 'english') {
-            root.SkoolTTS.speakEnglish(text);
+            root.SkoolTTS.speakEnglish(clean);
         } else {
-            root.SkoolTTS.speakChinese(text);
+            root.SkoolTTS.speakChinese(clean);
         }
     }
 
