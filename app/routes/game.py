@@ -474,13 +474,24 @@ _VOICE_MAP = {
 }
 
 
-def _clean_tts_text(text: str) -> str:
-    """Strip emojis, underscores, and other non-speakable characters from TTS input."""
+def _clean_tts_text(text: str, lang: str = "zh-CN") -> str:
+    """Strip emojis, underscores, and replace math operators with speakable words."""
     import re
     # Remove emojis and symbol blocks
     cleaned = re.sub(r'[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE00-\uFE0F\u200D\u20E3\U000E0020-\U000E007F]', '', text)
     # Remove underscores (fill-in-blank placeholders)
     cleaned = re.sub(r'_+', '', cleaned)
+
+    # Replace math operators with speakable words
+    is_zh = lang.startswith("zh")
+    cleaned = re.sub(r'\s*\+\s*', ' 加 ' if is_zh else ' plus ', cleaned)
+    cleaned = re.sub(r'\s*[−\-\u2212]\s*', ' 减 ' if is_zh else ' minus ', cleaned)
+    cleaned = re.sub(r'\s*[×*xX]\s*', ' 乘 ' if is_zh else ' times ', cleaned)
+    cleaned = re.sub(r'\s*[÷/]\s*', ' 除以 ' if is_zh else ' divided by ', cleaned)
+    cleaned = re.sub(r'\s*=\s*\?\s*', ' 等于多少' if is_zh else ' equals what', cleaned)
+    cleaned = re.sub(r'\s*=\s*', ' 等于 ' if is_zh else ' equals ', cleaned)
+    cleaned = cleaned.replace('?', '')
+
     # Collapse whitespace
     cleaned = re.sub(r'\s+', ' ', cleaned).strip()
     return cleaned
@@ -491,7 +502,7 @@ async def tts_proxy(text: str = Query(..., max_length=50), lang: str = Query("zh
     """Generate TTS audio using Microsoft Edge neural voices via edge-tts."""
     import edge_tts
 
-    text = _clean_tts_text(text)
+    text = _clean_tts_text(text, lang)
     if not text:
         return Response(content=b"", media_type="audio/mpeg", status_code=204)
 

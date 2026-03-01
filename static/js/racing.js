@@ -55,19 +55,31 @@
        Helpers
        ────────────────────────────────────────────── */
 
-    function cleanTextForTTS(text) {
+    function cleanTextForTTS(text, lang) {
         if (!text) return '';
         /* Strip emojis (surrogate pairs, variation selectors, ZWJ sequences) */
         var cleaned = text.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '');
         /* Strip underscores (fill-in-blank placeholders) */
         cleaned = cleaned.replace(/_+/g, '');
+
+        /* Replace math operators with speakable words */
+        var isChinese = (lang === 'zh');
+        cleaned = cleaned.replace(/\s*\+\s*/g, isChinese ? ' \u52A0 ' : ' plus ');
+        cleaned = cleaned.replace(/\s*[−\-\u2212]\s*/g, isChinese ? ' \u51CF ' : ' minus ');
+        cleaned = cleaned.replace(/\s*[×\*xX]\s*/g, isChinese ? ' \u4E58 ' : ' times ');
+        cleaned = cleaned.replace(/\s*[÷\/]\s*/g, isChinese ? ' \u9664\u4EE5 ' : ' divided by ');
+        cleaned = cleaned.replace(/\s*=\s*\?\s*/g, isChinese ? ' \u7B49\u4E8E\u591A\u5C11' : ' equals what');
+        cleaned = cleaned.replace(/\s*=\s*/g, isChinese ? ' \u7B49\u4E8E ' : ' equals ');
+        cleaned = cleaned.replace(/\?/g, '');
+
         /* Collapse whitespace */
         cleaned = cleaned.replace(/\s+/g, ' ').trim();
         return cleaned;
     }
 
     function speakText(text) {
-        var clean = cleanTextForTTS(text);
+        var lang = (gameType === 'english') ? 'en' : 'zh';
+        var clean = cleanTextForTTS(text, lang);
         if (!clean) return;
         if (gameType === 'english') {
             root.SkoolTTS.speakEnglish(clean);
