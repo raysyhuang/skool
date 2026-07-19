@@ -330,3 +330,18 @@ def test_parent_drill_cancel():
     child = db.query(User).filter_by(id=user_id).one()
     assert child.pending_drill_char_ids is None
     db.close()
+
+
+def test_service_worker_precache_urls_resolve():
+    """Every URL the SW precaches must exist — a 404 there used to brick installation."""
+    client, _, _ = _build_client(with_characters=False)
+
+    sw_source = open("static/sw.js", encoding="utf-8").read()
+    m = re.search(r"PRECACHE_URLS\s*=\s*\[(.*?)\]", sw_source, re.DOTALL)
+    assert m, "Could not find PRECACHE_URLS in sw.js"
+    urls = re.findall(r"'([^']+)'", m.group(1))
+    assert urls, "PRECACHE_URLS is empty"
+
+    for url in urls:
+        resp = client.get(url)
+        assert resp.status_code == 200, f"Precached URL {url} returned {resp.status_code}"

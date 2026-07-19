@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skool-v4';
+const CACHE_NAME = 'skool-v5';
 
 // Only precache essential assets — SVG images are cached on first use
 // via the /static/ cache-first strategy (much faster install)
@@ -11,10 +11,14 @@ const PRECACHE_URLS = [
 ];
 
 // --- Install: precache key static assets + offline page ---
+// Each URL is cached individually so one 404 can never brick installation
+// (cache.addAll rejects wholesale, which kept the SW from ever activating).
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then((cache) => Promise.all(
+        PRECACHE_URLS.map((url) => cache.add(url).catch(() => null))
+      ))
       .then(() => self.skipWaiting())
   );
 });
