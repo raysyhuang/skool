@@ -159,6 +159,10 @@ body.racing-theme {
    QUESTION AREA  (the "sky")
    ================================================================ */
 
+.question-area.js-pending {
+    visibility: hidden;
+}
+
 .question-area {
     flex: 1;
     background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);

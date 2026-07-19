@@ -232,6 +232,11 @@
 
         var mode = q.mode || 'char_to_image';
 
+        /* Reveal the question area: the SSR fallback only renders the
+           default mode, so it stays hidden until JS builds the real UI */
+        var qArea = document.querySelector('.question-area');
+        if (qArea) qArea.classList.remove('js-pending');
+
         /* -- Prompt area (character display + pinyin) -- */
         var isMathLogic = (gameType === 'math' || gameType === 'logic' || gameType === 'english');
 

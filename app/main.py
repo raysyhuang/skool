@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import logging
+import os
 
 from pathlib import Path
 
@@ -79,6 +80,19 @@ def _run_migrations(engine_instance):
         except Exception:
             pass
 
+        # Data fix: loosen over-simplified meanings in already-seeded DBs
+        try:
+            conn.execute(text(
+                "UPDATE characters SET meaning = 'is / yes' "
+                "WHERE character = '是' AND meaning = 'yes'"
+            ))
+            conn.execute(text(
+                "UPDATE characters SET meaning = 'not / no' "
+                "WHERE character = '不' AND meaning = 'no'"
+            ))
+        except Exception:
+            pass
+
         # Backfill lifetime_coins so existing car levels never demote:
         # at least the coins threshold of the current level, or the
         # current balance if higher
@@ -97,6 +111,13 @@ def _run_migrations(engine_instance):
 
 def create_app() -> FastAPI:
     settings = get_settings()
+
+    # A default secret on Heroku means forgeable session cookies
+    if settings.secret_key == "change-me-in-production" and os.environ.get("DYNO"):
+        raise RuntimeError(
+            "SECRET_KEY is not set. Run: "
+            "heroku config:set SECRET_KEY=$(openssl rand -hex 32)"
+        )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
