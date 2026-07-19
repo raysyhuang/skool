@@ -244,7 +244,10 @@ def start_drill(child_id: int, request: Request, db: Session = Depends(get_db)):
         char_ids.extend(row[0] for row in weak)
 
     if not char_ids:
-        return JSONResponse({"error": "No characters to drill"}, status_code=400)
+        return JSONResponse(
+            {"error": f"{child.name} hasn't practiced any characters yet — there's nothing to drill until they play a few sessions."},
+            status_code=400,
+        )
 
     # Queue the drill; the child's next Chinese session consumes it.
     # Creating the session here would orphan it (the child always gets a
