@@ -231,9 +231,9 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
 def _update_car_level(user: User, settings) -> bool:
     """Check if user reached a new car tier. Returns True if leveled up."""
     thresholds = settings.car_tier_thresholds
-    # Calculate total coins ever earned (current coins + spent coins approximation)
-    # We use current coins as a simple proxy
-    total_coins = user.coins
+    # Tiers are driven by lifetime earnings so store spending never blocks
+    # progression
+    total_coins = user.lifetime_coins or 0
     new_level = 0
     for i, threshold in enumerate(thresholds):
         if total_coins >= threshold:

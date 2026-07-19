@@ -38,6 +38,9 @@ def _run_migrations(engine_instance):
         ("users", "equipped_car_skin", "VARCHAR", None),
         ("users", "equipped_background", "VARCHAR", None),
         ("users", "equipped_trail", "VARCHAR", None),
+        ("users", "lifetime_coins", "INTEGER", "0"),
+        ("users", "pending_drill_char_ids", "VARCHAR", None),
+        ("points_ledger", "coins_change", "INTEGER", "0"),
         ("session_questions", "started_at", "TIMESTAMP", None),
         # SM-2 spaced repetition columns
         ("user_character_progress", "easiness_factor", "REAL", "2.5"),
@@ -72,6 +75,21 @@ def _run_migrations(engine_instance):
         try:
             conn.execute(text(
                 "UPDATE users SET age = 9 WHERE name = 'Ellie' AND age = 8"
+            ))
+        except Exception:
+            pass
+
+        # Backfill lifetime_coins so existing car levels never demote:
+        # at least the coins threshold of the current level, or the
+        # current balance if higher
+        greatest = "GREATEST" if dialect == "postgresql" else "MAX"
+        try:
+            conn.execute(text(
+                f"UPDATE users SET lifetime_coins = {greatest}("
+                "COALESCE(coins, 0), "
+                "CASE COALESCE(car_level, 0) WHEN 1 THEN 5 WHEN 2 THEN 15 "
+                "WHEN 3 THEN 30 WHEN 4 THEN 50 ELSE 0 END) "
+                "WHERE COALESCE(lifetime_coins, 0) = 0"
             ))
         except Exception:
             pass

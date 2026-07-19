@@ -160,6 +160,41 @@ def test_first_play_starts_streak_at_1(db, sample_user, sample_characters):
     assert sample_user.streak == 1
 
 
+def test_car_level_survives_spending(db, sample_user, sample_characters):
+    from app.services.session_engine import _update_car_level
+    settings = get_settings()
+
+    sample_user.coins = 5
+    sample_user.lifetime_coins = 5
+    assert _update_car_level(sample_user, settings) is True
+    assert sample_user.car_level == 1
+
+    # Spend everything at the store — the tier must not stall
+    sample_user.coins = 0
+    sample_user.lifetime_coins = 15
+    assert _update_car_level(sample_user, settings) is True
+    assert sample_user.car_level == 2
+
+
+def test_ledger_records_coin_spending(db, sample_user, sample_characters):
+    from app.models.rewards import PointsLedger
+    from app.services.rewards import award_points, buy_streak_freeze
+    settings = get_settings()
+
+    # Earn enough points to convert stars into at least one coin
+    award_points(db, sample_user, settings.coins_per_stars, "test_award")
+    db.commit()
+    conversion = db.query(PointsLedger).filter_by(user_id=sample_user.id, reason="test_award").one()
+    assert conversion.coins_change == 1
+    assert sample_user.lifetime_coins == 1
+
+    assert buy_streak_freeze(db, sample_user) is True
+    db.commit()
+    spend = db.query(PointsLedger).filter_by(user_id=sample_user.id, reason="buy_streak_freeze").one()
+    assert spend.coins_change == -1
+    assert sample_user.lifetime_coins == 1  # spending never reduces lifetime earnings
+
+
 def test_summary_points_include_lucky_star_bonus(db, sample_user, sample_characters, monkeypatch):
     settings = get_settings()
     session = create_session(db, sample_user)

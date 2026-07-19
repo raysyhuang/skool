@@ -232,7 +232,7 @@ def game_page(request: Request, db: Session = Depends(get_db)):
     # Car tier info
     car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
     next_tier_idx = min(user.car_level + 1, len(settings.car_tier_thresholds) - 1)
-    coins_to_next_car = max(0, settings.car_tier_thresholds[next_tier_idx] - user.coins) if user.car_level < len(CAR_TIERS) - 1 else 0
+    coins_to_next_car = max(0, settings.car_tier_thresholds[next_tier_idx] - (user.lifetime_coins or 0)) if user.car_level < len(CAR_TIERS) - 1 else 0
 
     # Achievement count
     from app.services.achievements import get_earned_badges

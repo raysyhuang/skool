@@ -11,6 +11,7 @@ class PointsLedger(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     change = Column(Integer, nullable=False)        # +2 for correct, +5 for daily bonus, etc.
+    coins_change = Column(Integer, default=0)        # +N on star conversion, -N on store spends
     reason = Column(String, nullable=False)          # "correct_answer", "daily_bonus", "streak_bonus"
     balance_after = Column(Integer, nullable=False)  # running total for audit
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

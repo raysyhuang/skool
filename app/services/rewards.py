@@ -15,14 +15,17 @@ def award_points(db: Session, user: User, amount: int, reason: str) -> None:
 
     # Auto-convert stars to coins
     settings = get_settings()
+    new_coins = 0
     if user.stars >= settings.coins_per_stars:
         new_coins = user.stars // settings.coins_per_stars
         user.coins += new_coins
+        user.lifetime_coins = (user.lifetime_coins or 0) + new_coins
         user.stars = user.stars % settings.coins_per_stars
 
     entry = PointsLedger(
         user_id=user.id,
         change=amount,
+        coins_change=new_coins,
         reason=reason,
         balance_after=user.points,
     )
@@ -52,6 +55,7 @@ def buy_streak_freeze(db: Session, user: User) -> bool:
     entry = PointsLedger(
         user_id=user.id,
         change=0,
+        coins_change=-1,
         reason="buy_streak_freeze",
         balance_after=user.points,
     )

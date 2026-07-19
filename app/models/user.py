@@ -19,6 +19,7 @@ class User(Base):
     points = Column(Integer, default=0)
     stars = Column(Integer, default=0)
     coins = Column(Integer, default=0)
+    lifetime_coins = Column(Integer, default=0)  # never decremented; drives car tiers
 
     # Daily tracking
     streak = Column(Integer, default=0)
@@ -31,6 +32,10 @@ class User(Base):
     perfect_sessions = Column(Integer, default=0)
     total_sessions_completed = Column(Integer, default=0)
     car_level = Column(Integer, default=0)
+
+    # Drill queued by the parent; JSON list of character ids, consumed by
+    # the child's next Chinese session
+    pending_drill_char_ids = Column(String, nullable=True)
 
     # Store / customization
     equipped_car_skin = Column(String, nullable=True)
