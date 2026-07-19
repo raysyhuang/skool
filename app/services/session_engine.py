@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.session import GameSession, SessionQuestion
 from app.models.rewards import PointsLedger
-from app.services.question_generator import select_characters, generate_image_options, generate_options, generate_question, pick_question_mode
+from app.services.question_generator import select_characters, generate_question, pick_question_mode
 from app.services.spaced_repetition import update_mastery
 from app.services.rewards import award_points
 from app.services.math_generator import generate_math_questions
@@ -70,14 +70,14 @@ def create_session(db: Session, user: User, game_type: str = "chinese", characte
 
 def _create_chinese_questions(db: Session, game_session: GameSession, user: User, settings, character_ids: list[int] | None = None) -> None:
     """Create Chinese character questions (original logic)."""
-    theme = user.theme or "racing"
-    characters = select_characters(db, user.id, count=settings.questions_per_session, theme=theme, character_ids=character_ids)
+    is_prereader = (user.age or 5) <= 5
+    characters = select_characters(db, user.id, count=settings.questions_per_session, is_prereader=is_prereader, character_ids=character_ids)
 
     if not characters:
         raise ValueError("No characters available for this user.")
 
     for i, char in enumerate(characters, 1):
-        mode = pick_question_mode(theme, char)
+        mode = pick_question_mode(is_prereader, char)
         q_data = generate_question(db, char, mode, count=settings.distractors_per_question)
 
         question = SessionQuestion(

@@ -160,6 +160,37 @@ def test_first_play_starts_streak_at_1(db, sample_user, sample_characters):
     assert sample_user.streak == 1
 
 
+def test_age_drives_character_pool_not_theme(db, sample_user, sample_characters):
+    """A pre-reader only gets image-backed chars; a reader gets the full pool —
+    regardless of which theme string is set on the user."""
+    from app.models.character import Character
+    from app.models.session import SessionQuestion
+
+    imageless = Character(
+        character="想", pinyin="xiǎng", meaning="to think", difficulty=2,
+        tags="test", image_url=None, target_users="daughter",
+    )
+    db.add(imageless)
+    db.commit()
+
+    # 4-year-old with any theme: image-backed picture questions only
+    sample_user.theme = "pony"
+    db.commit()
+    session = create_session(db, sample_user)
+    for q in session.questions:
+        char = db.query(Character).filter_by(id=q.character_id).one()
+        assert char.image_url is not None
+        assert q.question_mode == "char_to_image"
+
+    # 9-year-old reader: imageless daughter-content is reachable
+    reader = User(name="Reader Kid", pin="1111", age=9, theme="racing", role="child")
+    db.add(reader)
+    db.commit()
+    from app.services.question_generator import select_characters
+    pool = select_characters(db, reader.id, count=50, is_prereader=False)
+    assert any(c.character == "想" for c in pool)
+
+
 def test_car_level_survives_spending(db, sample_user, sample_characters):
     from app.services.session_engine import _update_car_level
     settings = get_settings()
