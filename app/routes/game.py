@@ -128,8 +128,17 @@ def _start_game_session(request: Request, db: Session, game_type: str):
             "user": user,
         })
 
+    # A drill queued by the parent takes over the next Chinese session
+    drill_char_ids = None
+    if game_type == "chinese" and user.pending_drill_char_ids:
+        try:
+            drill_char_ids = json.loads(user.pending_drill_char_ids)
+        except (ValueError, TypeError):
+            drill_char_ids = None
+        user.pending_drill_char_ids = None
+
     try:
-        session = create_session(db, user, game_type=game_type)
+        session = create_session(db, user, game_type=game_type, character_ids=drill_char_ids)
     except SessionLimitReached:
         return templates.TemplateResponse(request, resolve_theme_template(user.theme, "limit_reached.html"), {
             "user": user,
@@ -262,6 +271,7 @@ def game_page(request: Request, db: Session = Depends(get_db)):
         "badge_count": badge_count,
         "quest_info": quest_info,
         "car_tiers": CAR_TIERS,
+        "has_pending_drill": bool(user.pending_drill_char_ids),
     })
 
 

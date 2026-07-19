@@ -336,6 +336,16 @@
     .quest-dot.filled {
         background: #fdcb6e;
     }
+    .drill-banner {
+        display: block;
+        margin-top: 8px;
+        background: #ffeaa7;
+        color: #d63031;
+        border-radius: 10px;
+        padding: 6px 10px;
+        font-size: 14px;
+        font-weight: 800;
+    }
 </style>
 {% endblock %}
 
@@ -439,6 +449,9 @@
         <button class="game-card chinese {% if not can_play %}disabled{% endif %}" onclick="pickGame('chinese')" type="button">
             <span class="game-emoji">&#128218;</span>
             <span class="game-label">Chinese</span>
+            {% if has_pending_drill %}
+            <span class="drill-banner">&#9889; Special mission from &#29240;&#29240;!</span>
+            {% endif %}
         </button>
         <button class="game-card math {% if not can_play %}disabled{% endif %}" onclick="pickGame('math')" type="button">
             <span class="game-emoji">&#128290;</span>

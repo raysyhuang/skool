@@ -259,3 +259,74 @@ def test_older_kid_logic_game_flow():
 
     assert result["total_correct"] == 5
     assert result["points_earned"] > 0
+
+
+def test_parent_drill_queue_flow():
+    client, SessionLocal, user_id = _build_client(with_characters=True)
+
+    # Give the child some progress so the drill has characters to target
+    db = SessionLocal()
+    from datetime import date
+    from app.models.progress import UserCharacterProgress
+    from app.models.character import Character as Char
+    char_ids = [row[0] for row in db.query(Char.id).limit(3).all()]
+    for cid in char_ids:
+        db.add(UserCharacterProgress(
+            user_id=user_id, character_id=cid,
+            mastery_score=1, next_review_date=date.today(),
+        ))
+    parent = User(name="Parent", pin="8888", age=40, theme="dashboard", role="parent")
+    db.add(parent)
+    db.commit()
+    db.close()
+
+    # Parent queues a drill — no session is created, child stats untouched
+    client.post("/login/parent", data={"pin": "8888"}, follow_redirects=False)
+    resp = client.post(f"/dashboard/drill/{user_id}")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["queued"] is True
+
+    db = SessionLocal()
+    child = db.query(User).filter_by(id=user_id).one()
+    queued_ids = set(json.loads(child.pending_drill_char_ids))
+    assert queued_ids
+    assert db.query(GameSession).filter_by(user_id=user_id).count() == 0
+    assert child.sessions_today == 0
+    assert child.last_played_date is None
+    db.close()
+
+    # Child's next Chinese game consumes the queued drill
+    client.get("/logout", follow_redirects=False)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+    resp = client.get("/game/chinese")
+    assert resp.status_code == 200
+
+    db = SessionLocal()
+    child = db.query(User).filter_by(id=user_id).one()
+    assert child.pending_drill_char_ids is None
+    session = db.query(GameSession).filter_by(user_id=user_id).one()
+    session_char_ids = {q.character_id for q in session.questions}
+    assert session_char_ids <= queued_ids
+    db.close()
+
+
+def test_parent_drill_cancel():
+    client, SessionLocal, user_id = _build_client(with_characters=True)
+
+    db = SessionLocal()
+    parent = User(name="Parent", pin="8888", age=40, theme="dashboard", role="parent")
+    child = db.query(User).filter_by(id=user_id).one()
+    child.pending_drill_char_ids = "[1, 2, 3]"
+    db.add(parent)
+    db.commit()
+    db.close()
+
+    client.post("/login/parent", data={"pin": "8888"}, follow_redirects=False)
+    resp = client.post(f"/dashboard/drill/{user_id}/cancel")
+    assert resp.status_code == 200
+
+    db = SessionLocal()
+    child = db.query(User).filter_by(id=user_id).one()
+    assert child.pending_drill_char_ids is None
+    db.close()
