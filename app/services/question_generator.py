@@ -71,7 +71,7 @@ def select_characters(
     db: Session,
     user_id: int,
     count: int = 5,
-    theme: str = "racing",
+    is_prereader: bool = True,
     character_ids: list[int] | None = None,
 ) -> list[Character]:
     """Select characters using SM-2 review priority buckets.
@@ -84,11 +84,11 @@ def select_characters(
 
     If character_ids is provided (drill mode), select only those characters.
     """
-    # Get all characters available for this user
-    target_filter = ["son", "all"] if theme == "racing" else ["daughter", "all"]
+    # Pool is driven by reading ability, not by which theme is skinned on top
+    target_filter = ["son", "all"] if is_prereader else ["daughter", "all"]
     query = db.query(Character).filter(Character.target_users.in_(target_filter))
-    # For young kids (racing/son), only pick characters with images
-    if theme == "racing":
+    # Pre-readers can only do picture matching, so images are required
+    if is_prereader:
         query = query.filter(Character.image_url.isnot(None))
     if character_ids:
         query = query.filter(Character.id.in_(character_ids))
@@ -142,18 +142,18 @@ def select_characters(
     return selected
 
 
-def pick_question_mode(theme: str, char: Character) -> str:
-    """Pick a random question mode based on theme and character capabilities."""
+def pick_question_mode(is_prereader: bool, char: Character) -> str:
+    """Pick a random question mode based on reading ability and character capabilities."""
     has_image = bool(char.image_url)
     is_compound = len(char.character) >= 2
 
-    if theme == "racing":
-        # Son (age 4): picture-only, simple matching — no reading or true/false
+    if is_prereader:
+        # Age <= 5: picture-only, simple matching — no reading or true/false
         candidates = []
         if has_image:
             candidates += ["char_to_image"] * 100  # show character, pick picture
     else:
-        # Daughter (age 8): weighted mode distribution
+        # Readers: weighted mode distribution
         candidates = []
         candidates += ["char_to_meaning"] * 25
         candidates += ["meaning_to_char"] * 20

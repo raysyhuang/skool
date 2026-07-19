@@ -16,6 +16,17 @@ def _deterministic_random():
     random.seed(42)
     yield
     random.seed()
+
+
+@pytest.fixture(autouse=True)
+def _unlimited_sessions():
+    """Default tests to unlimited sessions; cap tests opt in explicitly."""
+    from app.config import get_settings
+    settings = get_settings()
+    original = settings.max_sessions_per_day
+    settings.max_sessions_per_day = 0
+    yield settings
+    settings.max_sessions_per_day = original
 from app.main import create_app
 
 

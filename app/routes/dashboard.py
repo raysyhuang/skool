@@ -1,4 +1,4 @@
-import os
+import json
 from datetime import date, timedelta
 from collections import defaultdict
 
@@ -201,8 +201,7 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
             "review_schedule": review_schedule,
         })
 
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "dashboard.html", {
         "user": user,
         "children": child_data,
     })
@@ -245,16 +244,35 @@ def start_drill(child_id: int, request: Request, db: Session = Depends(get_db)):
         char_ids.extend(row[0] for row in weak)
 
     if not char_ids:
-        return JSONResponse({"error": "No characters to drill"}, status_code=400)
+        return JSONResponse(
+            {"error": f"{child.name} hasn't practiced any characters yet — there's nothing to drill until they play a few sessions."},
+            status_code=400,
+        )
 
-    from app.services.session_engine import create_session
-    try:
-        session = create_session(db, child, game_type="chinese", character_ids=char_ids)
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=400)
+    # Queue the drill; the child's next Chinese session consumes it.
+    # Creating the session here would orphan it (the child always gets a
+    # fresh session on login) and pollute their streak/session counters.
+    child.pending_drill_char_ids = json.dumps(char_ids)
+    db.commit()
 
     return JSONResponse({
-        "session_id": session.id,
-        "redirect": f"/game/chinese",
+        "queued": True,
         "characters": len(char_ids),
+        "child_name": child.name,
     })
+
+
+@router.post("/drill/{child_id}/cancel")
+def cancel_drill(child_id: int, request: Request, db: Session = Depends(get_db)):
+    """Cancel a queued drill that hasn't been played yet."""
+    user = _get_current_user(request, db)
+    if not user or user.role != "parent":
+        return JSONResponse({"error": "Not authorized"}, status_code=403)
+
+    child = db.query(User).filter_by(id=child_id, role="child").first()
+    if not child:
+        return JSONResponse({"error": "Child not found"}, status_code=404)
+
+    child.pending_drill_char_ids = None
+    db.commit()
+    return JSONResponse({"cancelled": True})

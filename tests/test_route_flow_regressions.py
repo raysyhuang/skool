@@ -140,7 +140,7 @@ def test_full_chinese_game_flow():
 
 
 def test_full_math_game_flow():
-    client, _, user_id = _build_client(with_characters=False)
+    client, _, user_id = _build_client(with_characters=False, age=8)
     result = _play_full_game(client, user_id, "math")
 
     assert result["total_correct"] == 5
@@ -148,7 +148,7 @@ def test_full_math_game_flow():
 
 
 def test_full_logic_game_flow():
-    client, _, user_id = _build_client(with_characters=False)
+    client, _, user_id = _build_client(with_characters=False, age=8)
     result = _play_full_game(client, user_id, "logic")
 
     assert result["total_correct"] == 5
@@ -156,7 +156,7 @@ def test_full_logic_game_flow():
 
 
 def test_session_complete_page_after_completion():
-    client, _, user_id = _build_client(with_characters=False)
+    client, _, user_id = _build_client(with_characters=False, age=8)
     result = _play_full_game(client, user_id, "math")
     session_id = result["session_id"]
 
@@ -165,7 +165,7 @@ def test_session_complete_page_after_completion():
 
 
 def test_wrong_answer_then_retry():
-    client, _, user_id = _build_client(with_characters=False)
+    client, _, user_id = _build_client(with_characters=False, age=8)
     client.post("/login", data={"user_id": user_id}, follow_redirects=False)
 
     resp = client.get("/game/math")
@@ -259,3 +259,155 @@ def test_older_kid_logic_game_flow():
 
     assert result["total_correct"] == 5
     assert result["points_earned"] > 0
+
+
+def test_parent_drill_queue_flow():
+    client, SessionLocal, user_id = _build_client(with_characters=True)
+
+    # Give the child some progress so the drill has characters to target
+    db = SessionLocal()
+    from datetime import date
+    from app.models.progress import UserCharacterProgress
+    from app.models.character import Character as Char
+    char_ids = [row[0] for row in db.query(Char.id).limit(3).all()]
+    for cid in char_ids:
+        db.add(UserCharacterProgress(
+            user_id=user_id, character_id=cid,
+            mastery_score=1, next_review_date=date.today(),
+        ))
+    parent = User(name="Parent", pin="8888", age=40, theme="dashboard", role="parent")
+    db.add(parent)
+    db.commit()
+    db.close()
+
+    # Parent queues a drill — no session is created, child stats untouched
+    client.post("/login/parent", data={"pin": "8888"}, follow_redirects=False)
+    resp = client.post(f"/dashboard/drill/{user_id}")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["queued"] is True
+
+    db = SessionLocal()
+    child = db.query(User).filter_by(id=user_id).one()
+    queued_ids = set(json.loads(child.pending_drill_char_ids))
+    assert queued_ids
+    assert db.query(GameSession).filter_by(user_id=user_id).count() == 0
+    assert child.sessions_today == 0
+    assert child.last_played_date is None
+    db.close()
+
+    # Child's next Chinese game consumes the queued drill
+    client.get("/logout", follow_redirects=False)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+    resp = client.get("/game/chinese")
+    assert resp.status_code == 200
+
+    db = SessionLocal()
+    child = db.query(User).filter_by(id=user_id).one()
+    assert child.pending_drill_char_ids is None
+    session = db.query(GameSession).filter_by(user_id=user_id).one()
+    session_char_ids = {q.character_id for q in session.questions}
+    assert session_char_ids <= queued_ids
+    db.close()
+
+
+def test_parent_drill_cancel():
+    client, SessionLocal, user_id = _build_client(with_characters=True)
+
+    db = SessionLocal()
+    parent = User(name="Parent", pin="8888", age=40, theme="dashboard", role="parent")
+    child = db.query(User).filter_by(id=user_id).one()
+    child.pending_drill_char_ids = "[1, 2, 3]"
+    db.add(parent)
+    db.commit()
+    db.close()
+
+    client.post("/login/parent", data={"pin": "8888"}, follow_redirects=False)
+    resp = client.post(f"/dashboard/drill/{user_id}/cancel")
+    assert resp.status_code == 200
+
+    db = SessionLocal()
+    child = db.query(User).filter_by(id=user_id).one()
+    assert child.pending_drill_char_ids is None
+    db.close()
+
+
+def test_service_worker_precache_urls_resolve():
+    """Every URL the SW precaches must exist — a 404 there used to brick installation."""
+    client, _, _ = _build_client(with_characters=False)
+
+    sw_source = open("static/sw.js", encoding="utf-8").read()
+    m = re.search(r"PRECACHE_URLS\s*=\s*\[(.*?)\]", sw_source, re.DOTALL)
+    assert m, "Could not find PRECACHE_URLS in sw.js"
+    urls = re.findall(r"'([^']+)'", m.group(1))
+    assert urls, "PRECACHE_URLS is empty"
+
+    for url in urls:
+        resp = client.get(url)
+        assert resp.status_code == 200, f"Precached URL {url} returned {resp.status_code}"
+
+
+def test_tts_proxy_accepts_long_english_prompts():
+    """English sentence prompts run well past 50 chars; they must not 422."""
+    client, _, user_id = _build_client(with_characters=False)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    long_text = "The enormous elephant walked slowly across the wide green field to find some delicious fresh water."
+    resp = client.get(f"/game/tts?text={long_text}&lang=en-US")
+    assert resp.status_code != 422, f"TTS proxy rejected a {len(long_text)}-char prompt"
+
+
+def test_pony_theme_renders_for_pony_user():
+    client, _, user_id = _build_client(with_characters=True, age=9, theme="pony")
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/chinese")
+    assert resp.status_code == 200
+    html = resp.text
+    assert "pony.css" in html
+    assert "Meadow 1 of 5" in html
+    assert "pony-theme" in html
+    assert "Stop 1 of 5" not in html
+
+
+def test_racing_theme_unchanged_for_racing_user():
+    client, _, user_id = _build_client(with_characters=True, age=4, theme="racing")
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/chinese")
+    assert resp.status_code == 200
+    html = resp.text
+    assert "Stop 1 of 5" in html
+    assert "pony.css" not in html
+
+
+def test_prereader_selector_hides_text_games():
+    client, _, user_id = _build_client(with_characters=True, age=4)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/")
+    assert resp.status_code == 200
+    html = resp.text
+    assert "pickGame('chinese')" in html
+    assert "pickGame('math')" not in html
+    assert "pickGame('logic')" not in html
+    assert "pickGame('english')" not in html
+
+
+def test_prereader_direct_url_to_text_game_redirects():
+    client, _, user_id = _build_client(with_characters=True, age=4)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/math", follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "/game/"
+
+
+def test_reader_selector_shows_all_games():
+    client, _, user_id = _build_client(with_characters=True, age=9)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/")
+    html = resp.text
+    for game in ("chinese", "math", "logic", "english"):
+        assert f"pickGame('{game}')" in html

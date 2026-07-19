@@ -2,9 +2,12 @@
 
 ## Project Overview
 Daily micro-learning reinforcement engine for two kids:
-- **Son (弟弟, age 4):** Racing car theme, picture matching, PIN 0000
-- **Daughter (姐姐, age 8):** Pony theme (Phase 2), phrase builder, PIN 1111
-- **Parent (爸爸):** Dashboard (Phase 2), PIN 8888
+- **Son (弟弟, age 4):** Racing car theme, picture matching only (pre-readers are age-gated to the Chinese game)
+- **Daughter (姐姐, age 9):** Pony/unicorn theme (reskin of the racing engine via `app/themes.py` + `static/css/pony.css`), mixed question modes
+- **Parent (爸爸):** Dashboard, PIN 8888
+
+Auth: kids log in by tapping their avatar — deliberately no PIN (a
+4-year-old can't manage one; the PIN gate protects the parent dashboard).
 
 ## Tech Stack
 - **Backend:** FastAPI + SQLAlchemy + Jinja2
@@ -40,10 +43,15 @@ git push heroku main
 - `tests/` — pytest tests
 
 ## Game Rules
-- 5 questions per session, max 2 sessions per day
-- Spaced repetition: mastery 0-5 (+1 correct, -1 wrong)
-- Points: +2 correct, +5 daily bonus, +streak bonus
+- 5 questions per session, max 2 sessions per day (override with the
+  `MAX_SESSIONS_PER_DAY` env var; 0 = unlimited)
+- Spaced repetition: SM-2 (mastery 0-5 derived for display)
+- Points: +2 correct, +5 daily bonus, +streak bonus, lucky-star/speed bonuses
 - Rewards: points → stars (1:1) → coins (10:1) → RMB (10 coins = ¥20)
+- Car/pony tier progression is driven by `users.lifetime_coins`
+  (never decremented), so store spending can't demote anyone
+- `SECRET_KEY` must be set on Heroku (app refuses to boot with the
+  default secret when `DYNO` is present)
 
 ## iPad-First Design
 - All touch targets >= 60px

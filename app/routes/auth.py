@@ -13,8 +13,7 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/login")
 def login_page(request: Request, db: Session = Depends(get_db)):
     users = get_child_users(db)
-    return templates.TemplateResponse("login.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "login.html", {
         "users": users,
     })
 

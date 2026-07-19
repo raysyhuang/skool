@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import logging
+import os
 
 from pathlib import Path
 
@@ -38,6 +39,9 @@ def _run_migrations(engine_instance):
         ("users", "equipped_car_skin", "VARCHAR", None),
         ("users", "equipped_background", "VARCHAR", None),
         ("users", "equipped_trail", "VARCHAR", None),
+        ("users", "lifetime_coins", "INTEGER", "0"),
+        ("users", "pending_drill_char_ids", "VARCHAR", None),
+        ("points_ledger", "coins_change", "INTEGER", "0"),
         ("session_questions", "started_at", "TIMESTAMP", None),
         # SM-2 spaced repetition columns
         ("user_character_progress", "easiness_factor", "REAL", "2.5"),
@@ -76,9 +80,44 @@ def _run_migrations(engine_instance):
         except Exception:
             pass
 
+        # Data fix: loosen over-simplified meanings in already-seeded DBs
+        try:
+            conn.execute(text(
+                "UPDATE characters SET meaning = 'is / yes' "
+                "WHERE character = '是' AND meaning = 'yes'"
+            ))
+            conn.execute(text(
+                "UPDATE characters SET meaning = 'not / no' "
+                "WHERE character = '不' AND meaning = 'no'"
+            ))
+        except Exception:
+            pass
+
+        # Backfill lifetime_coins so existing car levels never demote:
+        # at least the coins threshold of the current level, or the
+        # current balance if higher
+        greatest = "GREATEST" if dialect == "postgresql" else "MAX"
+        try:
+            conn.execute(text(
+                f"UPDATE users SET lifetime_coins = {greatest}("
+                "COALESCE(coins, 0), "
+                "CASE COALESCE(car_level, 0) WHEN 1 THEN 5 WHEN 2 THEN 15 "
+                "WHEN 3 THEN 30 WHEN 4 THEN 50 ELSE 0 END) "
+                "WHERE COALESCE(lifetime_coins, 0) = 0"
+            ))
+        except Exception:
+            pass
+
 
 def create_app() -> FastAPI:
     settings = get_settings()
+
+    # A default secret on Heroku means forgeable session cookies
+    if settings.secret_key == "change-me-in-production" and os.environ.get("DYNO"):
+        raise RuntimeError(
+            "SECRET_KEY is not set. Run: "
+            "heroku config:set SECRET_KEY=$(openssl rand -hex 32)"
+        )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -117,7 +156,7 @@ def create_app() -> FastAPI:
     # Offline fallback page
     @app.get("/offline")
     def offline_page(request: Request):
-        return _templates.TemplateResponse("offline.html", {"request": request})
+        return _templates.TemplateResponse(request, "offline.html")
 
     # Root redirect
     @app.get("/")

@@ -221,6 +221,15 @@
     }
     .drill-btn:active { transform: scale(0.96); }
     .drill-btn:disabled { opacity: 0.5; cursor: default; }
+    .drill-status {
+        background: #ffeaa7;
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    .drill-status a { color: #d63031; margin-left: 8px; }
 
     /* ── Mastery bars ── */
     .mastery-chart {
@@ -422,9 +431,15 @@
     {% endif %}
 
     {# ── Drill Button ── #}
-    <button class="drill-btn" onclick="startDrill({{ child.user.id }})" id="drill-btn-{{ child.user.id }}">
-        &#9889; Start Drill for {{ child.user.name }}
+    <button class="drill-btn" onclick="startDrill({{ child.user.id }})" id="drill-btn-{{ child.user.id }}"
+            {% if child.user.pending_drill_char_ids %}style="display:none"{% endif %}>
+        &#9889; Queue Drill for {{ child.user.name }}
     </button>
+    <div class="drill-status" id="drill-status-{{ child.user.id }}"
+         {% if not child.user.pending_drill_char_ids %}style="display:none"{% endif %}>
+        &#9889; Drill queued — starts next time {{ child.user.name }} plays Chinese.
+        <a href="#" onclick="cancelDrill({{ child.user.id }}); return false;">Cancel</a>
+    </div>
 
     {# ── Mastery distribution ── #}
     <div class="section-title">Mastery Distribution</div>
@@ -475,7 +490,8 @@
 <script>
 function startDrill(childId) {
     var btn = document.getElementById('drill-btn-' + childId);
-    if (btn) { btn.disabled = true; btn.textContent = 'Starting...'; }
+    var status = document.getElementById('drill-status-' + childId);
+    if (btn) { btn.disabled = true; btn.textContent = 'Queueing...'; }
 
     fetch('/dashboard/drill/' + childId, {
         method: 'POST',
@@ -484,18 +500,32 @@ function startDrill(childId) {
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
+        if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Queue Drill'; }
         if (data.error) {
             alert(data.error);
-            if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Start Drill'; }
         } else {
-            /* Redirect to game — session was created for the child */
-            alert('Drill session created with ' + data.characters + ' characters! Have ' + (childId === 1 ? 'them' : 'them') + ' log in to play.');
-            if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Start Drill'; }
+            if (btn) { btn.style.display = 'none'; }
+            if (status) { status.style.display = ''; }
         }
     })
     .catch(function() {
         alert('Something went wrong. Try again.');
-        if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Start Drill'; }
+        if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Queue Drill'; }
+    });
+}
+
+function cancelDrill(childId) {
+    fetch('/dashboard/drill/' + childId + '/cancel', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function() {
+        var btn = document.getElementById('drill-btn-' + childId);
+        var status = document.getElementById('drill-status-' + childId);
+        if (btn) { btn.style.display = ''; }
+        if (status) { status.style.display = 'none'; }
     });
 }
 </script>

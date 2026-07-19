@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Skool - Car is Resting!{% endblock %}
+{% block title %}Skool - {{ theme_cfg.rest_title }}{% endblock %}
 
 {% block theme_css %}
 <style>
@@ -193,16 +193,16 @@
 {# ── Main card ── #}
 <div class="limit-card">
     <div class="sleeping-car">
-        &#128663;
+        {{ theme_cfg.rest_sprite }}
         <span class="zzz">&#128164;</span>
     </div>
 
     <h1 class="limit-title">
-        The car is resting! &#128564;
+        {{ theme_cfg.rest_title }}
     </h1>
 
     <p class="limit-msg">
-        Great racing today!<br>
+        {{ theme_cfg.rest_msg }}<br>
         Come back tomorrow for more fun! &#127775;
     </p>
 

@@ -19,6 +19,7 @@ class User(Base):
     points = Column(Integer, default=0)
     stars = Column(Integer, default=0)
     coins = Column(Integer, default=0)
+    lifetime_coins = Column(Integer, default=0)  # never decremented; drives car tiers
 
     # Daily tracking
     streak = Column(Integer, default=0)
@@ -31,6 +32,10 @@ class User(Base):
     perfect_sessions = Column(Integer, default=0)
     total_sessions_completed = Column(Integer, default=0)
     car_level = Column(Integer, default=0)
+
+    # Drill queued by the parent; JSON list of character ids, consumed by
+    # the child's next Chinese session
+    pending_drill_char_ids = Column(String, nullable=True)
 
     # Store / customization
     equipped_car_skin = Column(String, nullable=True)
@@ -46,19 +51,30 @@ class User(Base):
     quest_progress = relationship("QuestProgress", back_populates="user")
 
     def reset_daily_if_needed(self):
-        """Reset sessions_today if it's a new day. Update streak."""
-        today = date.today()
-        if self.last_played_date != today:
-            if self.last_played_date and (today - self.last_played_date).days == 1:
-                self.streak += 1
-            elif self.last_played_date and (today - self.last_played_date).days > 1:
-                # Streak freeze: use one instead of resetting
-                if self.streak_freezes > 0:
-                    self.streak_freezes -= 1
-                    # Keep streak intact, don't increment (missed day)
-                else:
-                    self.streak = 0
-            # Track best streak
-            if self.streak > self.best_streak:
-                self.best_streak = self.streak
+        """Reset sessions_today when the day changes.
+
+        Safe to call from any handler; streak logic lives in
+        record_play_today(), which only create_session invokes.
+        """
+        if self.last_played_date != date.today():
             self.sessions_today = 0
+
+    def record_play_today(self):
+        """Stamp today's play and update the streak. Idempotent within a day."""
+        today = date.today()
+        if self.last_played_date == today:
+            return
+        if self.last_played_date is None:
+            self.streak = 1
+        elif (today - self.last_played_date).days == 1:
+            self.streak += 1
+        else:
+            # Missed a day: one freeze preserves the streak, otherwise restart
+            if self.streak_freezes > 0:
+                self.streak_freezes -= 1
+            else:
+                self.streak = 1
+        if self.streak > self.best_streak:
+            self.best_streak = self.streak
+        self.sessions_today = 0
+        self.last_played_date = today

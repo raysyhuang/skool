@@ -232,6 +232,11 @@
 
         var mode = q.mode || 'char_to_image';
 
+        /* Reveal the question area: the SSR fallback only renders the
+           default mode, so it stays hidden until JS builds the real UI */
+        var qArea = document.querySelector('.question-area');
+        if (qArea) qArea.classList.remove('js-pending');
+
         /* -- Prompt area (character display + pinyin) -- */
         var isMathLogic = (gameType === 'math' || gameType === 'logic' || gameType === 'english');
 
@@ -312,7 +317,8 @@
 
         /* -- Progress label -- */
         if (progressLabel) {
-            progressLabel.textContent = 'Stop ' + q.question_number + ' of ' + totalQuestions;
+            var progressNoun = (root.themeCopy && root.themeCopy.progressNoun) || 'Stop';
+            progressLabel.textContent = progressNoun + ' ' + q.question_number + ' of ' + totalQuestions;
         }
 
         /* -- Progress bar -- */
@@ -375,7 +381,7 @@
             }
         }
 
-        /* -- Auto TTS (skip for math/logic) -- */
+        /* -- Auto TTS: exactly one speaker per question render -- */
         if (!isMathLogic) {
             setTimeout(function () {
                 if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char') {
@@ -384,6 +390,8 @@
                     speakText(q.character);
                 }
             }, 300);
+        } else if (gameType === 'english') {
+            setTimeout(function () { speakText(q.character); }, 300);
         }
     }
 
@@ -853,7 +861,7 @@
        Confetti burst
        ────────────────────────────────────────────── */
 
-    var CONFETTI_COLORS = [
+    var CONFETTI_COLORS = (root.themeCopy && root.themeCopy.confetti) || [
         '#ff6b35', '#fdcb6e', '#00b894', '#e84393',
         '#6c5ce7', '#74b9ff', '#fd79a8', '#ffeaa7'
     ];
@@ -985,15 +993,8 @@
         /* Set initial car position */
         moveCarToStop(0);
 
-        /* Render first question */
+        /* Render first question (renderQuestion handles auto-speak) */
         renderQuestion(0);
-
-        /* Auto-speak the first character (handles iOS gesture requirement) */
-        if (gameType === 'chinese') {
-            root.SkoolTTS.autoSpeak(questions[0].character, 'zh-CN');
-        } else if (gameType === 'english') {
-            root.SkoolTTS.autoSpeak(questions[0].character, 'en-US');
-        }
     }
 
     /* Wait for DOM */

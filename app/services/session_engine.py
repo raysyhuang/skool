@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.session import GameSession, SessionQuestion
 from app.models.rewards import PointsLedger
-from app.services.question_generator import select_characters, generate_image_options, generate_options, generate_question, pick_question_mode
+from app.services.question_generator import select_characters, generate_question, pick_question_mode
 from app.services.spaced_repetition import update_mastery
 from app.services.rewards import award_points
 from app.services.math_generator import generate_math_questions
@@ -61,8 +61,8 @@ def create_session(db: Session, user: User, game_type: str = "chinese", characte
         raise ValueError(f"Unknown game type: {game_type}")
 
     # Update user session count
+    user.record_play_today()
     user.sessions_today += 1
-    user.last_played_date = date.today()
 
     db.commit()
     return game_session
@@ -70,14 +70,14 @@ def create_session(db: Session, user: User, game_type: str = "chinese", characte
 
 def _create_chinese_questions(db: Session, game_session: GameSession, user: User, settings, character_ids: list[int] | None = None) -> None:
     """Create Chinese character questions (original logic)."""
-    theme = user.theme or "racing"
-    characters = select_characters(db, user.id, count=settings.questions_per_session, theme=theme, character_ids=character_ids)
+    is_prereader = (user.age or 5) <= 5
+    characters = select_characters(db, user.id, count=settings.questions_per_session, is_prereader=is_prereader, character_ids=character_ids)
 
     if not characters:
         raise ValueError("No characters available for this user.")
 
     for i, char in enumerate(characters, 1):
-        mode = pick_question_mode(theme, char)
+        mode = pick_question_mode(is_prereader, char)
         q_data = generate_question(db, char, mode, count=settings.distractors_per_question)
 
         question = SessionQuestion(
@@ -198,6 +198,7 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
                         bonus_text = "speed_bonus"
 
             session.total_correct += 1
+            session.points_earned += points
             award_points(db, user, points, "correct_answer")
         else:
             session.total_wrong += 1
@@ -209,6 +210,7 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
             session.total_correct += 1
             if question.character_id is not None:
                 update_mastery(db, user.id, question.character_id, True, is_first_attempt=False)
+            session.points_earned += points
             award_points(db, user, points, "correct_answer")
         else:
             question.is_correct = False
@@ -229,9 +231,9 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
 def _update_car_level(user: User, settings) -> bool:
     """Check if user reached a new car tier. Returns True if leveled up."""
     thresholds = settings.car_tier_thresholds
-    # Calculate total coins ever earned (current coins + spent coins approximation)
-    # We use current coins as a simple proxy
-    total_coins = user.coins
+    # Tiers are driven by lifetime earnings so store spending never blocks
+    # progression
+    total_coins = user.lifetime_coins or 0
     new_level = 0
     for i, threshold in enumerate(thresholds):
         if total_coins >= threshold:
@@ -295,16 +297,16 @@ def complete_session(db: Session, user: User, session_id: int) -> dict:
 
     session.completed_at = datetime.now(timezone.utc)
 
-    # Calculate session points
+    # points_earned was accumulated per answer (incl. lucky-star/speed bonuses)
     settings = get_settings()
     total_questions = len(session.questions)
-    session.points_earned = session.total_correct * settings.points_correct
+    base_points = session.points_earned or 0
 
     # Perfect session bonus
     is_perfect = session.total_correct == total_questions
     perfect_bonus = 0
     if is_perfect:
-        perfect_bonus = session.points_earned * (settings.perfect_bonus_multiplier - 1)
+        perfect_bonus = base_points * (settings.perfect_bonus_multiplier - 1)
         if perfect_bonus > 0:
             award_points(db, user, perfect_bonus, "perfect_bonus")
             session.points_earned += perfect_bonus
@@ -347,8 +349,7 @@ def complete_session(db: Session, user: User, session_id: int) -> dict:
 
     # Build XP breakdown
     xp_breakdown = []
-    base_xp = session.total_correct * settings.points_correct
-    xp_breakdown.append({"label": "Correct answers", "value": base_xp})
+    xp_breakdown.append({"label": "Correct answers", "value": base_points})
     if perfect_bonus > 0:
         xp_breakdown.append({"label": "Perfect bonus", "value": perfect_bonus})
     if daily_bonus > 0:

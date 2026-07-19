@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from app.database import get_db
 from app.models.user import User
 from app.models.store import StoreItem, UserInventory
+from app.models.rewards import PointsLedger
 
 router = APIRouter(prefix="/game/store")
 templates = Jinja2Templates(directory="templates")
@@ -93,8 +94,7 @@ def store_page(request: Request, db: Session = Depends(get_db)):
         "trail_effect": "Trail Effects",
     }
 
-    return templates.TemplateResponse("store.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "store.html", {
         "user": user,
         "categories": categories,
         "cat_labels": cat_labels,
@@ -125,6 +125,13 @@ def buy_item(request: Request, body: BuyRequest, db: Session = Depends(get_db)):
 
     user.coins -= item.price_coins
     db.add(UserInventory(user_id=user.id, item_key=body.item_key))
+    db.add(PointsLedger(
+        user_id=user.id,
+        change=0,
+        coins_change=-item.price_coins,
+        reason=f"store_purchase:{item.key}",
+        balance_after=user.points,
+    ))
     db.commit()
 
     return JSONResponse({

@@ -98,7 +98,7 @@ def seed():
         print(f"Seeded {len(chars_data)} characters.")
         print("Done! Users:")
         print(f"  Daniel (son)     - PIN: 0000 - Theme: racing")
-        print(f"  Ellie  (daughter) - PIN: 1111 - Theme: racing")
+        print(f"  Ellie  (daughter) - PIN: 1111 - Theme: pony")
         print(f"  爸爸   (parent)   - PIN: 8888")
 
     except Exception as e:

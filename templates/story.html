@@ -193,23 +193,14 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', path='js/tts.js') }}"></script>
 <script>
     function speakSentence(text) {
-        if ('speechSynthesis' in window) {
-            var u = new SpeechSynthesisUtterance(text);
-            u.lang = 'zh-CN';
-            u.rate = 0.8;
-            window.speechSynthesis.speak(u);
-        }
+        window.SkoolTTS.speakChinese(text);
     }
 
     function speakChar(ch) {
-        if ('speechSynthesis' in window) {
-            var u = new SpeechSynthesisUtterance(ch);
-            u.lang = 'zh-CN';
-            u.rate = 0.7;
-            window.speechSynthesis.speak(u);
-        }
+        window.SkoolTTS.speakChinese(ch);
     }
 
     var answered = false;
