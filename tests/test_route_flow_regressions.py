@@ -140,7 +140,7 @@ def test_full_chinese_game_flow():
 
 
 def test_full_math_game_flow():
-    client, _, user_id = _build_client(with_characters=False)
+    client, _, user_id = _build_client(with_characters=False, age=8)
     result = _play_full_game(client, user_id, "math")
 
     assert result["total_correct"] == 5
@@ -148,7 +148,7 @@ def test_full_math_game_flow():
 
 
 def test_full_logic_game_flow():
-    client, _, user_id = _build_client(with_characters=False)
+    client, _, user_id = _build_client(with_characters=False, age=8)
     result = _play_full_game(client, user_id, "logic")
 
     assert result["total_correct"] == 5
@@ -156,7 +156,7 @@ def test_full_logic_game_flow():
 
 
 def test_session_complete_page_after_completion():
-    client, _, user_id = _build_client(with_characters=False)
+    client, _, user_id = _build_client(with_characters=False, age=8)
     result = _play_full_game(client, user_id, "math")
     session_id = result["session_id"]
 
@@ -165,7 +165,7 @@ def test_session_complete_page_after_completion():
 
 
 def test_wrong_answer_then_retry():
-    client, _, user_id = _build_client(with_characters=False)
+    client, _, user_id = _build_client(with_characters=False, age=8)
     client.post("/login", data={"user_id": user_id}, follow_redirects=False)
 
     resp = client.get("/game/math")
@@ -379,3 +379,35 @@ def test_racing_theme_unchanged_for_racing_user():
     html = resp.text
     assert "Stop 1 of 5" in html
     assert "pony.css" not in html
+
+
+def test_prereader_selector_hides_text_games():
+    client, _, user_id = _build_client(with_characters=True, age=4)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/")
+    assert resp.status_code == 200
+    html = resp.text
+    assert "pickGame('chinese')" in html
+    assert "pickGame('math')" not in html
+    assert "pickGame('logic')" not in html
+    assert "pickGame('english')" not in html
+
+
+def test_prereader_direct_url_to_text_game_redirects():
+    client, _, user_id = _build_client(with_characters=True, age=4)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/math", follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "/game/"
+
+
+def test_reader_selector_shows_all_games():
+    client, _, user_id = _build_client(with_characters=True, age=9)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/")
+    html = resp.text
+    for game in ("chinese", "math", "logic", "english"):
+        assert f"pickGame('{game}')" in html

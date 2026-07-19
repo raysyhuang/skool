@@ -121,6 +121,11 @@ def _start_game_session(request: Request, db: Session, game_type: str):
     if not user:
         return RedirectResponse(url="/login", status_code=303)
 
+    # Pre-readers only get the picture-based Chinese game (the selector
+    # hides the others, but guard direct URLs/bookmarks too)
+    if game_type != "chinese" and (user.age or 5) <= 5:
+        return RedirectResponse(url="/game/", status_code=303)
+
     user.reset_daily_if_needed()
     db.commit()
 
@@ -277,6 +282,7 @@ def game_page(request: Request, db: Session = Depends(get_db)):
         "quest_info": quest_info,
         "car_tiers": tiers,
         "has_pending_drill": bool(user.pending_drill_char_ids),
+        "is_prereader": (user.age or 5) <= 5,
     })
 
 

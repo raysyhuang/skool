@@ -38,6 +38,16 @@ def test_unlimited_sessions_when_limit_zero(db, sample_user, sample_characters):
     assert sample_user.sessions_today == 3
 
 
+def test_third_session_blocked_at_default_cap(db, sample_user, sample_characters, _unlimited_sessions):
+    """Cap of 2/day: two sessions succeed, the third raises."""
+    _unlimited_sessions.max_sessions_per_day = 2
+    create_session(db, sample_user)
+    create_session(db, sample_user)
+    assert can_start_session(sample_user) is False
+    with pytest.raises(SessionLimitReached):
+        create_session(db, sample_user)
+
+
 def test_submit_correct_answer(db, sample_user, sample_characters):
     session = create_session(db, sample_user)
     q = session.questions[0]

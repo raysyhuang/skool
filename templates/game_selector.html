@@ -336,6 +336,13 @@
     .quest-dot.filled {
         background: #fdcb6e;
     }
+    .game-card.hero {
+        width: clamp(220px, 60vw, 420px);
+        height: clamp(200px, 30vw, 280px);
+    }
+    .game-card.hero .game-emoji {
+        font-size: clamp(56px, 9vw, 96px);
+    }
     .drill-banner {
         display: block;
         margin-top: 8px;
@@ -444,15 +451,16 @@
     <div class="game-error">{{ game_error }}</div>
     {% endif %}
 
-    {# ── Game cards ── #}
+    {# ── Game cards (text-based games hidden from pre-readers) ── #}
     <div class="game-grid">
-        <button class="game-card chinese {% if not can_play %}disabled{% endif %}" onclick="pickGame('chinese')" type="button">
+        <button class="game-card chinese {% if is_prereader %}hero{% endif %} {% if not can_play %}disabled{% endif %}" onclick="pickGame('chinese')" type="button">
             <span class="game-emoji">&#128218;</span>
             <span class="game-label">Chinese</span>
             {% if has_pending_drill %}
             <span class="drill-banner">&#9889; Special mission from &#29240;&#29240;!</span>
             {% endif %}
         </button>
+        {% if not is_prereader %}
         <button class="game-card math {% if not can_play %}disabled{% endif %}" onclick="pickGame('math')" type="button">
             <span class="game-emoji">&#128290;</span>
             <span class="game-label">Math</span>
@@ -465,6 +473,7 @@
             <span class="game-emoji">&#127468;&#127463;</span>
             <span class="game-label">English</span>
         </button>
+        {% endif %}
     </div>
 
     {# ── Quick links ── #}
@@ -472,7 +481,9 @@
         <a class="quick-link" href="/game/achievements">&#127942; Badges</a>
         <a class="quick-link" href="/game/quest">&#127937; Quest</a>
         <a class="quick-link" href="/game/store/">&#128722; Garage</a>
+        {% if not is_prereader %}
         <a class="quick-link" href="/game/stories/">&#128214; Stories</a>
+        {% endif %}
         {% if user.role == 'parent' %}
         <a class="quick-link" href="/dashboard">&#128202; Dashboard</a>
         {% endif %}

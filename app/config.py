@@ -22,7 +22,7 @@ class Settings(BaseSettings):
 
     # Game rules
     questions_per_session: int = 5
-    max_sessions_per_day: int = 0  # 0 = unlimited
+    max_sessions_per_day: int = 2  # 0 = unlimited; override via MAX_SESSIONS_PER_DAY
     distractors_per_question: int = 2  # + 1 correct = 3 options
 
     # Scoring
