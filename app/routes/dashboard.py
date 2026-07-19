@@ -201,8 +201,7 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
             "review_schedule": review_schedule,
         })
 
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "dashboard.html", {
         "user": user,
         "children": child_data,
     })

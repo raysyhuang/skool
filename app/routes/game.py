@@ -124,16 +124,14 @@ def _start_game_session(request: Request, db: Session, game_type: str):
     db.commit()
 
     if not can_start_session(user):
-        return templates.TemplateResponse(resolve_theme_template(user.theme, "limit_reached.html"), {
-            "request": request,
+        return templates.TemplateResponse(request, resolve_theme_template(user.theme, "limit_reached.html"), {
             "user": user,
         })
 
     try:
         session = create_session(db, user, game_type=game_type)
     except SessionLimitReached:
-        return templates.TemplateResponse(resolve_theme_template(user.theme, "limit_reached.html"), {
-            "request": request,
+        return templates.TemplateResponse(request, resolve_theme_template(user.theme, "limit_reached.html"), {
             "user": user,
         })
     except ValueError as e:
@@ -161,8 +159,7 @@ def _start_game_session(request: Request, db: Session, game_type: str):
 
     car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
 
-    return templates.TemplateResponse(resolve_theme_template(user.theme, "game.html"), {
-        "request": request,
+    return templates.TemplateResponse(request, resolve_theme_template(user.theme, "game.html"), {
         "user": user,
         "session": session,
         "question": first_q,
@@ -253,8 +250,7 @@ def game_page(request: Request, db: Session = Depends(get_db)):
             "sessions_needed": settings.quest_sessions_per_stage,
         }
 
-    return templates.TemplateResponse("game_selector.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "game_selector.html", {
         "user": user,
         "remaining_sessions": remaining,
         "can_play": can_start_session(user),
@@ -355,8 +351,7 @@ def session_complete_page(
     stars_progress_pct = round(stars_mod / settings.coins_per_stars * 100)
     car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
 
-    return templates.TemplateResponse(resolve_theme_template(user.theme, "session_complete.html"), {
-        "request": request,
+    return templates.TemplateResponse(request, resolve_theme_template(user.theme, "session_complete.html"), {
         "user": user,
         "session": session,
         "can_play_again": can_start_session(user),
@@ -419,8 +414,7 @@ def achievements_page(request: Request, db: Session = Depends(get_db)):
             "earned": key in earned,
         })
 
-    return templates.TemplateResponse("achievements.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "achievements.html", {
         "user": user,
         "badges": badges_list,
         "earned_count": len(earned),
@@ -454,8 +448,7 @@ def quest_map_page(request: Request, db: Session = Depends(get_db)):
             status = "locked"
         stages.append({"number": i, "status": status})
 
-    return templates.TemplateResponse("quest_map.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "quest_map.html", {
         "user": user,
         "quest": qp,
         "stages": stages,

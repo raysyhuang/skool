@@ -117,7 +117,7 @@ def create_app() -> FastAPI:
     # Offline fallback page
     @app.get("/offline")
     def offline_page(request: Request):
-        return _templates.TemplateResponse("offline.html", {"request": request})
+        return _templates.TemplateResponse(request, "offline.html")
 
     # Root redirect
     @app.get("/")

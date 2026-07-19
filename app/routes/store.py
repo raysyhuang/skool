@@ -93,8 +93,7 @@ def store_page(request: Request, db: Session = Depends(get_db)):
         "trail_effect": "Trail Effects",
     }
 
-    return templates.TemplateResponse("store.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "store.html", {
         "user": user,
         "categories": categories,
         "cat_labels": cat_labels,

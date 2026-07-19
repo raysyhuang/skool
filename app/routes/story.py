@@ -36,8 +36,7 @@ def stories_list(request: Request, db: Session = Depends(get_db)):
 
     stories = get_available_stories(float(avg))
 
-    return templates.TemplateResponse("story_list.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "story_list.html", {
         "user": user,
         "stories": stories,
     })
@@ -58,8 +57,7 @@ def read_story(story_id: int, request: Request, db: Session = Depends(get_db)):
     if not story:
         return RedirectResponse(url="/game/stories/", status_code=303)
 
-    return templates.TemplateResponse("story.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "story.html", {
         "user": user,
         "story": story,
     })
