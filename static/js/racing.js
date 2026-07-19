@@ -375,7 +375,7 @@
             }
         }
 
-        /* -- Auto TTS (skip for math/logic) -- */
+        /* -- Auto TTS: exactly one speaker per question render -- */
         if (!isMathLogic) {
             setTimeout(function () {
                 if (mode === 'image_to_char' || mode === 'meaning_to_char' || mode === 'pinyin_to_char') {
@@ -384,6 +384,8 @@
                     speakText(q.character);
                 }
             }, 300);
+        } else if (gameType === 'english') {
+            setTimeout(function () { speakText(q.character); }, 300);
         }
     }
 
@@ -985,15 +987,8 @@
         /* Set initial car position */
         moveCarToStop(0);
 
-        /* Render first question */
+        /* Render first question (renderQuestion handles auto-speak) */
         renderQuestion(0);
-
-        /* Auto-speak the first character (handles iOS gesture requirement) */
-        if (gameType === 'chinese') {
-            root.SkoolTTS.autoSpeak(questions[0].character, 'zh-CN');
-        } else if (gameType === 'english') {
-            root.SkoolTTS.autoSpeak(questions[0].character, 'en-US');
-        }
     }
 
     /* Wait for DOM */

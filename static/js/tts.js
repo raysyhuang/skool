@@ -13,6 +13,15 @@
     /* ── Google Translate TTS (natural sounding) ── */
     var _ttsAudio = null;
 
+    /* ── Duck background music while speaking ── */
+    function _duck() {
+        if (root.SkoolMusic && root.SkoolMusic.duck) root.SkoolMusic.duck();
+    }
+
+    function _unduck() {
+        if (root.SkoolMusic && root.SkoolMusic.unduck) root.SkoolMusic.unduck();
+    }
+
     function speakViaGoogle(text, lang, opts) {
         opts = opts || {};
         lang = lang || DEFAULT_LANG;
@@ -29,20 +38,24 @@
         _ttsAudio = new Audio(url);
         _ttsAudio.volume = 1.0;
 
-        if (typeof opts.onEnd === 'function') {
-            _ttsAudio.onended = opts.onEnd;
-        }
+        _ttsAudio.onended = function () {
+            _unduck();
+            if (typeof opts.onEnd === 'function') opts.onEnd();
+        };
 
         _ttsAudio.onerror = function () {
-            /* Google TTS failed — fall back to Web Speech API */
-            console.warn('[Skool TTS] Google TTS failed, falling back to Web Speech API.');
+            /* Server TTS failed — fall back to Web Speech API */
+            console.warn('[Skool TTS] Server TTS failed, falling back to Web Speech API.');
+            _unduck();
             speakViaWebSpeech(text, lang, opts);
         };
 
+        _duck();
         var p = _ttsAudio.play();
         if (p && p.catch) {
             p.catch(function () {
                 /* Autoplay blocked — try Web Speech API as fallback */
+                _unduck();
                 speakViaWebSpeech(text, lang, opts);
             });
         }
@@ -108,12 +121,15 @@
 
             utterance.onend = function () {
                 clearInterval(keepAlive);
+                _unduck();
                 if (typeof opts.onEnd === 'function') opts.onEnd();
             };
             utterance.onerror = function () {
                 clearInterval(keepAlive);
+                _unduck();
             };
 
+            _duck();
             synth.resume();
             synth.speak(utterance);
         }, 50);

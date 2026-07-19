@@ -501,7 +501,7 @@ def _clean_tts_text(text: str, lang: str = "zh-CN") -> str:
 
 
 @router.get("/tts")
-async def tts_proxy(text: str = Query(..., max_length=50), lang: str = Query("zh-CN", max_length=10)):
+async def tts_proxy(text: str = Query(..., max_length=300), lang: str = Query("zh-CN", max_length=10)):
     """Generate TTS audio using Microsoft Edge neural voices via edge-tts."""
     import edge_tts
 

@@ -345,3 +345,13 @@ def test_service_worker_precache_urls_resolve():
     for url in urls:
         resp = client.get(url)
         assert resp.status_code == 200, f"Precached URL {url} returned {resp.status_code}"
+
+
+def test_tts_proxy_accepts_long_english_prompts():
+    """English sentence prompts run well past 50 chars; they must not 422."""
+    client, _, user_id = _build_client(with_characters=False)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    long_text = "The enormous elephant walked slowly across the wide green field to find some delicious fresh water."
+    resp = client.get(f"/game/tts?text={long_text}&lang=en-US")
+    assert resp.status_code != 422, f"TTS proxy rejected a {len(long_text)}-char prompt"

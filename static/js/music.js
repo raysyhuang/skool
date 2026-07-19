@@ -107,6 +107,9 @@
         return TRACKS[Math.floor(Math.random() * TRACKS.length)];
     }
 
+    var BGM_VOLUME = 0.3;
+    var DUCKED_VOLUME = 0.1;
+
     function startBGM() {
         if (bgmStarted) return;
         bgmStarted = true;
@@ -114,7 +117,7 @@
         if (!bgmAudio) {
             bgmAudio = new Audio();
             bgmAudio.loop = true;
-            bgmAudio.volume = 0.3;
+            bgmAudio.volume = BGM_VOLUME;
             bgmAudio.src = pickTrack();
         }
 
@@ -206,11 +209,22 @@
     document.addEventListener('touchstart', onFirstInteraction, { once: true });
     document.addEventListener('click', onFirstInteraction, { once: true });
 
+    /* ── Ducking: drop BGM under speech ── */
+    function duck() {
+        if (bgmAudio) bgmAudio.volume = DUCKED_VOLUME;
+    }
+
+    function unduck() {
+        if (bgmAudio) bgmAudio.volume = BGM_VOLUME;
+    }
+
     /* ── Public API ── */
     root.SkoolMusic = {
         startBGM: startBGM,
         stopBGM: stopBGM,
         toggleMute: toggleMute,
+        duck: duck,
+        unduck: unduck,
         playCorrect: playCorrect,
         playWrong: playWrong,
         playFinish: playFinish,
