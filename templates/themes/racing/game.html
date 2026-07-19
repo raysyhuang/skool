@@ -1,20 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Skool - Race!{% endblock %}
+{% block title %}Skool - {{ theme_cfg.page_title }}{% endblock %}
 
 {% block theme_css %}
 <link rel="stylesheet" href="{{ url_for('static', path='css/racing.css') }}">
+{% if theme_cfg.extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/' + theme_cfg.extra_css) }}">
+{% endif %}
 {% endblock %}
 
 {% block content %}
-{# Add racing-theme class so body styles apply #}
-<script>document.body.classList.add('racing-theme');</script>
+{# Add theme classes so body styles apply #}
+<script>'{{ theme_cfg.body_class }}'.split(' ').forEach(function (c) { document.body.classList.add(c); });</script>
 
 {# ── Top bar ── #}
 <div class="top-bar">
     <div class="top-bar-left">
         <span class="progress-label" id="progressLabel">
-            Stop {{ question_number }} of {{ total_questions }}
+            {{ theme_cfg.progress_noun }} {{ question_number }} of {{ total_questions }}
         </span>
     </div>
     <button class="music-toggle" id="musicToggle" onclick="toggleMusic()" type="button" aria-label="Toggle music">
@@ -36,9 +39,9 @@
 <div class="question-area js-pending">
     {# Clouds #}
     <div class="clouds">
-        <span class="cloud">&#9729;&#65039;</span>
-        <span class="cloud">&#9925;</span>
-        <span class="cloud">&#9729;&#65039;</span>
+        {% for cloud in theme_cfg.clouds %}
+        <span class="cloud">{{ cloud }}</span>
+        {% endfor %}
     </div>
 
     {# Character + TTS #}
@@ -109,7 +112,7 @@
                 <span
                     class="stop-flag {% if i < question_number - 1 %}reached{% elif i == question_number - 1 %}current{% endif %}"
                     data-stop="{{ i }}"
-                >&#127937;</span>
+                >{{ theme_cfg.marker_emoji }}</span>
             </div>
             {% endfor %}
         </div>
@@ -132,6 +135,7 @@
     window.initialPoints  = {{ user.points }};
     window.gameType       = '{{ game_type|default("chinese") }}';
     window.carLevel       = {{ user.car_level|default(0) }};
+    window.themeCopy      = {{ theme_copy_json | safe }};
 </script>
 
 {# ── Hanzi Writer for stroke order animation ── #}

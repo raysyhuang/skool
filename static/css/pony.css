@@ -1,0 +1,56 @@
+/* ================================================================
+   Skool -- Pony Theme Overrides
+   Loaded AFTER racing.css; reskins the shared engine with a
+   pink/lavender meadow palette. Structure stays in racing.css.
+   ================================================================ */
+
+/* ── Palette ── */
+:root {
+    --road-color: #b48ee0;        /* lavender bridle path */
+    --road-stripe: #fff0f7;
+    --grass-top: #ff9ff3;
+    --grass-bottom: #ffeaa7;
+    --sky-top: #ffd6e8;
+    --sky-bottom: #c8b6ff;
+    --accent-orange: #e84393;
+    --accent-yellow: #fab1d9;
+    /* --correct-color / --wrong-color intentionally unchanged:
+       answer feedback must stay unambiguous */
+}
+
+/* ── Top bar: plum gradient instead of asphalt ── */
+.pony-theme .top-bar {
+    background: linear-gradient(135deg, #6c3483, #a569bd);
+}
+
+/* ── Scenery backgrounds (pony variants of the six bg-* classes) ── */
+
+/* Meadow (default) */
+.pony-theme .question-area.bg-highway {
+    background: linear-gradient(180deg, #ffd6e8 0%, #c8b6ff 100%);
+}
+
+/* Castle sunset */
+.pony-theme .question-area.bg-city {
+    background: linear-gradient(180deg, #e84393 0%, #fab1d9 40%, #ffeaa7 100%);
+}
+
+/* Lake shore */
+.pony-theme .question-area.bg-beach {
+    background: linear-gradient(180deg, #c8b6ff 0%, #81ecec 50%, #ffd6e8 100%);
+}
+
+/* Starry night (keep light text from racing.css bg-space rules) */
+.pony-theme .question-area.bg-space {
+    background: linear-gradient(180deg, #2d1b4e 0%, #6c3483 50%, #a569bd 100%);
+}
+
+/* Enchanted garden */
+.pony-theme .question-area.bg-forest {
+    background: linear-gradient(180deg, #ff9ff3 0%, #ffd6e8 40%, #d6f5c9 100%);
+}
+
+/* Snowy meadow */
+.pony-theme .question-area.bg-snow {
+    background: linear-gradient(180deg, #fff0f7 0%, #e6d9ff 50%, #c8b6ff 100%);
+}

@@ -317,7 +317,8 @@
 
         /* -- Progress label -- */
         if (progressLabel) {
-            progressLabel.textContent = 'Stop ' + q.question_number + ' of ' + totalQuestions;
+            var progressNoun = (root.themeCopy && root.themeCopy.progressNoun) || 'Stop';
+            progressLabel.textContent = progressNoun + ' ' + q.question_number + ' of ' + totalQuestions;
         }
 
         /* -- Progress bar -- */
@@ -860,7 +861,7 @@
        Confetti burst
        ────────────────────────────────────────────── */
 
-    var CONFETTI_COLORS = [
+    var CONFETTI_COLORS = (root.themeCopy && root.themeCopy.confetti) || [
         '#ff6b35', '#fdcb6e', '#00b894', '#e84393',
         '#6c5ce7', '#74b9ff', '#fd79a8', '#ffeaa7'
     ];

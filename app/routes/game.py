@@ -10,6 +10,7 @@ from app.database import get_db
 from app.models.user import User
 from app.models.session import GameSession, SessionQuestion
 from app.services.session_engine import create_session, submit_answer, complete_session, can_start_session, SessionLimitReached
+from app.themes import get_theme
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "templates")
 
@@ -126,6 +127,7 @@ def _start_game_session(request: Request, db: Session, game_type: str):
     if not can_start_session(user):
         return templates.TemplateResponse(request, resolve_theme_template(user.theme, "limit_reached.html"), {
             "user": user,
+            "theme_cfg": get_theme(user),
         })
 
     # A drill queued by the parent takes over the next Chinese session
@@ -142,6 +144,7 @@ def _start_game_session(request: Request, db: Session, game_type: str):
     except SessionLimitReached:
         return templates.TemplateResponse(request, resolve_theme_template(user.theme, "limit_reached.html"), {
             "user": user,
+            "theme_cfg": get_theme(user),
         })
     except ValueError as e:
         request.session["game_error"] = str(e)
@@ -166,7 +169,7 @@ def _start_game_session(request: Request, db: Session, game_type: str):
             "image_url": None,
         })()
 
-    car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
+    theme_cfg = get_theme(user)
 
     return templates.TemplateResponse(request, resolve_theme_template(user.theme, "game.html"), {
         "user": user,
@@ -178,7 +181,12 @@ def _start_game_session(request: Request, db: Session, game_type: str):
         "total_questions": len(questions),
         "questions_json": questions_json,
         "game_type": game_type,
-        "car_info": car_info,
+        "car_info": _car_info(user),
+        "theme_cfg": theme_cfg,
+        "theme_copy_json": json.dumps({
+            "progressNoun": theme_cfg["progress_noun"],
+            "confetti": theme_cfg["confetti"],
+        }),
     })
 
 
@@ -209,14 +217,10 @@ def _get_motivational_message(streak: int) -> str:
     return random.choice(msgs)
 
 
-# Car tier display info
-CAR_TIERS = [
-    {"emoji": "\U0001F3CE\uFE0F", "name": "Go-kart"},     # 0 coins
-    {"emoji": "\U0001F697", "name": "Sedan"},               # 5 coins
-    {"emoji": "\U0001F3CE\uFE0F", "name": "Sports Car"},   # 15 coins
-    {"emoji": "\U0001F3C1", "name": "Race Car"},             # 30 coins
-    {"emoji": "\U0001F680", "name": "F1 Car"},               # 50 coins
-]
+def _car_info(user) -> dict:
+    """Current tier sprite/name in the user's theme."""
+    tiers = get_theme(user)["tiers"]
+    return tiers[min(user.car_level, len(tiers) - 1)]
 
 
 @router.get("/")
@@ -239,9 +243,10 @@ def game_page(request: Request, db: Session = Depends(get_db)):
     motivational = _get_motivational_message(user.streak)
 
     # Car tier info
-    car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
+    tiers = get_theme(user)["tiers"]
+    car_info = _car_info(user)
     next_tier_idx = min(user.car_level + 1, len(settings.car_tier_thresholds) - 1)
-    coins_to_next_car = max(0, settings.car_tier_thresholds[next_tier_idx] - (user.lifetime_coins or 0)) if user.car_level < len(CAR_TIERS) - 1 else 0
+    coins_to_next_car = max(0, settings.car_tier_thresholds[next_tier_idx] - (user.lifetime_coins or 0)) if user.car_level < len(tiers) - 1 else 0
 
     # Achievement count
     from app.services.achievements import get_earned_badges
@@ -270,7 +275,7 @@ def game_page(request: Request, db: Session = Depends(get_db)):
         "coins_to_next_car": coins_to_next_car,
         "badge_count": badge_count,
         "quest_info": quest_info,
-        "car_tiers": CAR_TIERS,
+        "car_tiers": tiers,
         "has_pending_drill": bool(user.pending_drill_char_ids),
     })
 
@@ -359,8 +364,6 @@ def session_complete_page(
     is_perfect = session.total_correct == total_questions
     stars_mod = user.stars % settings.coins_per_stars
     stars_progress_pct = round(stars_mod / settings.coins_per_stars * 100)
-    car_info = CAR_TIERS[min(user.car_level, len(CAR_TIERS) - 1)]
-
     return templates.TemplateResponse(request, resolve_theme_template(user.theme, "session_complete.html"), {
         "user": user,
         "session": session,
@@ -370,7 +373,8 @@ def session_complete_page(
         "is_perfect": is_perfect,
         "stars_progress_pct": stars_progress_pct,
         "stars_to_next_coin": settings.coins_per_stars - stars_mod,
-        "car_info": car_info,
+        "car_info": _car_info(user),
+        "theme_cfg": get_theme(user),
     })
 
 

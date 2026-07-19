@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Skool - Race Complete!{% endblock %}
+{% block title %}Skool - {{ theme_cfg.finish_title }}{% endblock %}
 
 {% block theme_css %}
 <style>
@@ -361,9 +361,9 @@
 
     <h1 class="complete-title">
         {% if is_perfect %}
-            &#127775; Perfect Race! &#127775;
+            {{ theme_cfg.perfect_title }}
         {% else %}
-            Race Complete!
+            {{ theme_cfg.finish_title }}
         {% endif %}
     </h1>
 
@@ -433,7 +433,7 @@
     {% if can_play_again %}
     <a href="javascript:void(0)" onclick="window.location.href='/game/'" style="text-decoration: none;">
         <button class="action-btn race-again" type="button">
-            {{ car_info.emoji }} Race Again!
+            {{ car_info.emoji }} {{ theme_cfg.again_label }}
         </button>
     </a>
     {% else %}

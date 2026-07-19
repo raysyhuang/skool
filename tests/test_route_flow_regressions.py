@@ -355,3 +355,27 @@ def test_tts_proxy_accepts_long_english_prompts():
     long_text = "The enormous elephant walked slowly across the wide green field to find some delicious fresh water."
     resp = client.get(f"/game/tts?text={long_text}&lang=en-US")
     assert resp.status_code != 422, f"TTS proxy rejected a {len(long_text)}-char prompt"
+
+
+def test_pony_theme_renders_for_pony_user():
+    client, _, user_id = _build_client(with_characters=True, age=9, theme="pony")
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/chinese")
+    assert resp.status_code == 200
+    html = resp.text
+    assert "pony.css" in html
+    assert "Meadow 1 of 5" in html
+    assert "pony-theme" in html
+    assert "Stop 1 of 5" not in html
+
+
+def test_racing_theme_unchanged_for_racing_user():
+    client, _, user_id = _build_client(with_characters=True, age=4, theme="racing")
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    resp = client.get("/game/chinese")
+    assert resp.status_code == 200
+    html = resp.text
+    assert "Stop 1 of 5" in html
+    assert "pony.css" not in html
