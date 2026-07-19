@@ -1,5 +1,5 @@
 import json
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 
@@ -88,7 +88,8 @@ def test_daily_bonus_applies_to_first_completed_session_even_if_multiple_started
     result = complete_session(db, sample_user, first.id)
     base = len(first.questions) * settings.points_correct
     perfect_bonus = base * (settings.perfect_bonus_multiplier - 1)  # 2x perfect session
-    expected = base + perfect_bonus + settings.daily_bonus
+    streak_bonus = sample_user.streak * settings.streak_bonus_multiplier  # first play starts streak at 1
+    expected = base + perfect_bonus + settings.daily_bonus + streak_bonus
     assert result["points_earned"] == expected
 
 
@@ -105,3 +106,79 @@ def test_retry_after_wrong_answer_awards_points_when_corrected(db, sample_user, 
     assert first_try["is_correct"] is False
     assert retry["is_correct"] is True
     assert retry["points_earned"] == settings.points_correct
+
+
+def test_streak_increments_once_per_day(db, sample_user, sample_characters):
+    sample_user.streak = 3
+    sample_user.best_streak = 3
+    sample_user.last_played_date = date.today() - timedelta(days=1)
+    db.commit()
+
+    create_session(db, sample_user)
+    assert sample_user.streak == 4
+
+    # Repeated daily resets and sessions on the same day must not inflate it
+    sample_user.reset_daily_if_needed()
+    create_session(db, sample_user)
+    sample_user.reset_daily_if_needed()
+    create_session(db, sample_user)
+    assert sample_user.streak == 4
+    assert sample_user.best_streak == 4
+
+
+def test_streak_freeze_burns_one_per_gap(db, sample_user, sample_characters):
+    sample_user.streak = 5
+    sample_user.streak_freezes = 2
+    sample_user.last_played_date = date.today() - timedelta(days=3)
+    db.commit()
+
+    create_session(db, sample_user)
+    assert sample_user.streak_freezes == 1
+    assert sample_user.streak == 5
+
+    # Second session the same day burns nothing further
+    create_session(db, sample_user)
+    assert sample_user.streak_freezes == 1
+    assert sample_user.streak == 5
+
+
+def test_missed_day_without_freeze_restarts_streak_at_1(db, sample_user, sample_characters):
+    sample_user.streak = 7
+    sample_user.best_streak = 7
+    sample_user.streak_freezes = 0
+    sample_user.last_played_date = date.today() - timedelta(days=2)
+    db.commit()
+
+    create_session(db, sample_user)
+    assert sample_user.streak == 1
+    assert sample_user.best_streak == 7
+
+
+def test_first_play_starts_streak_at_1(db, sample_user, sample_characters):
+    assert sample_user.last_played_date is None
+    create_session(db, sample_user)
+    assert sample_user.streak == 1
+
+
+def test_summary_points_include_lucky_star_bonus(db, sample_user, sample_characters, monkeypatch):
+    settings = get_settings()
+    session = create_session(db, sample_user)
+
+    # Force lucky star on every answer (patched after session creation so
+    # question generation randomness is untouched)
+    monkeypatch.setattr("app.services.session_engine.random.random", lambda: 0.0)
+
+    for q in session.questions:
+        result = submit_answer(db, sample_user, q.id, q.correct_answer)
+        assert result["bonus"] == "lucky_star"
+        assert result["points_earned"] == settings.points_correct * settings.lucky_star_multiplier
+
+    summary = complete_session(db, sample_user, session.id)
+
+    base = len(session.questions) * settings.points_correct * settings.lucky_star_multiplier
+    perfect_bonus = base * (settings.perfect_bonus_multiplier - 1)
+    streak_bonus = sample_user.streak * settings.streak_bonus_multiplier
+    expected = base + perfect_bonus + settings.daily_bonus + streak_bonus
+    assert summary["points_earned"] == expected
+    # Breakdown must account for every point in the summary
+    assert sum(x["value"] for x in summary["xp_breakdown"]) == summary["points_earned"]

@@ -46,19 +46,30 @@ class User(Base):
     quest_progress = relationship("QuestProgress", back_populates="user")
 
     def reset_daily_if_needed(self):
-        """Reset sessions_today if it's a new day. Update streak."""
-        today = date.today()
-        if self.last_played_date != today:
-            if self.last_played_date and (today - self.last_played_date).days == 1:
-                self.streak += 1
-            elif self.last_played_date and (today - self.last_played_date).days > 1:
-                # Streak freeze: use one instead of resetting
-                if self.streak_freezes > 0:
-                    self.streak_freezes -= 1
-                    # Keep streak intact, don't increment (missed day)
-                else:
-                    self.streak = 0
-            # Track best streak
-            if self.streak > self.best_streak:
-                self.best_streak = self.streak
+        """Reset sessions_today when the day changes.
+
+        Safe to call from any handler; streak logic lives in
+        record_play_today(), which only create_session invokes.
+        """
+        if self.last_played_date != date.today():
             self.sessions_today = 0
+
+    def record_play_today(self):
+        """Stamp today's play and update the streak. Idempotent within a day."""
+        today = date.today()
+        if self.last_played_date == today:
+            return
+        if self.last_played_date is None:
+            self.streak = 1
+        elif (today - self.last_played_date).days == 1:
+            self.streak += 1
+        else:
+            # Missed a day: one freeze preserves the streak, otherwise restart
+            if self.streak_freezes > 0:
+                self.streak_freezes -= 1
+            else:
+                self.streak = 1
+        if self.streak > self.best_streak:
+            self.best_streak = self.streak
+        self.sessions_today = 0
+        self.last_played_date = today
