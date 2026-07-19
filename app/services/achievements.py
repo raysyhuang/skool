@@ -60,12 +60,12 @@ BADGES = {
     },
     "collector_5": {
         "name": "Car Collector",
-        "description": "Reach car level 2 (Sedan)",
+        "description": "Unlock the Sedan (earn 5 coins)",
         "emoji": "\U0001F697",  # car
     },
     "collector_15": {
         "name": "Speed Demon Garage",
-        "description": "Reach car level 3 (Sports Car)",
+        "description": "Unlock the Sports Car (earn 15 coins)",
         "emoji": "\U0001F3CE\uFE0F",  # racing car
     },
     "speed_demon": {
@@ -143,8 +143,10 @@ def check_badges(db: Session, user: User, session_result: dict, game_session: Ga
     if game_type == "english" and completed_of_type >= 10:
         _try_award("polyglot")
 
-    # century (100 stars total earned, approximate via points)
-    if user.points >= 100:
+    # century: 100 stars earned. Points are lifetime (never spent) and stars
+    # accrue at stars_per_point per point, so lifetime stars = points * rate.
+    from app.config import get_settings
+    if user.points * get_settings().stars_per_point >= 100:
         _try_award("century")
 
     # car collector milestones
@@ -157,7 +159,11 @@ def check_badges(db: Session, user: User, session_result: dict, game_session: Ga
     fast_count = 0
     for q in game_session.questions:
         if q.started_at and q.answered_at:
-            delta = (q.answered_at - q.started_at).total_seconds()
+            # Strip tzinfo before subtracting: PostgreSQL can hand back a
+            # naive/aware mix, and mixing raises TypeError
+            a = q.answered_at.replace(tzinfo=None)
+            s = q.started_at.replace(tzinfo=None)
+            delta = (a - s).total_seconds()
             if delta < 3.0:
                 fast_count += 1
     if fast_count == len(game_session.questions):
