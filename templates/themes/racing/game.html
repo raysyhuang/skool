@@ -110,7 +110,7 @@
             {% for i in range(total_questions) %}
             <div class="stop-marker">
                 <span
-                    class="stop-flag {% if i < question_number - 1 %}reached{% elif i == question_number - 1 %}current{% endif %}"
+                    class="stop-flag {% if i < question_number - 1 %}reached{% elif i == question_number - 1 %}next{% endif %}"
                     data-stop="{{ i }}"
                 >{{ theme_cfg.marker_emoji }}</span>
             </div>
