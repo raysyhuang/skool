@@ -12,4 +12,6 @@ build/
 .mypy_cache/
 .DS_Store
 *.png
+# ...but the PWA app icons are real source, not screenshot clutter.
+!static/icons/*.png
 .playwright-mcp/

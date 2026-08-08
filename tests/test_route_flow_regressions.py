@@ -1,5 +1,6 @@
 import json
 import re
+import struct
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -345,6 +346,36 @@ def test_service_worker_precache_urls_resolve():
     for url in urls:
         resp = client.get(url)
         assert resp.status_code == 200, f"Precached URL {url} returned {resp.status_code}"
+
+
+def test_manifest_icons_exist_at_their_declared_sizes():
+    """A manifest icon that 404s or lies about its size gives the iPad no home
+    screen icon — and the PWA is how the kids launch this."""
+    client, _, _ = _build_client(with_characters=False)
+
+    manifest = json.loads(open("static/manifest.json", encoding="utf-8").read())
+    icons = manifest.get("icons") or []
+    assert icons, "manifest.json declares no icons"
+
+    for icon in icons:
+        resp = client.get(icon["src"])
+        assert resp.status_code == 200, f"{icon['src']} returned {resp.status_code}"
+        assert resp.headers["content-type"] == icon["type"]
+        # PNG header: width and height are big-endian uint32 at bytes 16-24.
+        width, height = struct.unpack(">II", resp.content[16:24])
+        assert f"{width}x{height}" == icon["sizes"], (
+            f"{icon['src']} is {width}x{height}, manifest declares {icon['sizes']}"
+        )
+
+
+def test_apple_touch_icon_resolves():
+    """iOS reads apple-touch-icon, not the manifest, for Add to Home Screen."""
+    client, _, _ = _build_client(with_characters=False)
+
+    base = open("templates/base.html", encoding="utf-8").read()
+    m = re.search(r'rel="apple-touch-icon"\s+href="([^"]+)"', base)
+    assert m, "base.html has no apple-touch-icon link"
+    assert client.get(m.group(1)).status_code == 200
 
 
 def test_tts_proxy_accepts_long_english_prompts():
