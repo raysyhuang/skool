@@ -20,8 +20,11 @@ Auth: kids log in by tapping their avatar — deliberately no PIN (a
 # Install dependencies
 pip install -r requirements.txt
 
-# Seed the database
+# Seed the database (includes learning topics)
 python -m app.seed.seed_db
+
+# Re-import learning topics only (idempotent)
+python -m app.seed.seed_taxonomy
 
 # Run dev server
 uvicorn app.main:app --reload
@@ -38,9 +41,25 @@ git push heroku main
 - `app/services/` — Business logic (session engine, spaced repetition, rewards, question generation)
 - `app/routes/` — FastAPI route handlers (auth, game)
 - `app/seed/` — Seed data JSON + script
+- `app/seed/taxonomy/` — Vendored Marble Skill Taxonomy subset (see NOTICE)
 - `templates/` — Jinja2 templates organized by theme
 - `static/` — CSS, JS, images
 - `tests/` — pytest tests
+
+## Learning Topics (math / English)
+- Math and English questions are chosen by *topic*, not by rolling a die over
+  age-bucketed modes. Topics come from the Marble Skill Taxonomy
+  (`app/seed/taxonomy/`), which also supplies the prerequisite graph.
+- Only topics listed in `app/seed/taxonomy/topic_modes.json` are **playable** —
+  a topic is playable when an existing generator mode genuinely covers its
+  evidence criteria. The other ~1,250 topics are reference-only and drive the
+  dashboard's "Ask at dinner" prompts.
+- Per-topic mastery uses the same SM-2 code as characters
+  (`update_topic_mastery` in `app/services/spaced_repetition.py`)
+- If the topic tables are empty, math/English silently fall back to the old
+  random age-bucketed rotation — nothing breaks on an un-migrated database
+- Adding a generator mode? Map topics to it in `topic_modes.json`, then run
+  `python scripts/build_taxonomy.py <clone>` and `python -m app.seed.seed_taxonomy`
 
 ## Game Rules
 - 5 questions per session, max 2 sessions per day (override with the

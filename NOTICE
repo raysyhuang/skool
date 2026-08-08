@@ -1,0 +1,34 @@
+Third-party data used by Skool
+==============================
+
+Marble Skill Taxonomy
+---------------------
+Source:   https://github.com/lauramionel/os-taxonomy
+Producer: Marble (https://withmarble.com)
+Vendored: app/seed/taxonomy/topics.json, app/seed/taxonomy/dependencies.json
+
+Licences (as published upstream):
+  * Database (structure, selection, arrangement) — Open Database License
+    (ODbL) v1.0. Commercial use is permitted; derivative *databases* that are
+    publicly distributed must be offered under ODbL and carry this notice.
+  * Authored content (topic names, descriptions, evidence criteria,
+    assessment prompts) — Creative Commons Attribution-ShareAlike 4.0
+    International (CC BY-SA 4.0).
+  * The curriculum standards the topics were distilled from retain their own
+    upstream licences (NGSS, Common Core, UK National Curriculum, and others).
+    Skool does not vendor the standards file.
+
+What Skool vendors and why
+--------------------------
+Upstream ships 1,590 topics spanning ages 4-16 across 8 subjects. Skool
+vendors only the age 4-10 slice (1,325 topics), with the `standards` field
+dropped, plus the hard/soft prerequisite edges among Mathematics and English
+topics. scripts/build_taxonomy.py regenerates that subset from a fresh clone
+and is the only supported way to change these files by hand-edit.
+
+Attribution is surfaced in-product at the foot of the parent dashboard.
+
+Scope note: Skool is a private family app. The ODbL share-alike obligation
+attaches on public distribution of a derived database — if this app is ever
+published, the vendored subset and anything derived from it must ship under
+ODbL with this notice intact.

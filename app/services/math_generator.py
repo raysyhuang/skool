@@ -359,3 +359,19 @@ _GENERATORS = {
     "fractions_compare": _gen_fractions_compare,
     "missing_number_medium": _gen_missing_number_medium,
 }
+
+
+def generate_math_question(mode: str) -> dict:
+    """Generate a single question in a named mode.
+
+    Used by the topic spine, which decides *what* to practise and then asks for
+    one question of the matching mode.
+    """
+    generator = _GENERATORS.get(mode)
+    if generator is None:
+        raise ValueError(f"Unknown math question mode: {mode}")
+    return generator()
+
+
+def available_modes() -> set[str]:
+    return set(_GENERATORS)

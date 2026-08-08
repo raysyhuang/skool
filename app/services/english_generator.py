@@ -659,3 +659,15 @@ _GENERATORS = {
     "prefix_suffix_hard": _gen_prefix_suffix_hard,
     "sentence_complete": _gen_sentence_complete,
 }
+
+
+def generate_english_question(mode: str, age: int) -> dict:
+    """Generate a single question in a named mode. See math_generator's twin."""
+    generator = _GENERATORS.get(mode)
+    if generator is None:
+        raise ValueError(f"Unknown English question mode: {mode}")
+    return generator(age)
+
+
+def available_modes() -> set[str]:
+    return set(_GENERATORS)

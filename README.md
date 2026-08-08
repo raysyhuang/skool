@@ -30,8 +30,14 @@ A daily micro-learning app that teaches Chinese characters to kids through inter
 # Install dependencies
 pip install -r requirements.txt
 
-# Seed the database
+# Seed the database (users, characters, and learning topics)
 python -m app.seed.seed_db
+
+# Re-import learning topics only (idempotent — safe on a live database)
+python -m app.seed.seed_taxonomy
+
+# Upgrade an existing database's schema
+alembic upgrade head
 
 # Run dev server
 uvicorn app.main:app --reload
@@ -47,6 +53,21 @@ pytest tests/ -v
 | Daniel | 0000 | Racing | 4yo — picture matching only |
 | Ellie | 1111 | Pony | 8yo — text & character modes |
 | Parent | 8888 | Dashboard | Admin (Phase 2) |
+
+## Learning Topics
+
+Math and English questions are chosen by *topic* rather than at random, using
+the [Marble Skill Taxonomy](https://github.com/lauramionel/os-taxonomy) — 1,325
+micro-topics for ages 4-10 plus the prerequisite graph between them. Each topic
+carries its own SM-2 schedule, so the app tracks what a child has actually
+mastered and introduces new topics only once their prerequisites are in place.
+
+72 of those topics are **playable** — an existing question generator covers
+them (`app/seed/taxonomy/topic_modes.json`). The rest are reference-only and
+power the parent dashboard's "Ask at Dinner" prompts, which reach into science,
+history, and life skills the app can't quiz.
+
+See `NOTICE` for the upstream licences (ODbL 1.0 / CC BY-SA 4.0).
 
 ## Game Rules
 

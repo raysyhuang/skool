@@ -13,6 +13,7 @@ from app.models.user import User
 from app.models.session import GameSession, SessionQuestion
 from app.models.progress import UserCharacterProgress
 from app.models.character import Character
+from app.services.topic_selection import conversation_prompts, topic_snapshot
 
 router = APIRouter(prefix="/dashboard")
 templates = Jinja2Templates(directory="templates")
@@ -189,6 +190,10 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
             "due_chars": due_chars,
         }
 
+        # ── Topic spine (math / English) + offline conversation prompts ──
+        topics = topic_snapshot(db, child)
+        talk_prompts = conversation_prompts(db, child, limit=3)
+
         child_data.append({
             "user": child,
             "total_sessions": total_sessions,
@@ -199,6 +204,8 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
             "heatmap": heatmap,
             "session_history": session_history,
             "review_schedule": review_schedule,
+            "topics": topics,
+            "talk_prompts": talk_prompts,
         })
 
     return templates.TemplateResponse(request, "dashboard.html", {
