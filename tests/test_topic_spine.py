@@ -30,7 +30,7 @@ def kid9(db):
 
 def test_vendored_taxonomy_imports(db, taxonomy):
     assert taxonomy["topics_added"] == 1325
-    assert taxonomy["playable"] == 72
+    assert taxonomy["playable"] == 90
     assert taxonomy["edges"] > 1000
     assert db.query(LearningTopic).count() == 1325
     assert db.query(TopicPrerequisite).count() == taxonomy["edges"]
@@ -359,3 +359,83 @@ def test_conversation_prompts_leave_room_beyond_practised_work(db, taxonomy, kid
     prompts = conversation_prompts(db, kid9, limit=3)
     assert len(prompts) == 3
     assert sum(1 for p in prompts if p["practised"]) <= 2
+
+
+# ── Parent-queued math / English drills ──
+
+def _practise(db, kid, game_type, wrong_every=None):
+    """Play one session, optionally answering some questions wrong."""
+    session = create_session(db, kid, game_type=game_type)
+    for q in session.questions:
+        answer = q.correct_answer
+        if wrong_every and q.question_number % wrong_every == 0:
+            answer = next(o for o in json.loads(q.options) if o != q.correct_answer)
+        submit_answer(db, kid, q.id, answer)
+    return session
+
+
+def test_weakest_topics_needs_practice_first(db, taxonomy, kid9):
+    from app.services.topic_selection import weakest_topics
+
+    assert weakest_topics(db, kid9, "math") == []      # nothing attempted yet
+
+    _practise(db, kid9, "math", wrong_every=2)
+    weak = weakest_topics(db, kid9, "math")
+
+    assert weak
+    assert all(t.subject == "Mathematics" for t in weak)
+    # Wrong answers reset SM-2 to review-today, so they rank ahead of the rest.
+    assert weak[0].id in {
+        r.topic_id for r in db.query(UserTopicProgress)
+        .filter_by(user_id=kid9.id).all() if r.wrong_count
+    }
+
+
+def test_queued_drill_overrides_spaced_repetition(db, taxonomy, kid9):
+    _practise(db, kid9, "math", wrong_every=2)
+
+    from app.services.topic_selection import weakest_topics
+    targets = weakest_topics(db, kid9, "math", limit=2)
+    kid9.pending_drill_topic_ids = json.dumps([t.id for t in targets])
+    db.commit()
+
+    session = create_session(
+        db, kid9, game_type="math", topic_ids=[t.id for t in targets]
+    )
+    assert {q.topic_id for q in session.questions} == {t.id for t in targets}
+    assert len(session.questions) == 5      # two topics cycled to fill the session
+
+
+def test_drill_topics_ignores_an_empty_or_unknown_queue(db, taxonomy):
+    from app.services.topic_selection import drill_topics
+
+    assert drill_topics(db, None, 5) == []
+    assert drill_topics(db, [], 5) == []
+    assert drill_topics(db, [999999], 5) == []
+
+
+def test_a_maths_drill_survives_an_english_session(db, taxonomy, kid9):
+    """Subjects claim only their own topics, so one drill can't eat the other."""
+    _practise(db, kid9, "math", wrong_every=2)
+    _practise(db, kid9, "english", wrong_every=2)
+
+    from app.services.topic_selection import weakest_topics
+    maths = weakest_topics(db, kid9, "math", limit=2)
+    english = weakest_topics(db, kid9, "english", limit=2)
+    kid9.pending_drill_topic_ids = json.dumps([t.id for t in maths + english])
+    db.commit()
+
+    from app.routes.game import _claim_topic_drill
+    claimed, remaining = _claim_topic_drill(db, kid9, "english")
+
+    assert set(claimed) == {t.id for t in english}
+    assert set(remaining) == {t.id for t in maths}
+
+
+def test_drill_topics_preserves_the_queued_order(db, taxonomy, kid9):
+    from app.services.topic_selection import drill_topics
+
+    pool = candidate_topics(db, 9, "Mathematics")[:3]
+    ordered = [pool[2].id, pool[0].id, pool[1].id]
+    drilled = drill_topics(db, ordered, 3)
+    assert [t.id for t in drilled] == ordered

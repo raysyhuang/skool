@@ -10,9 +10,16 @@
     "can auto-grade them.",
     "",
     "Keep this conservative. Mapping a topic to a mode that only half-covers it",
-    "makes the mastery numbers lie."
+    "makes the mastery numbers lie.",
+    "",
+    "Deliberately NOT mapped, though the names look close:",
+    "  equivalent_fractions <- 'Equivalent fractions on a number line' (no number line here)",
+    "  factors_multiples    <- 'Prime numbers', 'Factor Pairs & Commutativity' (never asked)",
+    "  rounding             <- 'Estimating by rounding', 'Checking Answers by Rounding'",
+    "                          (those are about using rounding inside a calculation)",
+    "  fraction_of_amount   <- 'Fractions of a whole' (partitioning and modelling, not computing)",
+    "  past_tense           <- 'Past, Present and Progressive Tense' (no progressive forms)"
   ],
-
   "math": {
     "counting": [
       "mt_WcfaSfVT33",
@@ -80,9 +87,31 @@
     "missing_number_medium": [
       "mt_XuHmIn2xje",
       "mt_xZvDCYA5Ae"
+    ],
+    "place_value": [
+      "mt_THl9GLxwoL",
+      "mt_aPBzD28_mT",
+      "mt_98c2qwEF7Q",
+      "mt_jY7uf0Cb7o"
+    ],
+    "rounding": [
+      "mt_NLSfvB9vUl",
+      "mt_5NwqN6pf_A"
+    ],
+    "fraction_of_amount": [
+      "mt_cFltwUQi-d",
+      "mt_3y7xKP9MjU"
+    ],
+    "equivalent_fractions": [
+      "mt_FbDKeLfBCo",
+      "mt_FP-mjXaq3B",
+      "mt_ebPelt-qAl"
+    ],
+    "factors_multiples": [
+      "mt_FHIAv6dfhU",
+      "mt_0Wg5F97osg"
     ]
   },
-
   "english": {
     "letter_sound": [
       "mt_F978c32kDr",
@@ -142,6 +171,17 @@
       "mt_Of-WsrRQ8B",
       "mt_mkDqmejLMw",
       "mt_7D-vlii8F-"
+    ],
+    "plural_form": [
+      "mt_18qkgxr_-T",
+      "mt_nFBLNoChD0"
+    ],
+    "past_tense": [
+      "mt_KIG5FQI5fC"
+    ],
+    "syllable_count": [
+      "mt_UvNrOXny1i",
+      "mt_kVzAFMuFc4"
     ]
   }
 }

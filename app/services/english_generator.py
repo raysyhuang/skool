@@ -51,6 +51,37 @@ _RHYME_GROUPS = [
     ("sit", ["bit", "fit", "hit", "kit"]),
 ]
 
+# ── Pools for the grammar modes added to widen taxonomy coverage ──
+
+# Plurals where a plain -s is wrong: true irregulars (child/children) plus
+# the -ies and -es patterns children reach for -s on anyway.
+_IRREGULAR_PLURALS = [
+    ("child", "children"), ("foot", "feet"), ("tooth", "teeth"),
+    ("mouse", "mice"), ("goose", "geese"), ("man", "men"),
+    ("woman", "women"), ("person", "people"), ("leaf", "leaves"),
+    ("knife", "knives"), ("wolf", "wolves"), ("shelf", "shelves"),
+    ("baby", "babies"), ("city", "cities"), ("story", "stories"),
+    ("box", "boxes"), ("bus", "buses"), ("dish", "dishes"),
+]
+
+# Irregular past tense: same idea for -ed.
+_IRREGULAR_PAST = [
+    ("go", "went"), ("eat", "ate"), ("run", "ran"), ("see", "saw"),
+    ("take", "took"), ("give", "gave"), ("come", "came"), ("bring", "brought"),
+    ("think", "thought"), ("catch", "caught"), ("teach", "taught"),
+    ("buy", "bought"), ("write", "wrote"), ("sing", "sang"),
+    ("drink", "drank"), ("swim", "swam"), ("fly", "flew"), ("draw", "drew"),
+]
+
+# Syllable counts, chosen so the split is unambiguous when said aloud.
+_SYLLABLE_WORDS = [
+    ("cat", 1), ("dog", 1), ("book", 1), ("tree", 1),
+    ("rabbit", 2), ("pencil", 2), ("garden", 2), ("window", 2), ("monkey", 2),
+    ("elephant", 3), ("banana", 3), ("computer", 3), ("umbrella", 3),
+    ("butterfly", 3), ("dinosaur", 3),
+    ("caterpillar", 4), ("television", 4), ("alligator", 4),
+]
+
 # Sight words by tier (Dolch + Fry common words)
 _SIGHT_WORDS_EASY = [
     "the", "and", "a", "to", "is", "in", "it", "he", "she", "my",
@@ -142,14 +173,15 @@ def generate_english_questions(age: int, count: int = 5) -> list[dict]:
         modes = [
             "vocabulary_hard", "context_clues", "homophone_pick",
             "synonym_match", "prefix_suffix_hard", "sentence_complete",
+            "plural_form", "past_tense",
         ]
-        weights = [18, 20, 16, 16, 15, 15]
+        weights = [14, 15, 12, 12, 12, 12, 11, 12]
     else:
         modes = [
             "sight_word_spell", "vocabulary_match", "antonym_match",
-            "prefix_suffix", "rhyme_match",
+            "prefix_suffix", "rhyme_match", "syllable_count", "plural_form",
         ]
-        weights = [25, 25, 20, 20, 10]
+        weights = [20, 20, 15, 15, 8, 11, 11]
 
     questions = []
     for _ in range(count):
@@ -387,6 +419,74 @@ _VOCABULARY_HARD = [
     ("urgent", "needing attention right now"),
     ("vivid", "very bright and clear"),
 ]
+
+def _gen_plural_form(age: int) -> dict:
+    """Irregular plurals — where the regular -s rule fails."""
+    singular, plural = random.choice(_IRREGULAR_PLURALS)
+
+    # Distractors are the mistakes a child actually makes: the naive -s form,
+    # and another word's plural.
+    naive = singular + "s"
+    others = [p for _, p in _IRREGULAR_PLURALS if p != plural and p != naive]
+    wrong = [naive, random.choice(others)]
+
+    options = [plural] + wrong
+    random.shuffle(options)
+
+    return _build(
+        mode="plural_form",
+        expression=f"one {singular} \u2192 two ___",
+        prompt_text=f"One {singular}, two ___?",
+        prompt_image=None,
+        correct_answer=plural,
+        options=options,
+    )
+
+
+def _gen_past_tense(age: int) -> dict:
+    """Irregular past tense — where the regular -ed rule fails."""
+    present, past = random.choice(_IRREGULAR_PAST)
+
+    naive = present + ("d" if present.endswith("e") else "ed")
+    others = [p for _, p in _IRREGULAR_PAST if p != past and p != naive]
+    wrong = [naive, random.choice(others)]
+
+    options = [past] + wrong
+    random.shuffle(options)
+
+    return _build(
+        mode="past_tense",
+        expression=f"today I {present} \u2192 yesterday I ___",
+        prompt_text=f"Today I {present}. Yesterday I ___?",
+        prompt_image=None,
+        correct_answer=past,
+        options=options,
+    )
+
+
+def _gen_syllable_count(age: int) -> dict:
+    """How many beats in the word? Underpins reading longer words."""
+    word, count = random.choice(_SYLLABLE_WORDS)
+
+    wrong = set()
+    for delta in (-2, -1, 1, 2):
+        candidate = count + delta
+        if candidate >= 1 and candidate != count:
+            wrong.add(candidate)
+    wrong = random.sample(sorted(wrong), 2)
+
+    options = [str(count)] + [str(w) for w in wrong]
+    random.shuffle(options)
+
+    return _build(
+        mode="syllable_count",
+        expression=f"\U0001F44F {word}",
+        prompt_text=f"How many syllables in '{word}'?",
+        prompt_image=None,
+        correct_answer=str(count),
+        options=options,
+    )
+
 
 def _gen_vocabulary_hard(age: int) -> dict:
     word, definition = random.choice(_VOCABULARY_HARD)
@@ -658,6 +758,10 @@ _GENERATORS = {
     "synonym_match": _gen_synonym_match,
     "prefix_suffix_hard": _gen_prefix_suffix_hard,
     "sentence_complete": _gen_sentence_complete,
+    # Grammar / word structure
+    "plural_form": _gen_plural_form,
+    "past_tense": _gen_past_tense,
+    "syllable_count": _gen_syllable_count,
 }
 
 

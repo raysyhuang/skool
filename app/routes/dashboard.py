@@ -13,7 +13,13 @@ from app.models.user import User
 from app.models.session import GameSession, SessionQuestion
 from app.models.progress import UserCharacterProgress
 from app.models.character import Character
-from app.services.topic_selection import conversation_prompts, topic_snapshot
+from app.models.topic import LearningTopic
+from app.services.topic_selection import (
+    SUBJECT_BY_GAME_TYPE,
+    conversation_prompts,
+    topic_snapshot,
+    weakest_topics,
+)
 
 router = APIRouter(prefix="/dashboard")
 templates = Jinja2Templates(directory="templates")
@@ -192,6 +198,13 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
 
         # ── Topic spine (math / English) + offline conversation prompts ──
         topics = topic_snapshot(db, child)
+        queued_topics = json.loads(child.pending_drill_topic_ids or "[]")
+        for entry in topics:
+            entry["drillable"] = bool(weakest_topics(db, child, entry["game_type"]))
+            entry["drill_queued"] = any(
+                t.id in queued_topics
+                for t in weakest_topics(db, child, entry["game_type"], limit=50)
+            )
         talk_prompts = conversation_prompts(db, child, limit=3)
 
         child_data.append({
@@ -281,5 +294,77 @@ def cancel_drill(child_id: int, request: Request, db: Session = Depends(get_db))
         return JSONResponse({"error": "Child not found"}, status_code=404)
 
     child.pending_drill_char_ids = None
+    db.commit()
+    return JSONResponse({"cancelled": True})
+
+
+@router.post("/drill-topics/{child_id}/{game_type}")
+def start_topic_drill(child_id: int, game_type: str, request: Request, db: Session = Depends(get_db)):
+    """Queue a math or English drill on the topics this child is weakest at."""
+    user = _get_current_user(request, db)
+    if not user or user.role != "parent":
+        return JSONResponse({"error": "Not authorized"}, status_code=403)
+
+    if game_type not in SUBJECT_BY_GAME_TYPE:
+        return JSONResponse({"error": f"Cannot drill {game_type}"}, status_code=400)
+
+    child = db.query(User).filter_by(id=child_id, role="child").first()
+    if not child:
+        return JSONResponse({"error": "Child not found"}, status_code=404)
+
+    topics = weakest_topics(db, child, game_type, limit=5)
+    if not topics:
+        return JSONResponse(
+            {"error": f"{child.name} hasn't practised any {game_type} topics yet — "
+                      f"there's nothing to drill until they play a few sessions."},
+            status_code=400,
+        )
+
+    # Keep any drill already queued for the *other* subject.
+    existing = json.loads(child.pending_drill_topic_ids or "[]")
+    other_subject_ids = {
+        row[0] for row in db.query(LearningTopic.id)
+        .filter(LearningTopic.id.in_(existing))
+        .filter(LearningTopic.subject != SUBJECT_BY_GAME_TYPE[game_type])
+        .all()
+    } if existing else set()
+
+    child.pending_drill_topic_ids = json.dumps(
+        [t.id for t in topics] + sorted(other_subject_ids)
+    )
+    db.commit()
+
+    return JSONResponse({
+        "queued": True,
+        "game_type": game_type,
+        "topics": [t.name for t in topics],
+        "child_name": child.name,
+    })
+
+
+@router.post("/drill-topics/{child_id}/{game_type}/cancel")
+def cancel_topic_drill(child_id: int, game_type: str, request: Request, db: Session = Depends(get_db)):
+    """Drop the queued drill for one subject, leaving the other alone."""
+    user = _get_current_user(request, db)
+    if not user or user.role != "parent":
+        return JSONResponse({"error": "Not authorized"}, status_code=403)
+
+    subject = SUBJECT_BY_GAME_TYPE.get(game_type)
+    if subject is None:
+        return JSONResponse({"error": f"Cannot drill {game_type}"}, status_code=400)
+
+    child = db.query(User).filter_by(id=child_id, role="child").first()
+    if not child:
+        return JSONResponse({"error": "Child not found"}, status_code=404)
+
+    queued = json.loads(child.pending_drill_topic_ids or "[]")
+    keep = [
+        row[0] for row in db.query(LearningTopic.id)
+        .filter(LearningTopic.id.in_(queued))
+        .filter(LearningTopic.subject != subject)
+        .all()
+    ] if queued else []
+
+    child.pending_drill_topic_ids = json.dumps(keep) if keep else None
     db.commit()
     return JSONResponse({"cancelled": True})

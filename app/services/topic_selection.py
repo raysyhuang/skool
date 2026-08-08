@@ -314,3 +314,70 @@ def topic_snapshot(db: Session, child: User) -> list[dict]:
             ],
         })
     return out
+
+
+def drill_topics(db: Session, topic_ids: list[int] | None, count: int) -> list[LearningTopic]:
+    """Expand a parent-queued drill into a full session's worth of topics.
+
+    A drill is a deliberate override: the parent picked these, so spaced
+    repetition doesn't get a say. Fewer topics than questions means the topics
+    cycle — five questions on two shaky topics is exactly the point of a drill.
+    """
+    if not topic_ids:
+        return []
+
+    found = (
+        db.query(LearningTopic)
+        .filter(LearningTopic.id.in_(topic_ids))
+        .filter(LearningTopic.question_mode.isnot(None))
+        .all()
+    )
+    if not found:
+        return []
+
+    # Preserve the order the dashboard queued them in (weakest first).
+    order = {tid: i for i, tid in enumerate(topic_ids)}
+    found.sort(key=lambda t: order.get(t.id, len(order)))
+
+    selected = []
+    while len(selected) < count:
+        selected.append(found[len(selected) % len(found)])
+    return selected[:count]
+
+
+def weakest_topics(db: Session, child: User, game_type: str, limit: int = 5) -> list[LearningTopic]:
+    """Topics worth drilling for this child: overdue first, then weakest.
+
+    Only topics they have actually attempted — drilling something never seen
+    would be teaching, not drilling, and the session engine already introduces
+    new topics on its own.
+    """
+    subject = SUBJECT_BY_GAME_TYPE.get(game_type)
+    if subject is None:
+        return []
+
+    today = date.today()
+    rows = (
+        db.query(UserTopicProgress, LearningTopic)
+        .join(LearningTopic, UserTopicProgress.topic_id == LearningTopic.id)
+        .filter(UserTopicProgress.user_id == child.id)
+        .filter(LearningTopic.subject == subject)
+        .filter(LearningTopic.question_mode.isnot(None))
+        .all()
+    )
+    if not rows:
+        return []
+
+    def rank(pair):
+        progress, _ = pair
+        overdue = (
+            progress.next_review_date is not None and progress.next_review_date <= today
+        )
+        return (
+            0 if overdue else 1,
+            progress.mastery_score or 0,
+            -(progress.wrong_count or 0),
+        )
+
+    rows.sort(key=rank)
+    return [topic for _, topic in rows[:limit]]
