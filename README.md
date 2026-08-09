@@ -4,16 +4,16 @@ A daily micro-learning app that teaches Chinese characters to kids through inter
 
 ## Features
 
-- **500 Chinese words & phrases** — characters, compound words, idioms, and more
+- **540 Chinese words & phrases** — characters, compound words, idioms, and more
 - **Age-appropriate game modes:**
   - **Daniel (age 4):** Picture matching — see a character, tap the correct image
-  - **Ellie (age 8):** Multiple modes — character-to-meaning, fill-in-the-blank, pinyin-to-character, true/false
+  - **Ellie (age 9):** Multiple modes — character-to-meaning, fill-in-the-blank, pinyin-to-character, true/false
 - **Spaced repetition** — characters you struggle with appear more often
 - **Points & rewards** — earn stars, coins, and real-world rewards
 - **Natural Chinese TTS** — Google Translate pronunciation via server proxy
 - **Real background music** — royalty-free kids tracks from Mixkit
 - **Dynamic themes** — 6 randomized CSS backgrounds per session
-- **220+ custom SVG icons** — hand-crafted illustrations for concrete nouns
+- **219 custom SVG icons** — hand-crafted illustrations for concrete nouns
 - **iPad-first design** — 60px+ touch targets, portrait & landscape support
 
 ## Tech Stack
@@ -21,8 +21,11 @@ A daily micro-learning app that teaches Chinese characters to kids through inter
 - **Backend:** FastAPI + SQLAlchemy + Jinja2
 - **Frontend:** Vanilla JS, CSS animations, Web Audio API for sound effects
 - **Database:** SQLite (local) / PostgreSQL (Heroku)
-- **Auth:** 4-digit PIN + session cookie
-- **TTS:** Google Translate proxy for natural Chinese pronunciation
+- **Auth:** session cookie. Kids log in by tapping their avatar — no PIN,
+  because a 4-year-old can't manage one. The 4-digit PIN gates the parent
+  dashboard only.
+- **TTS:** Google Translate proxy for natural Chinese pronunciation, with a
+  Web Speech API fallback when autoplay is blocked
 
 ## Quick Start
 
@@ -51,8 +54,8 @@ pytest tests/ -v
 | User | PIN | Theme | Age Group |
 |------|-----|-------|-----------|
 | Daniel | 0000 | Racing | 4yo — picture matching only |
-| Ellie | 1111 | Pony | 8yo — text & character modes |
-| Parent | 8888 | Dashboard | Admin (Phase 2) |
+| Ellie | 1111 | Pony | 9yo — text & character modes |
+| Parent | 8888 | Dashboard | Progress, drills, dinner prompts |
 
 ## Learning Topics
 
@@ -72,7 +75,9 @@ See `NOTICE` for the upstream licences (ODbL 1.0 / CC BY-SA 4.0).
 ## Game Rules
 
 - 5 questions per session, max 2 sessions per day
-- Spaced repetition: mastery 0-5 (+1 correct, -1 wrong)
+- Spaced repetition: SM-2 (easiness factor, interval, next review date).
+  The 0-5 mastery score shown in the dashboard is derived from the SM-2
+  repetition count, not incremented directly.
 - Points: +2 correct, +5 daily bonus, +streak bonus
 - Rewards: points -> stars (1:1) -> coins (10:1) -> RMB (10 coins = 20 yuan)
 
