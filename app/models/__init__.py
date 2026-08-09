@@ -6,6 +6,11 @@ from app.models.rewards import PointsLedger
 from app.models.achievement import UserAchievement
 from app.models.store import StoreItem, UserInventory
 from app.models.quest import QuestProgress
+from app.models.topic import (
+    LearningTopic,
+    TopicPrerequisite,
+    UserTopicProgress,
+)
 
 __all__ = [
     "User",
@@ -18,4 +23,7 @@ __all__ = [
     "StoreItem",
     "UserInventory",
     "QuestProgress",
+    "LearningTopic",
+    "TopicPrerequisite",
+    "UserTopicProgress",
 ]

@@ -44,6 +44,7 @@ class User(Base):
 
     # Relationships
     progress = relationship("UserCharacterProgress", back_populates="user")
+    topic_progress = relationship("UserTopicProgress", back_populates="user")
     sessions = relationship("GameSession", back_populates="user")
     ledger_entries = relationship("PointsLedger", back_populates="user")
     achievements = relationship("UserAchievement", back_populates="user")

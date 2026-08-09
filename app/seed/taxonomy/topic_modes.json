@@ -1,0 +1,147 @@
+{
+  "_comment": [
+    "Hand-curated map from Marble Skill Taxonomy topic ids to the question",
+    "generator modes in app/services/{math,english}_generator.py.",
+    "",
+    "A topic listed here is 'playable': the generator genuinely exercises the",
+    "evidence criteria the taxonomy lists for it. Topics NOT listed here are",
+    "still imported — they drive the parent dashboard's conversation prompts —",
+    "but they never become quiz questions, because we have no generator that",
+    "can auto-grade them.",
+    "",
+    "Keep this conservative. Mapping a topic to a mode that only half-covers it",
+    "makes the mastery numbers lie."
+  ],
+
+  "math": {
+    "counting": [
+      "mt_WcfaSfVT33",
+      "mt_dmNvjroCPT",
+      "mt_pAcaehday5",
+      "mt_yqAL6O5i_v"
+    ],
+    "addition_simple": [
+      "mt_OvyoRo47K-",
+      "mt_e8CZ7E5qW7",
+      "mt_7XcCG43ZZW",
+      "mt_ghF3Vv6taM",
+      "mt__we2TDqnJx"
+    ],
+    "subtraction_simple": [
+      "mt_zuKAX6lcYR",
+      "mt_mr_Vk7FGzK"
+    ],
+    "addition_easy": [
+      "mt_glPPG-kTQY",
+      "mt_UQnAFPs83F",
+      "mt_cChv2j_-Da"
+    ],
+    "subtraction_easy": [
+      "mt_m1W6nTQJ2b",
+      "mt_3e_PQxwC12",
+      "mt_AKAtWEwpcj"
+    ],
+    "multiplication_easy": [
+      "mt_PZ909yPrEC",
+      "mt_HhuSDxwDNM"
+    ],
+    "missing_number_easy": [
+      "mt_ezc2m_0dzN",
+      "mt_3JgrHY221M",
+      "mt_ehGS_uVSJv"
+    ],
+    "addition_medium": [
+      "mt_ewmuMMPAzP",
+      "mt_HFRYjTb-Z5",
+      "mt_mpS-JK_p_m"
+    ],
+    "subtraction_medium": [
+      "mt_SrrsLiJkr3",
+      "mt_-F_Lv_apzH",
+      "mt_Yw1_4Nfsql"
+    ],
+    "multiplication_medium": [
+      "mt_wQ89AEXhz3",
+      "mt_K5jM7vlVhA",
+      "mt_WX30dzi4dt",
+      "mt_8A3pZNOp7Z"
+    ],
+    "division_basic": [
+      "mt_iNdrM2-oJf",
+      "mt_GDG9_SZmsO",
+      "mt_pjfmCMMPjO"
+    ],
+    "fractions_compare": [
+      "mt_IfEgu0X449",
+      "mt_SsLWS_APM7",
+      "mt_HnKbuCliNS",
+      "mt_SXbZ3bC9z7"
+    ],
+    "missing_number_medium": [
+      "mt_XuHmIn2xje",
+      "mt_xZvDCYA5Ae"
+    ]
+  },
+
+  "english": {
+    "letter_sound": [
+      "mt_F978c32kDr",
+      "mt_frDIaXzWbx"
+    ],
+    "beginning_sound": [
+      "mt_BhYJZUsErp",
+      "mt_PvU3eoikev"
+    ],
+    "rhyme_match": [
+      "mt_4GiE83rJF_"
+    ],
+    "cvc_blend": [
+      "mt__KHQttMde3"
+    ],
+    "sight_word_spell": [
+      "mt_YKkCM63fSC",
+      "mt_Jq0MjURrRC"
+    ],
+    "vocabulary_match": [
+      "mt_f_dMmvzxwo",
+      "mt_NP101Zl-4g"
+    ],
+    "antonym_match": [
+      "mt_VLu59hpQ4T"
+    ],
+    "prefix_suffix": [
+      "mt_zBUcAPDRPM",
+      "mt_FYK8m6eHQm",
+      "mt_UEe3MC5RZc"
+    ],
+    "vocabulary_hard": [
+      "mt_WzOyJFKDIu",
+      "mt_6-MYToNZ39"
+    ],
+    "context_clues": [
+      "mt_14OR-MhGJ9",
+      "mt_aw0PldeT_L"
+    ],
+    "homophone_pick": [
+      "mt_37QCuGOxFe",
+      "mt_u3OuIXqmAo"
+    ],
+    "synonym_match": [
+      "mt_E5YbLvMgLL"
+    ],
+    "prefix_suffix_hard": [
+      "mt_HrgDjxcWvf",
+      "mt_T6nrrf2K43",
+      "mt_tHtjfjjFrl",
+      "mt_2X9Cd38eSJ",
+      "mt_p1imGSFgJT"
+    ],
+    "sentence_complete": [
+      "mt_2NfIKEYdbm",
+      "mt_X1L9DoUwjF",
+      "mt_Of-WsrRQ8B",
+      "mt_mkDqmejLMw",
+      "mt_7D-vlii8F-"
+    ]
+  }
+}

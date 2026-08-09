@@ -82,3 +82,10 @@ def sample_characters(db):
         chars.append(c)
     db.commit()
     return chars
+
+
+@pytest.fixture
+def taxonomy(db):
+    """Import the real vendored taxonomy subset into the test database."""
+    from app.seed.seed_taxonomy import import_taxonomy
+    return import_taxonomy(db)

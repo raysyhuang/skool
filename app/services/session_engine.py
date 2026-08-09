@@ -7,11 +7,12 @@ from app.models.user import User
 from app.models.session import GameSession, SessionQuestion
 from app.models.rewards import PointsLedger
 from app.services.question_generator import select_characters, generate_question, pick_question_mode
-from app.services.spaced_repetition import update_mastery
+from app.services.spaced_repetition import update_mastery, update_topic_mastery
 from app.services.rewards import award_points
-from app.services.math_generator import generate_math_questions
+from app.services.math_generator import generate_math_questions, generate_math_question
 from app.services.logic_generator import generate_logic_questions
-from app.services.english_generator import generate_english_questions
+from app.services.english_generator import generate_english_questions, generate_english_question
+from app.services.topic_selection import select_topics
 from app.config import get_settings
 
 
@@ -92,21 +93,21 @@ def _create_chinese_questions(db: Session, game_session: GameSession, user: User
 
 
 def _create_math_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
-    """Create math questions based on user age."""
-    age = user.age or 5
-    math_qs = generate_math_questions(age, count=settings.questions_per_session)
+    """Create math questions, driven by the taxonomy topic spine where possible."""
+    count = settings.questions_per_session
+    topics = select_topics(db, user, "math", count)
 
-    for i, mq in enumerate(math_qs, 1):
-        question = SessionQuestion(
-            session_id=game_session.id,
-            character_id=None,
-            question_number=i,
-            correct_answer=mq["correct_answer"],
-            options=json.dumps(mq["options"]),
-            question_mode=mq["mode"],
-            prompt_data=mq["prompt_data"],
-        )
-        db.add(question)
+    if topics:
+        for i, topic in enumerate(topics, 1):
+            mq = generate_math_question(topic.question_mode)
+            db.add(_topic_question(game_session, i, mq, topic.id))
+        return
+
+    # No topics seeded (fresh DB, or the taxonomy import was skipped) — keep the
+    # original age-bucketed random rotation working.
+    age = user.age or 5
+    for i, mq in enumerate(generate_math_questions(age, count=count), 1):
+        db.add(_topic_question(game_session, i, mq, None))
 
 
 def _create_logic_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
@@ -128,21 +129,35 @@ def _create_logic_questions(db: Session, game_session: GameSession, user: User, 
 
 
 def _create_english_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
-    """Create English language questions based on user age."""
+    """Create English questions, driven by the taxonomy topic spine where possible."""
+    count = settings.questions_per_session
     age = user.age or 5
-    eng_qs = generate_english_questions(age, count=settings.questions_per_session)
+    topics = select_topics(db, user, "english", count)
 
-    for i, eq in enumerate(eng_qs, 1):
-        question = SessionQuestion(
-            session_id=game_session.id,
-            character_id=None,
-            question_number=i,
-            correct_answer=eq["correct_answer"],
-            options=json.dumps(eq["options"]),
-            question_mode=eq["mode"],
-            prompt_data=eq["prompt_data"],
-        )
-        db.add(question)
+    if topics:
+        for i, topic in enumerate(topics, 1):
+            eq = generate_english_question(topic.question_mode, age)
+            db.add(_topic_question(game_session, i, eq, topic.id))
+        return
+
+    for i, eq in enumerate(generate_english_questions(age, count=count), 1):
+        db.add(_topic_question(game_session, i, eq, None))
+
+
+def _topic_question(
+    game_session: GameSession, number: int, q: dict, topic_id: int | None
+) -> SessionQuestion:
+    """Build a SessionQuestion from a generator payload."""
+    return SessionQuestion(
+        session_id=game_session.id,
+        character_id=None,
+        topic_id=topic_id,
+        question_number=number,
+        correct_answer=q["correct_answer"],
+        options=json.dumps(q["options"]),
+        question_mode=q["mode"],
+        prompt_data=q["prompt_data"],
+    )
 
 
 def submit_answer(db: Session, user: User, question_id: int, selected_answer: str) -> dict:
@@ -176,6 +191,8 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
         # Update mastery on first answer attempt (SM-2 with quality)
         if question.character_id is not None:
             update_mastery(db, user.id, question.character_id, is_correct, is_first_attempt=True)
+        if question.topic_id is not None:
+            update_topic_mastery(db, user.id, question.topic_id, is_correct, is_first_attempt=True)
 
         if is_correct:
             points = settings.points_correct
@@ -210,6 +227,8 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
             session.total_correct += 1
             if question.character_id is not None:
                 update_mastery(db, user.id, question.character_id, True, is_first_attempt=False)
+            if question.topic_id is not None:
+                update_topic_mastery(db, user.id, question.topic_id, True, is_first_attempt=False)
             session.points_earned += points
             award_points(db, user, points, "correct_answer")
         else:

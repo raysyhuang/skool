@@ -27,6 +27,7 @@ class SessionQuestion(Base):
     id = Column(Integer, primary_key=True, index=True)
     session_id = Column(Integer, ForeignKey("game_sessions.id"), nullable=False)
     character_id = Column(Integer, ForeignKey("characters.id"), nullable=True)  # null for math/logic
+    topic_id = Column(Integer, ForeignKey("learning_topics.id"), nullable=True)  # taxonomy topic for math/english
     question_number = Column(Integer, nullable=False)  # 1-5
     question_mode = Column(String, default="char_to_image")  # char_to_image, image_to_char, char_to_meaning, meaning_to_char, math_*, logic_*
     correct_answer = Column(String, nullable=False)     # the correct image_url, meaning, or character
@@ -39,3 +40,4 @@ class SessionQuestion(Base):
 
     session = relationship("GameSession", back_populates="questions")
     character = relationship("Character")
+    topic = relationship("LearningTopic")
