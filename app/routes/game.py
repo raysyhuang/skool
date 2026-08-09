@@ -115,6 +115,26 @@ def _build_generic_questions_json(questions) -> list[dict]:
     return result
 
 
+def _claim_topic_drill(request_db, user, game_type: str) -> tuple[list[int], list[int]]:
+    """Split the queued drill into (this subject's topics, everything else)."""
+    from app.models.topic import LearningTopic
+    from app.services.topic_selection import SUBJECT_BY_GAME_TYPE
+
+    try:
+        queued = json.loads(user.pending_drill_topic_ids) or []
+    except (ValueError, TypeError):
+        return [], []
+
+    subject = SUBJECT_BY_GAME_TYPE.get(game_type)
+    mine = {
+        row[0] for row in request_db.query(LearningTopic.id)
+        .filter(LearningTopic.id.in_(queued))
+        .filter(LearningTopic.subject == subject)
+        .all()
+    }
+    return [t for t in queued if t in mine], [t for t in queued if t not in mine]
+
+
 def _start_game_session(request: Request, db: Session, game_type: str):
     """Shared logic for starting a game session of any type."""
     user = get_current_user(request, db)
@@ -135,7 +155,7 @@ def _start_game_session(request: Request, db: Session, game_type: str):
             "theme_cfg": get_theme(user),
         })
 
-    # A drill queued by the parent takes over the next Chinese session
+    # A drill queued by the parent takes over the next matching session
     drill_char_ids = None
     if game_type == "chinese" and user.pending_drill_char_ids:
         try:
@@ -144,8 +164,18 @@ def _start_game_session(request: Request, db: Session, game_type: str):
             drill_char_ids = None
         user.pending_drill_char_ids = None
 
+    drill_topic_ids = None
+    if game_type in ("math", "english") and user.pending_drill_topic_ids:
+        drill_topic_ids, remaining = _claim_topic_drill(db, user, game_type)
+        # Only this subject's topics are consumed; a queued English drill
+        # survives the child playing maths first.
+        user.pending_drill_topic_ids = json.dumps(remaining) if remaining else None
+
     try:
-        session = create_session(db, user, game_type=game_type, character_ids=drill_char_ids)
+        session = create_session(
+            db, user, game_type=game_type,
+            character_ids=drill_char_ids, topic_ids=drill_topic_ids,
+        )
     except SessionLimitReached:
         return templates.TemplateResponse(request, resolve_theme_template(user.theme, "limit_reached.html"), {
             "user": user,
@@ -281,7 +311,7 @@ def game_page(request: Request, db: Session = Depends(get_db)):
         "badge_count": badge_count,
         "quest_info": quest_info,
         "car_tiers": tiers,
-        "has_pending_drill": bool(user.pending_drill_char_ids),
+        "has_pending_drill": bool(user.pending_drill_char_ids or user.pending_drill_topic_ids),
         "is_prereader": (user.age or 5) <= 5,
     })
 

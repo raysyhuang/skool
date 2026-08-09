@@ -83,6 +83,120 @@
         margin-bottom: 10px;
     }
 
+    /* ── Topic spine (math / English) ── */
+    .topic-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .topic-card {
+        background: #f5f6fa;
+        border-radius: 16px;
+        padding: 14px 16px;
+    }
+    .topic-card .tc-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-weight: 800;
+        color: #2d3436;
+        margin-bottom: 8px;
+    }
+    .topic-card .tc-pct { font-size: 20px; color: #00b894; }
+    .topic-bar {
+        height: 8px;
+        border-radius: 4px;
+        background: #dfe6e9;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+    .topic-bar > span {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, #55efc4, #00b894);
+    }
+    .topic-card .tc-counts {
+        font-size: 12px;
+        color: #636e72;
+        font-weight: 600;
+    }
+    .topic-card .tc-weak {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #636e72;
+        line-height: 1.6;
+    }
+    .topic-card .tc-weak b { color: #2d3436; font-weight: 700; }
+    .topic-drill-btn {
+        margin-top: 12px;
+        width: 100%;
+        min-height: 44px;
+        border: none;
+        border-radius: 12px;
+        background: #6c5ce7;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+    .topic-drill-btn:disabled { opacity: 0.6; }
+    .topic-drill-status {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #6c5ce7;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+    .topic-drill-status a { color: #636e72; }
+
+    .topic-empty {
+        font-size: 13px;
+        color: #636e72;
+        background: #f5f6fa;
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+    }
+
+    /* ── Ask-at-dinner prompts ── */
+    .talk-list { margin-bottom: 20px; }
+    .talk-item {
+        background: #fffaf0;
+        border-left: 4px solid #fdcb6e;
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+    }
+    .talk-item .tk-meta {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #b8860b;
+        margin-bottom: 4px;
+    }
+    .talk-item .tk-prompt {
+        font-size: 14px;
+        color: #2d3436;
+        line-height: 1.5;
+    }
+    .talk-item .tk-evidence {
+        margin: 8px 0 0 16px;
+        font-size: 12px;
+        color: #636e72;
+        line-height: 1.6;
+    }
+    .attribution {
+        max-width: 800px;
+        margin: 0 auto 24px;
+        text-align: center;
+        font-size: 11px;
+        color: #95a5a6;
+        line-height: 1.6;
+    }
+    .attribution a { color: #7f8c8d; }
+
     /* ── Heatmap ── */
     .heatmap-grid {
         display: grid;
@@ -441,6 +555,72 @@
         <a href="#" onclick="cancelDrill({{ child.user.id }}); return false;">Cancel</a>
     </div>
 
+    {# ── Math / English topic progress ── #}
+    <div class="section-title">Math &amp; English Topics</div>
+    {% if child.topics %}
+    <div class="topic-grid">
+        {% for t in child.topics %}
+        <div class="topic-card">
+            <div class="tc-head">
+                <span>{{ t.subject }}</span>
+                <span class="tc-pct">{{ t.pct }}%</span>
+            </div>
+            <div class="topic-bar"><span style="width: {{ t.pct }}%;"></span></div>
+            <div class="tc-counts">
+                {{ t.mastered }} mastered &middot; {{ t.started }} in progress &middot;
+                {{ t.untouched }} not started ({{ t.total }} age-appropriate)
+            </div>
+            {% if t.weakest %}
+            <div class="tc-weak">
+                Needs practice:
+                {% for w in t.weakest %}<b>{{ w.name }}</b>{% if not loop.last %}, {% endif %}{% endfor %}
+            </div>
+            {% endif %}
+            {% if t.drillable %}
+            <button class="topic-drill-btn"
+                    id="tdrill-btn-{{ child.user.id }}-{{ t.game_type }}"
+                    onclick="startTopicDrill({{ child.user.id }}, '{{ t.game_type }}')"
+                    {% if t.drill_queued %}style="display:none"{% endif %}>
+                &#9889; Drill {{ t.subject }}
+            </button>
+            <div class="topic-drill-status"
+                 id="tdrill-status-{{ child.user.id }}-{{ t.game_type }}"
+                 {% if not t.drill_queued %}style="display:none"{% endif %}>
+                Queued &mdash; starts next {{ t.game_type }} session.
+                <a href="#" onclick="cancelTopicDrill({{ child.user.id }}, '{{ t.game_type }}'); return false;">Cancel</a>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="topic-empty">
+        No learning topics loaded yet — run <code>python -m app.seed.seed_taxonomy</code>.
+        Until then math and English pick questions at random by age.
+    </div>
+    {% endif %}
+
+    {# ── Offline conversation prompts ── #}
+    {% if child.talk_prompts %}
+    <div class="section-title">Ask {{ child.user.name }} at Dinner</div>
+    <div class="talk-list">
+        {% for tp in child.talk_prompts %}
+        <div class="talk-item">
+            <div class="tk-meta">
+                {{ tp.subject }} &middot; {{ tp.domain }}
+                {%- if tp.practised %} &middot; practising now{% endif %}
+            </div>
+            <div class="tk-prompt">{{ tp.prompt }}</div>
+            {% if tp.evidence %}
+            <ul class="tk-evidence">
+                {% for e in tp.evidence[:2] %}<li>{{ e }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     {# ── Mastery distribution ── #}
     <div class="section-title">Mastery Distribution</div>
     <div class="mastery-chart">
@@ -483,6 +663,12 @@
 </div>
 {% endfor %}
 
+<div class="attribution">
+    Topic graph and conversation prompts from the
+    <a href="https://github.com/lauramionel/os-taxonomy" target="_blank" rel="noopener">Marble Skill Taxonomy</a>
+    &mdash; database ODbL 1.0, content CC BY-SA 4.0.
+</div>
+
 <a class="back-link" href="/game/">&#8592; Back</a>
 {% endblock %}
 
@@ -511,6 +697,47 @@ function startDrill(childId) {
     .catch(function() {
         alert('Something went wrong. Try again.');
         if (btn) { btn.disabled = false; btn.textContent = '\u26A1 Queue Drill'; }
+    });
+}
+
+function startTopicDrill(childId, gameType) {
+    var btn = document.getElementById('tdrill-btn-' + childId + '-' + gameType);
+    var status = document.getElementById('tdrill-status-' + childId + '-' + gameType);
+    if (btn) { btn.disabled = true; }
+
+    fetch('/dashboard/drill-topics/' + childId + '/' + gameType, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (btn) { btn.disabled = false; }
+        if (data.error) {
+            alert(data.error);
+        } else {
+            if (btn) { btn.style.display = 'none'; }
+            if (status) { status.style.display = ''; }
+        }
+    })
+    .catch(function () {
+        alert('Something went wrong. Try again.');
+        if (btn) { btn.disabled = false; }
+    });
+}
+
+function cancelTopicDrill(childId, gameType) {
+    fetch('/dashboard/drill-topics/' + childId + '/' + gameType + '/cancel', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+    })
+    .then(function (r) { return r.json(); })
+    .then(function () {
+        var btn = document.getElementById('tdrill-btn-' + childId + '-' + gameType);
+        var status = document.getElementById('tdrill-status-' + childId + '-' + gameType);
+        if (btn) { btn.style.display = ''; }
+        if (status) { status.style.display = 'none'; }
     });
 }
 

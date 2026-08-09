@@ -37,6 +37,11 @@ class User(Base):
     # the child's next Chinese session
     pending_drill_char_ids = Column(String, nullable=True)
 
+    # Same idea for math/English. JSON list of learning_topics ids; the next
+    # session of the matching subject consumes just its own topics, so a maths
+    # drill isn't swallowed by an English session.
+    pending_drill_topic_ids = Column(String, nullable=True)
+
     # Store / customization
     equipped_car_skin = Column(String, nullable=True)
     equipped_background = Column(String, nullable=True)
@@ -44,6 +49,7 @@ class User(Base):
 
     # Relationships
     progress = relationship("UserCharacterProgress", back_populates="user")
+    topic_progress = relationship("UserTopicProgress", back_populates="user")
     sessions = relationship("GameSession", back_populates="user")
     ledger_entries = relationship("PointsLedger", back_populates="user")
     achievements = relationship("UserAchievement", back_populates="user")

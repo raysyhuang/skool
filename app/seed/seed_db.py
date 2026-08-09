@@ -10,6 +10,7 @@ from app.database import engine, SessionLocal, Base
 from app.models.user import User
 from app.models.character import Character
 from app.models import *  # noqa: ensure all models are registered
+from app.seed.seed_taxonomy import import_taxonomy
 
 
 def _load_chars_data():
@@ -96,6 +97,11 @@ def seed():
 
         db.commit()
         print(f"Seeded {len(chars_data)} characters.")
+
+        # Learning topics for the math/English spine + dashboard prompts
+        tax = import_taxonomy(db)
+        print(f"Seeded {tax['topics_added']} learning topics "
+              f"({tax['playable']} playable) and {tax['edges']} prerequisite edges.")
         print("Done! Users:")
         print(f"  Daniel (son)     - PIN: 0000 - Theme: racing")
         print(f"  Ellie  (daughter) - PIN: 1111 - Theme: pony")

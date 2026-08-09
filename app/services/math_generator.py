@@ -24,8 +24,10 @@ def generate_math_questions(age: int, count: int = 5) -> list[dict]:
         modes = [
             "addition_medium", "subtraction_medium", "multiplication_medium",
             "division_basic", "fractions_compare", "missing_number_medium",
+            "place_value", "rounding", "fraction_of_amount",
+            "equivalent_fractions", "factors_multiples",
         ]
-        weights = [15, 15, 25, 20, 15, 10]
+        weights = [10, 10, 16, 13, 10, 7, 8, 8, 6, 6, 6]
 
     questions = []
     for _ in range(count):
@@ -304,6 +306,149 @@ def _gen_missing_number_medium() -> dict:
     )
 
 
+# ── Additional Grade 3-4 modes (added to widen taxonomy topic coverage) ──
+
+_PLACE_NAMES = [(1, "ones"), (10, "tens"), (100, "hundreds"), (1000, "thousands")]
+
+
+def _gen_place_value() -> dict:
+    """What is the digit actually worth? Place value, not digit-naming."""
+    # Distinct digits: "what is the 1 worth" has two right answers in 1419.
+    digits = random.sample(range(1, 10), 4)
+    number = int("".join(str(d) for d in digits))
+    slot = random.randint(0, 3)                 # 0 = ones ... 3 = thousands
+    place, place_name = _PLACE_NAMES[slot]
+    digit = digits[3 - slot]
+    ans = digit * place
+
+    # Distractors are the same digit in the wrong place — the actual mistake.
+    wrong = [digit * pl for pl, _ in _PLACE_NAMES if pl != place]
+    random.shuffle(wrong)
+    options = [str(ans)] + [str(w) for w in wrong[:2]]
+    random.shuffle(options)
+
+    return _build(
+        mode="place_value",
+        expression=str(number),
+        prompt_text=f"In {number}, what is the {digit} worth?",
+        prompt_image=None,
+        correct_answer=str(ans),
+        options=options,
+    )
+
+
+def _gen_rounding() -> dict:
+    """Round to the nearest 10 or 100."""
+    to = random.choice([10, 100])
+    number = random.randint(120, 989)
+    while number % to == 0:                     # an exact multiple teaches nothing
+        number = random.randint(120, 989)
+    ans = int(round(number / to)) * to
+
+    down, up = (number // to) * to, ((number // to) + 1) * to
+    other = up if ans == down else down
+    options = [str(ans), str(other), str(number)]
+    random.shuffle(options)
+
+    return _build(
+        mode="rounding",
+        expression=f"{number} \u2192 nearest {to}",
+        prompt_text=f"Round {number} to the nearest {to}",
+        prompt_image=None,
+        correct_answer=str(ans),
+        options=options,
+    )
+
+
+def _gen_fraction_of_amount() -> dict:
+    """What is 3/4 of 12? — fractions as operators on a quantity."""
+    denominator = random.choice([2, 3, 4, 5, 6])
+    numerator = random.randint(1, denominator - 1)
+    whole = denominator * random.randint(2, 6)
+    ans = whole * numerator // denominator
+
+    unit = whole // denominator                 # the classic slip: forgetting the numerator
+    wrong = {unit, whole - ans, ans + unit}
+    wrong.discard(ans)
+    wrong = [w for w in wrong if w > 0][:2]
+    while len(wrong) < 2:
+        candidate = ans + random.choice([-2, -1, 1, 2, 3])
+        if candidate > 0 and candidate != ans and candidate not in wrong:
+            wrong.append(candidate)
+
+    options = [str(ans)] + [str(w) for w in wrong]
+    random.shuffle(options)
+
+    return _build(
+        mode="fraction_of_amount",
+        expression=f"{numerator}/{denominator} of {whole}",
+        prompt_text=f"What is {numerator}/{denominator} of {whole}?",
+        prompt_image=None,
+        correct_answer=str(ans),
+        options=options,
+    )
+
+
+def _gen_equivalent_fractions() -> dict:
+    """Which fraction is equal to this one?"""
+    base_n, base_d = random.choice([(1, 2), (1, 3), (1, 4), (2, 3), (3, 4), (2, 5)])
+    factor = random.randint(2, 4)
+    correct = f"{base_n * factor}/{base_d * factor}"
+
+    wrong = set()
+    while len(wrong) < 2:
+        n = base_n * factor + random.choice([-1, 1, 2])
+        d = base_d * factor + random.choice([-1, 1, 2])
+        if n < 1 or d < 2 or n >= d and base_n < base_d:
+            continue
+        if n * base_d == d * base_n:            # accidentally equivalent
+            continue
+        wrong.add(f"{n}/{d}")
+
+    options = [correct] + list(wrong)
+    random.shuffle(options)
+
+    return _build(
+        mode="equivalent_fractions",
+        expression=f"{base_n}/{base_d} = ?",
+        prompt_text=f"Which fraction is the SAME as {base_n}/{base_d}?",
+        prompt_image=None,
+        correct_answer=correct,
+        options=options,
+    )
+
+
+def _gen_factors_multiples() -> dict:
+    """Factor or multiple — the pair children most often confuse."""
+    if random.random() < 0.5:
+        number = random.choice([12, 18, 20, 24, 30, 36])
+        factors = [f for f in range(2, number) if number % f == 0]
+        ans = random.choice(factors)
+        wrong = [n for n in range(2, number) if number % n != 0]
+        random.shuffle(wrong)
+        prompt = f"Which number is a FACTOR of {number}?"
+        expression = f"factor of {number}"
+    else:
+        base = random.randint(3, 9)
+        ans = base * random.randint(2, 9)
+        wrong = [n for n in range(base * 2, base * 10) if n % base != 0]
+        random.shuffle(wrong)
+        prompt = f"Which number is a MULTIPLE of {base}?"
+        expression = f"multiple of {base}"
+
+    options = [str(ans)] + [str(w) for w in wrong[:2]]
+    random.shuffle(options)
+
+    return _build(
+        mode="factors_multiples",
+        expression=expression,
+        prompt_text=prompt,
+        prompt_image=None,
+        correct_answer=str(ans),
+        options=options,
+    )
+
+
 def _make_number_distractors(correct: int, low: int, high: int) -> list[str]:
     """Generate 2 plausible wrong answers near the correct one, return shuffled list of 3."""
     distractors = set()
@@ -358,4 +503,25 @@ _GENERATORS = {
     "division_basic": _gen_division_basic,
     "fractions_compare": _gen_fractions_compare,
     "missing_number_medium": _gen_missing_number_medium,
+    "place_value": _gen_place_value,
+    "rounding": _gen_rounding,
+    "fraction_of_amount": _gen_fraction_of_amount,
+    "equivalent_fractions": _gen_equivalent_fractions,
+    "factors_multiples": _gen_factors_multiples,
 }
+
+
+def generate_math_question(mode: str) -> dict:
+    """Generate a single question in a named mode.
+
+    Used by the topic spine, which decides *what* to practise and then asks for
+    one question of the matching mode.
+    """
+    generator = _GENERATORS.get(mode)
+    if generator is None:
+        raise ValueError(f"Unknown math question mode: {mode}")
+    return generator()
+
+
+def available_modes() -> set[str]:
+    return set(_GENERATORS)

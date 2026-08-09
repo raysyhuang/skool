@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from datetime import date, datetime, timedelta, timezone
 
 from app.models.progress import UserCharacterProgress
+from app.models.topic import UserTopicProgress
 
 
 def _quality_from_attempt(is_correct: bool, is_first_attempt: bool) -> int:
@@ -33,6 +34,47 @@ def _mastery_from_repetitions(repetitions: int) -> int:
         return 4
     else:
         return 5
+
+
+def _apply_sm2(progress, is_correct: bool, is_first_attempt: bool) -> None:
+    """Advance one SM-2 progress row in place.
+
+    Works on any row carrying the SM-2 field set (UserCharacterProgress,
+    UserTopicProgress) — the two models are kept field-compatible on purpose.
+    """
+    quality = _quality_from_attempt(is_correct, is_first_attempt)
+    today = date.today()
+
+    # Track counts
+    if is_correct:
+        progress.correct_count += 1
+    else:
+        progress.wrong_count += 1
+
+    # SM-2 core algorithm
+    if quality >= 3:  # correct
+        if progress.sm2_repetitions == 0:
+            interval = 1
+        elif progress.sm2_repetitions == 1:
+            interval = 3
+        else:
+            interval = round(progress.sm2_interval * progress.easiness_factor)
+        progress.sm2_repetitions += 1
+        progress.sm2_interval = max(interval, 1)
+    else:  # wrong
+        progress.sm2_repetitions = 0
+        progress.sm2_interval = 0  # review again today
+
+    # Update easiness factor (EF)
+    ef = progress.easiness_factor + 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
+    progress.easiness_factor = max(1.3, ef)
+
+    # Schedule next review
+    progress.next_review_date = today + timedelta(days=progress.sm2_interval)
+
+    # Update display mastery for backward compatibility
+    progress.mastery_score = _mastery_from_repetitions(progress.sm2_repetitions)
+    progress.last_seen = datetime.now(timezone.utc)
 
 
 def update_mastery(
@@ -69,40 +111,7 @@ def update_mastery(
         )
         db.add(progress)
 
-    quality = _quality_from_attempt(is_correct, is_first_attempt)
-    today = date.today()
-
-    # Track counts
-    if is_correct:
-        progress.correct_count += 1
-    else:
-        progress.wrong_count += 1
-
-    # SM-2 core algorithm
-    if quality >= 3:  # correct
-        if progress.sm2_repetitions == 0:
-            interval = 1
-        elif progress.sm2_repetitions == 1:
-            interval = 3
-        else:
-            interval = round(progress.sm2_interval * progress.easiness_factor)
-        progress.sm2_repetitions += 1
-        progress.sm2_interval = max(interval, 1)
-    else:  # wrong
-        progress.sm2_repetitions = 0
-        progress.sm2_interval = 0  # review again today
-
-    # Update easiness factor (EF)
-    ef = progress.easiness_factor + 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
-    progress.easiness_factor = max(1.3, ef)
-
-    # Schedule next review
-    progress.next_review_date = today + timedelta(days=progress.sm2_interval)
-
-    # Update display mastery for backward compatibility
-    progress.mastery_score = _mastery_from_repetitions(progress.sm2_repetitions)
-
-    progress.last_seen = datetime.now(timezone.utc)
+    _apply_sm2(progress, is_correct, is_first_attempt)
     db.flush()
     return progress
 
@@ -115,3 +124,36 @@ def get_mastery(db: Session, user_id: int, character_id: int) -> int:
         .first()
     )
     return progress.mastery_score if progress else 0
+
+
+def update_topic_mastery(
+    db: Session,
+    user_id: int,
+    topic_id: int,
+    is_correct: bool,
+    is_first_attempt: bool = True,
+) -> UserTopicProgress:
+    """Same SM-2 update as update_mastery(), but for a taxonomy topic."""
+    progress = (
+        db.query(UserTopicProgress)
+        .filter_by(user_id=user_id, topic_id=topic_id)
+        .first()
+    )
+
+    if not progress:
+        progress = UserTopicProgress(
+            user_id=user_id,
+            topic_id=topic_id,
+            mastery_score=0,
+            correct_count=0,
+            wrong_count=0,
+            easiness_factor=2.5,
+            sm2_interval=0,
+            sm2_repetitions=0,
+            next_review_date=None,
+        )
+        db.add(progress)
+
+    _apply_sm2(progress, is_correct, is_first_attempt)
+    db.flush()
+    return progress
