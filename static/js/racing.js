@@ -97,6 +97,12 @@
         pointsDisplay, carSprite, feedbackOverlay, feedbackMsg,
         stopFlags, celebrationBurst, screenFlash, progressBarFill;
 
+    /* Where the car sits now, so a resize can re-measure and stay put. */
+    var currentStop = 0;
+
+    /* Gap between the road's left edge and the car on the starting line. */
+    var START_LINE_PCT = 1;
+
 
     function cacheDom() {
         charDisplay       = document.getElementById('charDisplay');
@@ -328,13 +334,7 @@
         }
 
         /* -- Stop flags -- */
-        if (stopFlags && stopFlags.length) {
-            for (var f = 0; f < stopFlags.length; f++) {
-                stopFlags[f].classList.remove('reached', 'current');
-                if (f < idx)       stopFlags[f].classList.add('reached');
-                else if (f === idx) stopFlags[f].classList.add('current');
-            }
-        }
+        paintFlags(idx);
 
         /* -- Build option buttons -- */
         if (optionsRow) {
@@ -519,8 +519,13 @@
                     showFeedback(true);
                     showScreenFlash('correct');
 
-                    /* Move car forward */
-                    moveCarToStop(currentIndex + 1);
+                    /* Move car forward one checkpoint, and light that
+                       checkpoint only once the car has actually pulled in. */
+                    var reachedStop = currentIndex + 1;
+                    moveCarToStop(reachedStop);
+                    setTimeout(function () {
+                        markStopReached(reachedStop);
+                    }, carSlideMs());
 
                     /* Update progress bar */
                     if (progressBarFill) {
@@ -774,14 +779,68 @@
        ────────────────────────────────────────────── */
 
     /**
-     * Car position is a percentage of road width.
-     * 6 stops (0-5 answered) map to: 4%, 20.8%, 37.6%, 54.4%, 71.2%, 88%
-     * Formula: (stopIndex / totalQuestions * 84) + 4
+     * Stop 0 is the starting line; stops 1..N are the flags themselves, so a
+     * correct answer parks the car *on* the checkpoint it just earned.
+     *
+     * Measured from the DOM rather than computed: the flags are laid out by
+     * flexbox (padding 0 8%, space-between) and the old formula
+     * ((i / total * 84) + 4) drifted out of alignment with them — the car
+     * passed between the flags instead of ever reaching one.
      */
     function moveCarToStop(stopIndex) {
-        if (!carSprite) return;
-        var pct = (stopIndex / totalQuestions * 84) + 4;
-        carSprite.style.left = pct + '%';
+        var road = document.querySelector('.road');
+        if (!carSprite || !road) return;
+
+        currentStop = stopIndex;
+
+        var roadBox = road.getBoundingClientRect();
+        if (!roadBox.width) return;
+
+        /* left positions the car's edge; aim its centre at the target. */
+        var carHalfPct = (carSprite.getBoundingClientRect().width / roadBox.width) * 50;
+        var centrePct;
+
+        if (stopIndex <= 0 || !stopFlags || !stopFlags.length) {
+            centrePct = carHalfPct + START_LINE_PCT;
+        } else {
+            var flag = stopFlags[Math.min(stopIndex, stopFlags.length) - 1];
+            var flagBox = flag.getBoundingClientRect();
+            centrePct = ((flagBox.left + flagBox.width / 2) - roadBox.left) / roadBox.width * 100;
+        }
+
+        carSprite.style.left = (centrePct - carHalfPct) + '%';
+    }
+
+    /** Light the checkpoints the child has already driven past. */
+    function paintFlags(answered) {
+        if (!stopFlags || !stopFlags.length) return;
+        for (var f = 0; f < stopFlags.length; f++) {
+            stopFlags[f].classList.remove('reached', 'next', 'arrive');
+            if (f < answered)        stopFlags[f].classList.add('reached');
+            else if (f === answered) stopFlags[f].classList.add('next');
+        }
+    }
+
+    /**
+     * Called once the car has finished sliding, so the flag lights up as the
+     * car arrives rather than before it sets off.
+     */
+    function markStopReached(stopIndex) {
+        paintFlags(stopIndex);
+        var flag = stopFlags && stopFlags[stopIndex - 1];
+        if (!flag) return;
+        flag.classList.remove('arrive');
+        void flag.offsetWidth;          /* force reflow so the pop replays */
+        flag.classList.add('arrive');
+    }
+
+    /** Slide duration lives in racing.css as --car-slide-duration. */
+    function carSlideMs() {
+        var raw = getComputedStyle(document.documentElement)
+            .getPropertyValue('--car-slide-duration').trim();
+        var n = parseFloat(raw);
+        if (!n) return 800;
+        return raw.indexOf('ms') > -1 ? n : n * 1000;
     }
 
     function triggerCarBoost() {
@@ -992,6 +1051,13 @@
 
         /* Set initial car position */
         moveCarToStop(0);
+
+        /* Car stops are measured in px and stored as a percentage, so a
+           rotation or split-view resize on the iPad has to re-measure or the
+           car drifts off its checkpoint. */
+        root.addEventListener('resize', function () {
+            moveCarToStop(currentStop);
+        });
 
         /* Render first question (renderQuestion handles auto-speak) */
         renderQuestion(0);

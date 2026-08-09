@@ -347,6 +347,40 @@ def test_service_worker_precache_urls_resolve():
         assert resp.status_code == 200, f"Precached URL {url} returned {resp.status_code}"
 
 
+def test_race_track_marks_the_next_checkpoint_not_a_pulsing_flag():
+    """The car is the racer. Flags are checkpoints and must not animate on
+    their own — a forever-pulsing flag reads as the flag advancing, not the car.
+    """
+    client, _, user_id = _build_client(with_characters=True)
+    client.post("/login", data={"user_id": user_id}, follow_redirects=False)
+
+    html = client.get("/game/chinese").text
+    assert "stop-flag next" in html, "first checkpoint is not marked as the next target"
+    assert "stop-flag current" not in html, "stale 'current' class still rendered"
+
+    css = open("static/css/racing.css", encoding="utf-8").read()
+    assert "flagPulse" not in css, "the flag pulse animation is back"
+    assert re.search(r"\.stop-flag\.arrive\b", css), "no arrival pop for the flag"
+
+    # Every flag state racing.js applies must have a rule backing it.
+    js = open("static/js/racing.js", encoding="utf-8").read()
+    applied = set(re.findall(r"classList\.add\('(reached|next|arrive)'\)", js))
+    assert applied == {"reached", "next", "arrive"}, applied
+    for state in applied:
+        assert re.search(rf"\.stop-flag\.{state}\b", css), f".stop-flag.{state} has no CSS"
+
+
+def test_car_positions_are_measured_from_the_flags():
+    """The car used to be placed by a formula that drifted out of alignment
+    with the flexbox-laid-out flags, so it never landed on a checkpoint.
+    """
+    js = open("static/js/racing.js", encoding="utf-8").read()
+    assert "totalQuestions * 84" not in js, "the drifting car-position formula is back"
+    assert "getBoundingClientRect" in js.split("function moveCarToStop")[1][:900], (
+        "moveCarToStop no longer measures the flags"
+    )
+
+
 def test_tts_proxy_accepts_long_english_prompts():
     """English sentence prompts run well past 50 chars; they must not 422."""
     client, _, user_id = _build_client(with_characters=False)
