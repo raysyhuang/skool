@@ -52,8 +52,13 @@ git push heroku main
   (`app/seed/taxonomy/`), which also supplies the prerequisite graph.
 - Only topics listed in `app/seed/taxonomy/topic_modes.json` are **playable** —
   a topic is playable when an existing generator mode genuinely covers its
-  evidence criteria. The other ~1,250 topics are reference-only and drive the
-  dashboard's "Ask at dinner" prompts.
+  evidence criteria. The other ~1,235 topics are reference-only and drive the
+  dashboard's "Ask at dinner" prompts. The file's `_comment` records topics
+  deliberately left unmapped and why; keep that list honest when adding modes.
+- The parent dashboard can queue a drill per subject. Chinese uses
+  `users.pending_drill_char_ids`; math/English use
+  `users.pending_drill_topic_ids`, and each subject's session claims only its
+  own topics so one queued drill can't swallow the other.
 - Per-topic mastery uses the same SM-2 code as characters
   (`update_topic_mastery` in `app/services/spaced_repetition.py`)
 - If the topic tables are empty, math/English silently fall back to the old

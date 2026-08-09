@@ -62,7 +62,7 @@ micro-topics for ages 4-10 plus the prerequisite graph between them. Each topic
 carries its own SM-2 schedule, so the app tracks what a child has actually
 mastered and introduces new topics only once their prerequisites are in place.
 
-72 of those topics are **playable** — an existing question generator covers
+90 of those topics are **playable** — an existing question generator covers
 them (`app/seed/taxonomy/topic_modes.json`). The rest are reference-only and
 power the parent dashboard's "Ask at Dinner" prompts, which reach into science,
 history, and life skills the app can't quiz.

@@ -42,12 +42,18 @@ def build(src: str) -> None:
     with open(os.path.join(OUT_DIR, "topic_modes.json"), encoding="utf-8") as f:
         modes = json.load(f)
 
-    # topic id -> generator mode, flattened across subjects
+    # topic id -> generator mode, flattened across subjects. A topic mapped to
+    # two modes would silently take whichever won the loop, so refuse it.
     mode_by_id: dict[str, str] = {}
+    clashes: list[str] = []
     for subject_key in ("math", "english"):
         for mode, topic_ids in modes[subject_key].items():
             for tid in topic_ids:
+                if tid in mode_by_id:
+                    clashes.append(f"{tid}: {mode_by_id[tid]} and {mode}")
                 mode_by_id[tid] = mode
+    if clashes:
+        raise SystemExit("topic_modes.json maps a topic to two modes:\n  " + "\n  ".join(clashes))
 
     kept = [
         t for t in topics

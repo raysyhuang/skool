@@ -12,7 +12,7 @@ from app.services.rewards import award_points
 from app.services.math_generator import generate_math_questions, generate_math_question
 from app.services.logic_generator import generate_logic_questions
 from app.services.english_generator import generate_english_questions, generate_english_question
-from app.services.topic_selection import select_topics
+from app.services.topic_selection import select_topics, drill_topics
 from app.config import get_settings
 
 
@@ -38,7 +38,9 @@ def can_start_session(user: User) -> bool:
     return user.sessions_today < limit
 
 
-def create_session(db: Session, user: User, game_type: str = "chinese", character_ids: list[int] | None = None) -> GameSession:
+def create_session(db: Session, user: User, game_type: str = "chinese",
+                   character_ids: list[int] | None = None,
+                   topic_ids: list[int] | None = None) -> GameSession:
     """Create a new game session with 5 questions."""
     user.reset_daily_if_needed()
     settings = get_settings()
@@ -53,11 +55,11 @@ def create_session(db: Session, user: User, game_type: str = "chinese", characte
     if game_type == "chinese":
         _create_chinese_questions(db, game_session, user, settings, character_ids=character_ids)
     elif game_type == "math":
-        _create_math_questions(db, game_session, user, settings)
+        _create_math_questions(db, game_session, user, settings, topic_ids=topic_ids)
     elif game_type == "logic":
         _create_logic_questions(db, game_session, user, settings)
     elif game_type == "english":
-        _create_english_questions(db, game_session, user, settings)
+        _create_english_questions(db, game_session, user, settings, topic_ids=topic_ids)
     else:
         raise ValueError(f"Unknown game type: {game_type}")
 
@@ -92,10 +94,11 @@ def _create_chinese_questions(db: Session, game_session: GameSession, user: User
         db.add(question)
 
 
-def _create_math_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
+def _create_math_questions(db: Session, game_session: GameSession, user: User, settings,
+                           topic_ids: list[int] | None = None) -> None:
     """Create math questions, driven by the taxonomy topic spine where possible."""
     count = settings.questions_per_session
-    topics = select_topics(db, user, "math", count)
+    topics = drill_topics(db, topic_ids, count) or select_topics(db, user, "math", count)
 
     if topics:
         for i, topic in enumerate(topics, 1):
@@ -128,11 +131,12 @@ def _create_logic_questions(db: Session, game_session: GameSession, user: User, 
         db.add(question)
 
 
-def _create_english_questions(db: Session, game_session: GameSession, user: User, settings) -> None:
+def _create_english_questions(db: Session, game_session: GameSession, user: User, settings,
+                              topic_ids: list[int] | None = None) -> None:
     """Create English questions, driven by the taxonomy topic spine where possible."""
     count = settings.questions_per_session
     age = user.age or 5
-    topics = select_topics(db, user, "english", count)
+    topics = drill_topics(db, topic_ids, count) or select_topics(db, user, "english", count)
 
     if topics:
         for i, topic in enumerate(topics, 1):

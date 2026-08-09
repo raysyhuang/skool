@@ -6,7 +6,7 @@
   10
  ],
  "topicCount": 1325,
- "playableCount": 72,
+ "playableCount": 90,
  "topics": [
   {
    "id": "mt_-0cjwyYhce",
@@ -582,7 +582,7 @@
     "Use factor pairs to simplify 24 × 25 as 6 × (4 × 25) = 6 × 100 = 600"
    ],
    "assessmentPrompt": "If {{name}} is asked to find all the square numbers less than 100, can they work through it systematically and give you the correct list: 1, 4, 9, 16, 25, 36, 49, 64, 81?",
-   "questionMode": null
+   "questionMode": "factors_multiples"
   },
   {
    "id": "mt_0XxyaQLRhn",
@@ -834,7 +834,7 @@
     "Explain that plural nouns name more than one"
    ],
    "assessmentPrompt": "If you point to a picture of one cat and then several cats, can {{name}} tell you the correct word for more than one — and write it with the right ending, like \"cats\" or \"boxes\"?",
-   "questionMode": null
+   "questionMode": "plural_form"
   },
   {
    "id": "mt_19j_5AuuQI",
@@ -1947,7 +1947,7 @@
     "Solve: A bag has 24 sweets, 3/8 are red — how many red sweets?"
    ],
    "assessmentPrompt": "If 3/4 of a class of 28 pupils brought their homework in, can {{name}} work out exactly how many pupils that is?",
-   "questionMode": null
+   "questionMode": "fraction_of_amount"
   },
   {
    "id": "mt_3yuqKww2tU",
@@ -2433,7 +2433,7 @@
     "Use rounding to estimate the sum of 387,412 + 214,560"
    ],
    "assessmentPrompt": "Can {{name}} round a large number like 346,712 to the nearest 1,000 (347,000) or 10,000 (350,000) — identifying which digit to look at for each rounding?",
-   "questionMode": null
+   "questionMode": "rounding"
   },
   {
    "id": "mt_5OxKnrGEMP",
@@ -3748,7 +3748,7 @@
     "Explain the strategy used to solve a place-value problem"
    ],
    "assessmentPrompt": "If {{name}} is told 'I have 4 hundreds, 3 tens, and 7 ones — what number is that?', can they put it together and tell you 437?",
-   "questionMode": null
+   "questionMode": "place_value"
   },
   {
    "id": "mt_99G6Msdzw-",
@@ -5897,7 +5897,7 @@
     "Determine whether a given number (e.g. 97) is prime and justify the reasoning"
    ],
    "assessmentPrompt": "Can {{name}} list all the factor pairs for a number like 36 — (1, 36), (2, 18), (3, 12), (4, 9), (6, 6) — and find factors that two numbers share?",
-   "questionMode": null
+   "questionMode": "factors_multiples"
   },
   {
    "id": "mt_FIkqA0qhnj",
@@ -5951,7 +5951,7 @@
     "Complete equivalence chains: 1/4 = ?/8 = ?/12"
    ],
    "assessmentPrompt": "If {{name}} is shown a fraction bar split into 3 parts with 1 shaded (= 1/3), can they draw an equivalent bar with 6 parts that shows exactly the same amount shaded?",
-   "questionMode": null
+   "questionMode": "equivalent_fractions"
   },
   {
    "id": "mt_FW9_8F52bw",
@@ -6023,7 +6023,7 @@
     "Explain why two fractions are equivalent by comparing the shaded areas"
    ],
    "assessmentPrompt": "If {{name}} sees a bar divided into 4 equal parts with 2 shaded, can they tell you that's the same as 1/2 — and draw a different bar showing the same amount another way?",
-   "questionMode": null
+   "questionMode": "equivalent_fractions"
   },
   {
    "id": "mt_FieL-vVTI_",
@@ -7891,7 +7891,7 @@
     "Write a short recount using at least five irregular past-tense verbs accurately"
    ],
    "assessmentPrompt": "When {{name}} writes about something that happened in the past with an irregular verb — like \"run\" or \"sit\" — do they write \"ran\" and \"sat\" rather than \"runned\" and \"sitted\"?",
-   "questionMode": null
+   "questionMode": "past_tense"
   },
   {
    "id": "mt_KJeEeTutJI",
@@ -8898,7 +8898,7 @@
     "Apply rounding to estimate calculations"
    ],
    "assessmentPrompt": "Can {{name}} round a number like 4,738 to the nearest 10 (4,740), 100 (4,700), or 1,000 (5,000) — and explain which digit they look at to decide?",
-   "questionMode": null
+   "questionMode": "rounding"
   },
   {
    "id": "mt_NNNbPccwB4",
@@ -11153,7 +11153,7 @@
     "Identify the tens digit and ones digit in any two-digit number"
    ],
    "assessmentPrompt": "If {{name}} sees the number 47, can they tell you there are 4 tens (forty) and 7 ones — rather than just reading the digits as 'four seven'?",
-   "questionMode": null
+   "questionMode": "place_value"
   },
   {
    "id": "mt_TMOzMCE17H",
@@ -11745,7 +11745,7 @@
     "Segment a word into its syllable parts orally"
    ],
    "assessmentPrompt": "Can {{name}} clap out the syllables in words — two claps for 'pen-cil' or three for 'com-pu-ter' — and split a spoken word into its parts?",
-   "questionMode": null
+   "questionMode": "syllable_count"
   },
   {
    "id": "mt_V-ldQp56bF",
@@ -14408,7 +14408,7 @@
     "Explain why 706 has 7 hundreds, 0 tens, and 6 ones"
    ],
    "assessmentPrompt": "If {{name}} sees the number 348, can they tell you there are 3 hundreds, 4 tens, and 8 ones — rather than just reading the digits as 'three four eight'?",
-   "questionMode": null
+   "questionMode": "place_value"
   },
   {
    "id": "mt_aS-Gdh-MHx",
@@ -15145,7 +15145,7 @@
     "Identify 1/4 of a length on a number line or ruler"
    ],
    "assessmentPrompt": "If you put 12 grapes on the table, can {{name}} count out a quarter of them — and then show you what three-quarters of the grapes looks like?",
-   "questionMode": null
+   "questionMode": "fraction_of_amount"
   },
   {
    "id": "mt_cJ8CeyRKKs",
@@ -15937,7 +15937,7 @@
     "Generate three fractions equivalent to 3/5 and verify with diagrams"
    ],
    "assessmentPrompt": "If {{name}} needs to make 2/3 look different without changing its value, can they multiply the top and bottom by the same number and explain why the fraction stays the same?",
-   "questionMode": null
+   "questionMode": "equivalent_fractions"
   },
   {
    "id": "mt_efOeaGFyGM",
@@ -18028,7 +18028,7 @@
     "Compose a four-digit number from given place-value parts (e.g. 3000 + 400 + 50 + 2 = 3,452)"
    ],
    "assessmentPrompt": "If {{name}} sees the number 5,347, can they tell you the value of each digit — that the 5 means 5,000, the 3 means 300, the 4 means 40, and the 7 means 7?",
-   "questionMode": null
+   "questionMode": "place_value"
   },
   {
    "id": "mt_jc9k_HJQGd",
@@ -18352,7 +18352,7 @@
     "Identify that every syllable must contain a vowel sound"
    ],
    "assessmentPrompt": "When {{name}} encounters a long word like 'fantastic' or 'umbrella', can they break it into syllables and blend the parts together to read the whole word?",
-   "questionMode": null
+   "questionMode": "syllable_count"
   },
   {
    "id": "mt_kdWoAel3Zl",
@@ -19321,7 +19321,7 @@
     "Correct over-regularised plurals in writing (e.g. change 'mouses' to 'mice', 'foots' to 'feet')"
    ],
    "assessmentPrompt": "If you point to a picture of several mice or a group of children, can {{name}} write the correct plural — knowing it's \"mice\" not \"mouses\" and \"children\" not \"childs\"?",
-   "questionMode": null
+   "questionMode": "plural_form"
   },
   {
    "id": "mt_nIl1kKZHsk",
