@@ -23,33 +23,39 @@ logger = logging.getLogger(__name__)
 _templates = Jinja2Templates(directory="templates")
 
 
+# Columns added to tables that already exist in a deployed database.
+# create_all() only creates new tables; it won't ALTER existing ones, and the
+# Alembic history can't run against a database that was built by create_all in
+# the first place. So every column a migration adds to an existing table must
+# also be listed here — tests/test_startup_migrations.py enforces that.
+_MIGRATIONS = [
+    # (table, column, SQL type, default)
+    ("users", "streak_freezes", "INTEGER", "0"),
+    ("users", "best_streak", "INTEGER", "0"),
+    ("users", "perfect_sessions", "INTEGER", "0"),
+    ("users", "total_sessions_completed", "INTEGER", "0"),
+    ("users", "car_level", "INTEGER", "0"),
+    ("users", "equipped_car_skin", "VARCHAR", None),
+    ("users", "equipped_background", "VARCHAR", None),
+    ("users", "equipped_trail", "VARCHAR", None),
+    ("users", "lifetime_coins", "INTEGER", "0"),
+    ("users", "pending_drill_char_ids", "VARCHAR", None),
+    ("points_ledger", "coins_change", "INTEGER", "0"),
+    ("session_questions", "started_at", "TIMESTAMP", None),
+    # SM-2 spaced repetition columns
+    ("user_character_progress", "easiness_factor", "REAL", "2.5"),
+    ("user_character_progress", "sm2_interval", "INTEGER", "0"),
+    ("user_character_progress", "sm2_repetitions", "INTEGER", "0"),
+    ("user_character_progress", "next_review_date", "DATE", None),
+    # Topic spine: learning_topics et al. are new tables, so create_all makes
+    # them, but these two land on tables a deployed database already has.
+    ("users", "pending_drill_topic_ids", "VARCHAR", None),
+    ("session_questions", "topic_id", "INTEGER", None),
+]
+
+
 def _run_migrations(engine_instance):
-    """Add missing columns to existing tables.
-
-    create_all() only creates new tables; it won't ALTER existing ones.
-    This function adds columns idempotently using dialect-appropriate SQL.
-    """
-    _MIGRATIONS = [
-        # (table, column, SQL type, default)
-        ("users", "streak_freezes", "INTEGER", "0"),
-        ("users", "best_streak", "INTEGER", "0"),
-        ("users", "perfect_sessions", "INTEGER", "0"),
-        ("users", "total_sessions_completed", "INTEGER", "0"),
-        ("users", "car_level", "INTEGER", "0"),
-        ("users", "equipped_car_skin", "VARCHAR", None),
-        ("users", "equipped_background", "VARCHAR", None),
-        ("users", "equipped_trail", "VARCHAR", None),
-        ("users", "lifetime_coins", "INTEGER", "0"),
-        ("users", "pending_drill_char_ids", "VARCHAR", None),
-        ("points_ledger", "coins_change", "INTEGER", "0"),
-        ("session_questions", "started_at", "TIMESTAMP", None),
-        # SM-2 spaced repetition columns
-        ("user_character_progress", "easiness_factor", "REAL", "2.5"),
-        ("user_character_progress", "sm2_interval", "INTEGER", "0"),
-        ("user_character_progress", "sm2_repetitions", "INTEGER", "0"),
-        ("user_character_progress", "next_review_date", "DATE", None),
-    ]
-
+    """Add the columns in _MIGRATIONS to existing tables, idempotently."""
     dialect = engine_instance.dialect.name  # "postgresql" or "sqlite"
     with engine_instance.begin() as conn:
         for table, column, col_type, default in _MIGRATIONS:
