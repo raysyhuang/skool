@@ -39,7 +39,10 @@ python -m app.seed.seed_db
 # Re-import learning topics only (idempotent — safe on a live database)
 python -m app.seed.seed_taxonomy
 
-# Upgrade an existing database's schema
+# Upgrade an existing database's schema — only for a database Alembic already
+# tracks. One built by seed_db/create_all has no alembic_version row, and the
+# initial migration then fails on tables that already exist. Those databases
+# self-upgrade at app startup instead (see _MIGRATIONS in app/main.py).
 alembic upgrade head
 
 # Run dev server
