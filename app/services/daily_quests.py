@@ -3,7 +3,7 @@
 from datetime import date
 from sqlalchemy.orm import Session
 from app.models import DailyQuest, UserDailyQuestProgress, User
-from app.services.rewards import award_currency
+# Reward logic inline
 
 # Quest definitions (can later be loaded from DB or config)
 DAILY_QUEST_POOL = [

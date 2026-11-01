@@ -241,3 +241,7 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+# Import new feature routes
+from app.routes.game_new_features import router as game_new_router
+app.include_router(game_new_router)

@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}Parent Dashboard{% endblock %}
+
+{% block theme_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.css">
+<style>
+    body {
+        background: var(--bg-light);
+        min-height: 100dvh;
+        padding: var(--space-6);
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        margin-bottom: var(--space-8);
+    }
+
+    .dashboard-title {
+        font-size: var(--text-3xl);
+        color: var(--bg-dark);
+        margin-bottom: var(--space-2);
+    }
+
+    .student-tabs {
+        display: flex;
+        gap: var(--space-3);
+        margin-bottom: var(--space-6);
+    }
+
+    .student-tab {
+        background: white;
+        border: 2px solid var(--neutral);
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        font-weight: 600;
+        transition: all var(--duration-base);
+    }
+
+    .student-tab.active {
+        background: var(--sky-blue);
+        color: white;
+        border-color: var(--sky-blue);
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: var(--space-6);
+        margin-bottom: var(--space-8);
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        box-shadow: var(--shadow-md);
+    }
+
+    .chart-title {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        margin-bottom: var(--space-4);
+        color: var(--bg-dark);
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--space-4);
+        margin-bottom: var(--space-8);
+    }
+
+    .stat-card {
+        background: white;
+        padding: var(--space-5);
+        border-radius: var(--radius-lg);
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .stat-value {
+        font-size: var(--text-3xl);
+        font-weight: 700;
+        color: var(--sky-blue);
+        margin-bottom: var(--space-2);
+    }
+
+    .stat-label {
+        font-size: var(--text-base);
+        color: var(--neutral);
+    }
+
+    .actions-section {
+        background: white;
+        padding: var(--space-6);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        margin-bottom: var(--space-6);
+    }
+
+    .actions-title {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        margin-bottom: var(--space-4);
+    }
+
+    .action-btn {
+        margin-right: var(--space-3);
+        margin-bottom: var(--space-3);
+    }
+
+    @media (max-width: 768px) {
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">📊 Parent Dashboard</h1>
+    </div>
+
+    <div class="student-tabs">
+        {% for student in students %}
+        <button class="student-tab {% if loop.first %}active{% endif %}" 
+                onclick="switchStudent({{ student.id }})">
+            {{ student.name }}
+        </button>
+        {% endfor %}
+    </div>
+
+    {% for student in students %}
+    <div class="student-data" id="student-{{ student.id }}" style="{% if not loop.first %}display:none;{% endif %}">
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ student.stats.total_sessions }}</div>
+                <div class="stat-label">Total Sessions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ student.stats.accuracy }}%</div>
+                <div class="stat-label">Overall Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ student.stats.streak }}</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ student.stats.mastered_skills }}</div>
+                <div class="stat-label">Skills Mastered</div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">Ability Progress by Subject</h3>
+                <div class="chart-container">
+                    <canvas id="abilityChart-{{ student.id }}"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Weekly Activity</h3>
+                <div class="chart-container">
+                    <canvas id="activityChart-{{ student.id }}"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Topic Mastery Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="masteryChart-{{ student.id }}"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 class="chart-title">Accuracy by Subject</h3>
+                <div class="chart-container">
+                    <canvas id="accuracyChart-{{ student.id }}"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <h3 class="actions-title">Quick Actions</h3>
+            <button class="btn btn-primary action-btn" onclick="window.location.href='/game/placement-test-setup/{{ student.id }}'">
+                📊 Run Placement Test
+            </button>
+            <button class="btn btn-secondary action-btn" onclick="openDrillModal({{ student.id }})">
+                🎯 Queue Practice Drill
+            </button>
+            <button class="btn btn-secondary action-btn" onclick="window.location.href='/game/journey/{{ student.id }}'">
+                🗺️ View Learning Journey
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const studentData = {{ students_json | safe }};
+
+function switchStudent(studentId) {
+    document.querySelectorAll('.student-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    document.querySelectorAll('.student-data').forEach(d => d.style.display = 'none');
+    document.getElementById('student-' + studentId).style.display = 'block';
+}
+
+// Initialize charts for each student
+studentData.forEach(student => {
+    // Ability Progress Chart
+    new Chart(document.getElementById(`abilityChart-${student.id}`), {
+        type: 'line',
+        data: {
+            labels: student.ability_dates,
+            datasets: [{
+                label: 'Math',
+                data: student.math_ability,
+                borderColor: '#4A90E2',
+                tension: 0.4
+            }, {
+                label: 'English',
+                data: student.english_ability,
+                borderColor: '#FF6B6B',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { min: 800, max: 1800 }
+            }
+        }
+    });
+
+    // Activity Chart
+    new Chart(document.getElementById(`activityChart-${student.id}`), {
+        type: 'bar',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Sessions',
+                data: student.weekly_sessions,
+                backgroundColor: '#6BCF7F'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Mastery Distribution
+    new Chart(document.getElementById(`masteryChart-${student.id}`), {
+        type: 'doughnut',
+        data: {
+            labels: ['Mastered', 'Learning', 'New'],
+            datasets: [{
+                data: [student.mastered_count, student.learning_count, student.new_count],
+                backgroundColor: ['#00D084', '#FFD93D', '#95A5A6']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Accuracy by Subject
+    new Chart(document.getElementById(`accuracyChart-${student.id}`), {
+        type: 'bar',
+        data: {
+            labels: ['Chinese', 'Math', 'English', 'Logic'],
+            datasets: [{
+                label: 'Accuracy %',
+                data: [student.chinese_acc, student.math_acc, student.english_acc, student.logic_acc],
+                backgroundColor: ['#FF6B6B', '#4A90E2', '#FFD93D', '#B8A4E8']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { min: 0, max: 100 }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

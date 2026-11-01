@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Quests{% endblock %}
+
+{% block theme_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+        min-height: 100dvh;
+        padding: var(--space-6);
+    }
+
+    .quests-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .header {
+        text-align: center;
+        color: white;
+        margin-bottom: var(--space-8);
+    }
+
+    .header h1 {
+        font-size: var(--text-3xl);
+        margin-bottom: var(--space-2);
+    }
+
+    .header p {
+        font-size: var(--text-lg);
+        opacity: 0.9;
+    }
+
+    .quest-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: var(--space-6);
+        margin-bottom: var(--space-4);
+        box-shadow: var(--shadow-md);
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        transition: transform var(--duration-base);
+    }
+
+    .quest-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .quest-card.completed {
+        background: var(--gradient-ocean);
+        color: white;
+    }
+
+    .quest-icon {
+        font-size: 56px;
+        flex-shrink: 0;
+    }
+
+    .quest-details {
+        flex: 1;
+    }
+
+    .quest-title {
+        font-size: var(--text-xl);
+        font-weight: 700;
+        margin-bottom: var(--space-2);
+    }
+
+    .quest-description {
+        font-size: var(--text-base);
+        opacity: 0.8;
+        margin-bottom: var(--space-3);
+    }
+
+    .quest-progress {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    .progress-bar {
+        flex: 1;
+        height: 12px;
+        background: rgba(0,0,0,0.1);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--gradient-dawn);
+        border-radius: var(--radius-full);
+        transition: width 0.3s;
+    }
+
+    .quest-card.completed .progress-fill {
+        background: rgba(255,255,255,0.3);
+    }
+
+    .progress-text {
+        font-size: var(--text-sm);
+        font-weight: 700;
+    }
+
+    .claim-btn {
+        background: var(--sunshine-yellow);
+        color: var(--bg-dark);
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-full);
+        border: none;
+        font-weight: 700;
+        font-size: var(--text-base);
+        cursor: pointer;
+        transition: transform var(--duration-fast);
+    }
+
+    .claim-btn:hover {
+        transform: scale(1.05);
+    }
+
+    .claim-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        background: rgba(255,255,255,0.2);
+        color: white;
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-full);
+        text-decoration: none;
+        font-weight: 600;
+        transition: background var(--duration-base);
+    }
+
+    .back-btn:hover {
+        background: rgba(255,255,255,0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quests-container">
+    <a href="/game/" class="back-btn">← Back to World Map</a>
+    
+    <div class="header">
+        <h1>🎯 Daily Quests</h1>
+        <p>Complete quests to earn bonus rewards!</p>
+    </div>
+
+    <div id="questsList">
+        {% for quest in quests %}
+        <div class="quest-card {% if quest.completed %}completed{% endif %}" data-quest-id="{{ quest.id }}">
+            <div class="quest-icon">{{ quest.icon }}</div>
+            <div class="quest-details">
+                <div class="quest-title">{{ quest.title }}</div>
+                <div class="quest-description">{{ quest.description }}</div>
+                <div class="quest-progress">
+                    <div class="progress-bar">
+                        {% set pct = (quest.current_value / quest.target_value * 100) | round %}
+                        <div class="progress-fill" style="width: {{ pct }}%;"></div>
+                    </div>
+                    <div class="progress-text">{{ quest.current_value }}/{{ quest.target_value }}</div>
+                </div>
+            </div>
+            {% if quest.completed and not quest.claimed %}
+            <button class="claim-btn" onclick="claimQuest({{ quest.progress_id }})">
+                Claim +{{ quest.reward_amount }} {{ quest.reward_type }}!
+            </button>
+            {% elif quest.claimed %}
+            <span class="progress-text">✓ Claimed</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function claimQuest(progressId) {
+    fetch('/game/claim-quest/' + progressId, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}
