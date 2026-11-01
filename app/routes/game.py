@@ -1,16 +1,22 @@
 import json
 import os
+import logging
 from fastapi import APIRouter, Request, Depends, Query
 from fastapi.responses import RedirectResponse, JSONResponse, Response
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.database import get_db
 from app.models.user import User
 from app.models.session import GameSession, SessionQuestion
 from app.services.session_engine import create_session, submit_answer, complete_session, can_start_session, SessionLimitReached
 from app.themes import get_theme
+
+logger = logging.getLogger(__name__)
+limiter = Limiter(key_func=get_remote_address)
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "templates")
 
@@ -338,10 +344,18 @@ def english_game(request: Request, db: Session = Depends(get_db)):
 
 class AnswerRequest(BaseModel):
     question_id: int
-    selected_answer: str
+    selected_answer: str = Field(max_length=500)
+    
+    @field_validator('selected_answer')
+    @classmethod
+    def validate_answer(cls, v):
+        if not v or len(v.strip()) == 0:
+            raise ValueError("Answer cannot be empty")
+        return v.strip()
 
 
 @router.post("/answer")
+@limiter.limit("100/minute")
 def answer_question(
     request: Request,
     body: AnswerRequest,
@@ -541,7 +555,12 @@ def _clean_tts_text(text: str, lang: str = "zh-CN") -> str:
 
 
 @router.get("/tts")
-async def tts_proxy(text: str = Query(..., max_length=300), lang: str = Query("zh-CN", max_length=10)):
+@limiter.limit("60/minute")
+async def tts_proxy(
+    request: Request,
+    text: str = Query(..., max_length=300),
+    lang: str = Query("zh-CN", max_length=10)
+):
     """Generate TTS audio using Microsoft Edge neural voices via edge-tts."""
     import edge_tts
 
@@ -578,8 +597,14 @@ async def tts_proxy(text: str = Query(..., max_length=300), lang: str = Query("z
                 media_type="audio/mpeg",
                 headers={"Cache-Control": "public, max-age=86400"},
             )
-    except Exception:
-        pass
+    except Exception as e:
+        logger.error("TTS failed for text='%s' lang='%s': %s", text, lang, e)
+        return Response(
+            content=b"",
+            media_type="audio/mpeg",
+            status_code=503,
+            headers={"Retry-After": "60"}
+        )
 
-    # Return empty audio on failure
+    # Return empty audio if no data generated
     return Response(content=b"", media_type="audio/mpeg", status_code=204)

@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     # Session
     secret_key: str = "change-me-in-production"
     session_cookie_name: str = "skool_session"
+    debug: bool = False  # Set to True for local dev
 
     # Game rules
     questions_per_session: int = 5

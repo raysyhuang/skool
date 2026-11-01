@@ -432,6 +432,16 @@
     <h1 class="dash-title">&#128202; Parent Dashboard</h1>
 </div>
 
+{% if taxonomy_missing %}
+<div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
+    <strong>⚠️ Learning Topics Not Loaded</strong>
+    <p style="margin: 8px 0 0 0; font-size: 14px; color: #856404;">
+        Math and English topics are missing. Run <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">python -m app.seed.seed_taxonomy</code> to import them.
+        "Ask at Dinner" prompts will be empty until topics are loaded.
+    </p>
+</div>
+{% endif %}
+
 {% for child in children %}
 <div class="child-section">
     <div class="child-name">

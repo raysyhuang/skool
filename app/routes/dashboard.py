@@ -7,6 +7,8 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.database import get_db
 from app.models.user import User
@@ -20,6 +22,8 @@ from app.services.topic_selection import (
     topic_snapshot,
     weakest_topics,
 )
+
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/dashboard")
 templates = Jinja2Templates(directory="templates")
@@ -37,6 +41,9 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     user = _get_current_user(request, db)
     if not user or user.role != "parent":
         return RedirectResponse(url="/game/", status_code=303)
+
+    # Check if taxonomy is loaded
+    taxonomy_missing = db.query(LearningTopic).count() == 0
 
     # Get all child users
     children = db.query(User).filter_by(role="child").all()
@@ -224,10 +231,12 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(request, "dashboard.html", {
         "user": user,
         "children": child_data,
+        "taxonomy_missing": taxonomy_missing,
     })
 
 
 @router.post("/drill/{child_id}")
+@limiter.limit("20/minute")
 def start_drill(child_id: int, request: Request, db: Session = Depends(get_db)):
     """Start a drill session targeting the child's weakest/overdue characters."""
     user = _get_current_user(request, db)
@@ -299,6 +308,7 @@ def cancel_drill(child_id: int, request: Request, db: Session = Depends(get_db))
 
 
 @router.post("/drill-topics/{child_id}/{game_type}")
+@limiter.limit("20/minute")
 def start_topic_drill(child_id: int, game_type: str, request: Request, db: Session = Depends(get_db)):
     """Queue a math or English drill on the topics this child is weakest at."""
     user = _get_current_user(request, db)
