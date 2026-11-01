@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skool-v5';
+const CACHE_NAME = 'skool-v6';
 
 // Only precache essential assets — SVG images are cached on first use
 // via the /static/ cache-first strategy (much faster install)
@@ -85,7 +85,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For API POST requests, just try network (sync queue handles failures)
+  // For API POST requests, just try network (no offline queue implemented)
   if (event.request.method === 'POST') {
     return; // Let it pass through to network normally
   }

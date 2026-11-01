@@ -10,6 +10,9 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Redirect
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from starlette.middleware.sessions import SessionMiddleware
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from app.config import get_settings
 from app.database import engine, Base
@@ -19,6 +22,9 @@ from app.routes import store as store_routes
 from app.routes import story as story_routes
 
 logger = logging.getLogger(__name__)
+
+# Rate limiter instance
+limiter = Limiter(key_func=get_remote_address)
 
 _templates = Jinja2Templates(directory="templates")
 
@@ -133,11 +139,36 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title="Skool - Chinese Character Learning", lifespan=lifespan)
 
-    # Session middleware for cookie-based auth
+    # Attach rate limiter to app state
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+    # Security headers middleware
+    @app.middleware("http")
+    async def security_headers(request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        if not settings.debug:
+            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data:; "
+            "media-src 'self'; "
+            "connect-src 'self';"
+        )
+        return response
+
+    # Session middleware for cookie-based auth with security flags
     app.add_middleware(
         SessionMiddleware,
         secret_key=settings.secret_key,
         session_cookie=settings.session_cookie_name,
+        https_only=not settings.debug,
+        same_site="lax",
+        max_age=86400 * 30,  # 30 days
     )
 
     # Static files
