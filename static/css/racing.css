@@ -313,6 +313,33 @@ body.racing-theme {
     max-width: 900px;
 }
 
+/* Hint button */
+.hint-btn {
+    margin-top: 16px;
+    background: linear-gradient(135deg, #fdcb6e, #ffeaa7);
+    border: none;
+    border-radius: 20px;
+    padding: 12px 24px;
+    font-size: clamp(16px, 2.8vw, 20px);
+    font-weight: 700;
+    color: #2d3436;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(253, 203, 110, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    z-index: 1;
+}
+
+.hint-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(253, 203, 110, 0.6);
+}
+
+.hint-btn:active {
+    transform: scale(0.98);
+}
+
 .option-btn {
     flex: 1 1 0;
     min-width: 100px;

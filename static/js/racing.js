@@ -50,6 +50,9 @@
     var currentIndex = 0;       /* index into questions[] */
     var answering    = false;   /* lock to prevent double-tap */
     var carLevel     = root.carLevel || 0;
+    var currentCombo = 0;       /* streak of correct answers */
+    var hintShown    = false;   /* whether hint was shown for current question */
+    var particles    = null;    /* ParticleSystem instance */
 
     /* ──────────────────────────────────────────────
        Helpers
@@ -117,6 +120,12 @@
         screenFlash       = document.getElementById('screenFlash');
         progressBarFill   = document.getElementById('progressBarFill');
         stopFlags         = document.querySelectorAll('.stop-flag');
+        
+        /* Initialize particle system */
+        var canvas = document.getElementById('particleCanvas');
+        if (canvas && root.ParticleSystem) {
+            particles = new root.ParticleSystem(canvas);
+        }
     }
 
 
@@ -144,6 +153,11 @@
 
         var mode = q.mode || 'char_to_image';
         answering = false;
+        hintShown = false;  /* Reset hint flag for new question */
+        
+        /* Hide hint button */
+        var hintBtn = document.getElementById('hintBtn');
+        if (hintBtn) hintBtn.style.display = 'none';
 
         /* Record question start time for speed bonus */
         root.SkoolAPI.apiFetch('/game/start-question/' + q.id, { method: 'POST' }).catch(function() {});
@@ -504,8 +518,28 @@
                         }, 250);
                     }
 
+                    /* Update combo */
+                    currentCombo++;
+                    updateComboDisplay();
+                    
+                    /* Celebrate with particles */
+                    if (particles) {
+                        particles.celebrateCorrect();
+                        
+                        /* Extra celebration for combos */
+                        if (currentCombo >= 3 && currentCombo % 3 === 0) {
+                            setTimeout(function() {
+                                particles.celebrateStreak(currentCombo);
+                            }, 400);
+                        }
+                    }
+
                     /* Show bonus multiplier text */
-                    if (data.bonus === 'lucky_star') {
+                    if (data.bonus && data.bonus.startsWith('combo_x')) {
+                        var comboNum = data.bonus.split('_x')[1];
+                        showBonusText('\u{1F525} COMBO x' + comboNum + '!');
+                        spawnConfetti(20);
+                    } else if (data.bonus === 'lucky_star') {
                         showBonusText('\u2B50 LUCKY STAR! 3x! \u2B50');
                         spawnConfetti(25);
                     } else if (data.bonus === 'speed_bonus') {
@@ -546,6 +580,10 @@
                 } else {
                     /* ═══ WRONG — Teaching moment + retry ═══ */
 
+                    /* Reset combo */
+                    currentCombo = 0;
+                    updateComboDisplay();
+
                     /* Mark wrong button red */
                     btn.classList.add('wrong');
 
@@ -554,6 +592,17 @@
 
                     /* Show hint panel (don't reveal the answer) */
                     showTeachingPanel(q);
+                    
+                    /* Show hint button after teaching panel */
+                    setTimeout(function() {
+                        var hintBtn = document.getElementById('hintBtn');
+                        if (hintBtn && !hintShown) {
+                            hintBtn.style.display = 'block';
+                            if (root.Animations) {
+                                root.Animations.safeAnimate(hintBtn, root.Animations.pulse, 2);
+                            }
+                        }
+                    }, 1800);
 
                     /* After teaching panel is dismissed, let them retry */
                 }
