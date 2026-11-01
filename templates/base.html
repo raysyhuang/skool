@@ -14,6 +14,7 @@
 
     {# Common reset + base styles #}
     <link rel="stylesheet" href="{{ url_for('static', path='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/design-system.css') }}">
 
     {# Theme-specific CSS injected by child templates #}
     {% block theme_css %}{% endblock %}
@@ -22,6 +23,9 @@
 </head>
 <body>
     {% block content %}{% endblock %}
+
+    <script src="{{ url_for('static', path='js/animations.js') }}"></script>
+    <script src="{{ url_for('static', path='js/particles.js') }}"></script>
 
     {% block scripts %}{% endblock %}
 
