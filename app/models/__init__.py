@@ -7,6 +7,7 @@ from app.models.achievement import UserAchievement
 from app.models.store import StoreItem, UserInventory
 from app.models.quest import QuestProgress
 from app.models.daily_quest import DailyQuest, UserDailyQuestProgress
+from app.models.collectibles import CollectibleItem, UserCollectible, JourneyNode, UserJourneyProgress
 from app.models.topic import (
     LearningTopic,
     TopicPrerequisite,
@@ -26,6 +27,10 @@ __all__ = [
     "QuestProgress",
     "DailyQuest",
     "UserDailyQuestProgress",
+    "CollectibleItem",
+    "UserCollectible",
+    "JourneyNode",
+    "UserJourneyProgress",
     "LearningTopic",
     "TopicPrerequisite",
     "UserTopicProgress",
