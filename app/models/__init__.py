@@ -6,6 +6,9 @@ from app.models.rewards import PointsLedger
 from app.models.achievement import UserAchievement
 from app.models.store import StoreItem, UserInventory
 from app.models.quest import QuestProgress
+from app.models.daily_quest import DailyQuest, UserDailyQuestProgress
+from app.models.placement import PlacementTest, PlacementResponse, SkillAbility
+from app.models.collectibles import CollectibleItem, UserCollectible, JourneyNode, UserJourneyProgress
 from app.models.topic import (
     LearningTopic,
     TopicPrerequisite,
@@ -23,6 +26,15 @@ __all__ = [
     "StoreItem",
     "UserInventory",
     "QuestProgress",
+    "DailyQuest",
+    "UserDailyQuestProgress",
+    "PlacementTest",
+    "PlacementResponse",
+    "SkillAbility",
+    "CollectibleItem",
+    "UserCollectible",
+    "JourneyNode",
+    "UserJourneyProgress",
     "LearningTopic",
     "TopicPrerequisite",
     "UserTopicProgress",

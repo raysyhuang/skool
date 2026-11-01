@@ -192,11 +192,29 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
     if not was_answered:
         question.is_correct = is_correct
 
+        # Combo tracking
+        if is_correct:
+            session.current_combo = (session.current_combo or 0) + 1
+            if session.current_combo > (session.max_combo or 0):
+                session.max_combo = session.current_combo
+            
+            # Combo bonus (every 3 correct)
+            if session.current_combo >= 3 and session.current_combo % 3 == 0:
+                combo_points = 2 * (session.current_combo // 3)
+                session.combo_bonus = (session.combo_bonus or 0) + combo_points
+                session.points_earned += combo_points
+                award_points(db, user, combo_points, f"combo_x{session.current_combo}")
+                bonus_text = f"combo_x{session.current_combo}"
+        else:
+            session.current_combo = 0
+
         # Update mastery on first answer attempt (SM-2 with quality)
+        # Reduced quality if hint was used
+        first_try = question.first_try if question.first_try is not None else True
         if question.character_id is not None:
-            update_mastery(db, user.id, question.character_id, is_correct, is_first_attempt=True)
+            update_mastery(db, user.id, question.character_id, is_correct, is_first_attempt=first_try)
         if question.topic_id is not None:
-            update_topic_mastery(db, user.id, question.topic_id, is_correct, is_first_attempt=True)
+            update_topic_mastery(db, user.id, question.topic_id, is_correct, is_first_attempt=first_try)
 
         if is_correct:
             points = settings.points_correct
@@ -204,7 +222,8 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
             # Lucky star: random chance of multiplied points
             if random.random() < settings.lucky_star_chance:
                 points *= settings.lucky_star_multiplier
-                bonus_text = "lucky_star"
+                if not bonus_text:
+                    bonus_text = "lucky_star"
 
             # Speed bonus: answered within threshold
             if question.started_at and question.answered_at:
@@ -368,6 +387,33 @@ def complete_session(db: Session, user: User, session_id: int) -> dict:
     }
     new_badges = check_badges(db, user, session_result, session)
 
+    # Daily quest updates
+    from app.services.daily_quests import update_quest_progress
+    completed_quests = []
+    
+    # Quest: play_session
+    quest_result = update_quest_progress(db, user.id, "play_session", 1)
+    if quest_result:
+        completed_quests.append(quest_result)
+    
+    # Quest: perfect_session
+    if is_perfect:
+        quest_result = update_quest_progress(db, user.id, "perfect_session", 1)
+        if quest_result:
+            completed_quests.append(quest_result)
+    
+    # Quest: combo_master
+    if session.max_combo >= 3:
+        quest_result = update_quest_progress(db, user.id, "combo_master", 1)
+        if quest_result:
+            completed_quests.append(quest_result)
+    
+    # Quest: streak_keeper (check current streak)
+    if user.streak >= 3:
+        quest_result = update_quest_progress(db, user.id, "streak_keeper", 1)
+        if quest_result:
+            completed_quests.append(quest_result)
+
     db.commit()
 
     # Build XP breakdown
@@ -397,7 +443,10 @@ def complete_session(db: Session, user: User, session_id: int) -> dict:
         "car_leveled_up": car_leveled_up,
         "perfect_sessions": user.perfect_sessions,
         "total_sessions_completed": user.total_sessions_completed,
+        "max_combo": session.max_combo or 0,
+        "combo_bonus": session.combo_bonus or 0,
         "xp_breakdown": xp_breakdown,
         "new_badges": new_badges,
         "quest": quest_info,
+        "completed_quests": completed_quests,
     }

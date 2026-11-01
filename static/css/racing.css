@@ -92,6 +92,39 @@ body.racing-theme {
     opacity: 0.5;
 }
 
+/* Combo meter */
+.combo-meter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #ff6b35, #fdcb6e);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: clamp(16px, 2.8vw, 22px);
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+    animation: comboGlow 1s ease-in-out infinite alternate;
+}
+
+@keyframes comboGlow {
+    from { box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4); }
+    to { box-shadow: 0 6px 20px rgba(255, 215, 61, 0.6); }
+}
+
+.combo-icon {
+    font-size: clamp(20px, 3vw, 28px);
+    animation: flameFlicker 0.6s ease-in-out infinite;
+}
+
+@keyframes flameFlicker {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(5deg); }
+}
+
+.combo-count {
+    font-size: clamp(18px, 3vw, 26px);
+}
+
 .points-badge {
     display: flex;
     align-items: center;
@@ -217,7 +250,7 @@ body.racing-theme {
 }
 
 .character-display {
-    font-size: clamp(80px, 16vw, 160px);
+    font-size: clamp(60px, 16vw, 160px);
     font-weight: 900;
     color: var(--dark);
     text-shadow: 4px 4px 0 rgba(255, 255, 255, 0.6);
@@ -258,7 +291,7 @@ body.racing-theme {
 
 /* Pinyin subtitle */
 .pinyin-text {
-    font-size: clamp(24px, 5vw, 40px);
+    font-size: clamp(20px, 5vw, 40px);
     color: var(--dark);
     font-weight: 600;
     opacity: 0.8;
@@ -280,6 +313,33 @@ body.racing-theme {
     max-width: 900px;
 }
 
+/* Hint button */
+.hint-btn {
+    margin-top: 16px;
+    background: linear-gradient(135deg, #fdcb6e, #ffeaa7);
+    border: none;
+    border-radius: 20px;
+    padding: 12px 24px;
+    font-size: clamp(16px, 2.8vw, 20px);
+    font-weight: 700;
+    color: #2d3436;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(253, 203, 110, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    z-index: 1;
+}
+
+.hint-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(253, 203, 110, 0.6);
+}
+
+.hint-btn:active {
+    transform: scale(0.98);
+}
+
 .option-btn {
     flex: 1 1 0;
     min-width: 100px;
@@ -299,6 +359,8 @@ body.racing-theme {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Tap feedback (no hover needed -- iPad is touch-only) */
@@ -314,7 +376,7 @@ body.racing-theme {
 }
 
 .option-btn .option-label {
-    font-size: clamp(18px, 3vw, 28px);
+    font-size: clamp(16px, 3vw, 28px);
     font-weight: 700;
     color: var(--dark);
     text-align: center;
@@ -376,12 +438,6 @@ body.racing-theme {
 @keyframes flashRed {
     0%   { opacity: 1; }
     100% { opacity: 0; }
-}
-
-/* Make buttons relative so pseudo-elements position correctly */
-.option-btn {
-    position: relative;
-    overflow: hidden;
 }
 
 
@@ -670,14 +726,114 @@ body.racing-theme {
    RESPONSIVE — scales to any screen size
    ================================================================ */
 
-/* Small screens (phones, small windows) */
+/* ── Phone / Small Screens (up to 480px) ── */
+@media (max-width: 480px) {
+    /* Fix 1: 2x2 option grid with no minimum width */
+    .options-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 0 16px;
+    }
+    
+    .option-btn {
+        min-width: 0;
+        max-width: none;
+        min-height: 100px;
+        width: 100%;
+    }
+    
+    /* Fix 2: Smaller character display and TTS button */
+    .char-row {
+        gap: 8px;
+    }
+    
+    .tts-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+    
+    /* Fix 3: Top bar wraps on phones */
+    .top-bar {
+        flex-wrap: wrap;
+        padding: 8px 12px;
+        gap: 8px;
+    }
+    
+    .top-bar-left {
+        order: 1;
+        flex: 1 1 100%;
+    }
+    
+    .music-toggle {
+        order: 2;
+    }
+    
+    .points-badge {
+        order: 3;
+        font-size: 16px;
+        padding: 6px 12px;
+        min-height: 40px;
+    }
+    
+    .logout-btn {
+        order: 4;
+    }
+    
+    .progress-label {
+        font-size: 16px;
+    }
+    
+    /* Fix 4: Tighter spacing on phones */
+    .question-area {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .road-area {
+        height: 80px;
+    }
+    
+    /* Adjust teaching panel for phones */
+    .teaching-card {
+        width: calc(100vw - 32px);
+        padding: 20px;
+    }
+    
+    /* Adjust feedback overlay */
+    .feedback-msg {
+        font-size: 48px;
+        padding: 16px 24px;
+    }
+}
+
+/* ── Tablet (481px to 768px) ── */
+@media (min-width: 481px) and (max-width: 768px) {
+    .options-row {
+        gap: 20px;
+        max-width: 700px;
+    }
+    
+    .option-btn {
+        min-width: 120px;
+        max-width: 200px;
+    }
+    
+    .question-area {
+        padding: 20px;
+        gap: 16px;
+    }
+}
+
+/* Small height (landscape phones, small windows) */
 @media (max-height: 500px) {
     .character-display {
         font-size: 60px;
     }
 
     .road-area {
-        height: 80px;
+        height: 60px;
     }
 
     .top-bar {
@@ -686,6 +842,12 @@ body.racing-theme {
 
     .options-row {
         max-width: 600px;
+        gap: 12px;
+    }
+    
+    .question-area {
+        padding: 12px;
+        gap: 8px;
     }
 }
 

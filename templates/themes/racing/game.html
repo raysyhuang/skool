@@ -23,6 +23,11 @@
     <button class="music-toggle" id="musicToggle" onclick="toggleMusic()" type="button" aria-label="Toggle music">
         &#127925;
     </button>
+    {# Combo meter #}
+    <div class="combo-meter" id="comboMeter" style="display: none;">
+        <span class="combo-icon">🔥</span>
+        <span class="combo-count" id="comboCount">0</span>
+    </div>
     <div class="points-badge">
         <span>&#11088;</span>
         <span id="pointsDisplay">{{ user.points }}</span>
@@ -71,6 +76,11 @@
         </button>
         {% endfor %}
     </div>
+
+    {# Hint button (shown after wrong answer) #}
+    <button class="hint-btn" id="hintBtn" style="display: none;" onclick="showHint()" type="button">
+        💡 Need a hint?
+    </button>
 </div>
 
 {# ── Feedback overlay ── #}
@@ -83,6 +93,9 @@
 
 {# ── Celebration confetti ── #}
 <div class="celebration-burst" id="celebrationBurst"></div>
+
+{# ── Particle canvas ── #}
+<canvas id="particleCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
 
 {# ── Teaching panel (shown on wrong answer) ── #}
 <div class="teaching-panel" id="teachingPanel">

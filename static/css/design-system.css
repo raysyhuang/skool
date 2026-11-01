@@ -1,0 +1,315 @@
+/* ================================================================
+   Skool Design System v2
+   Modern, playful learning experience
+   ================================================================ */
+
+/* ── CSS Custom Properties (Design Tokens) ── */
+:root {
+    /* Primary Palette: Learning Garden */
+    --sky-blue:       #4A90E2;
+    --sunshine-yellow: #FFD93D;
+    --grass-green:    #6BCF7F;
+    --coral-orange:   #FF6B6B;
+    --lavender:       #B8A4E8;
+    
+    /* Semantic Colors */
+    --success:   #00D084;
+    --error:     #FF4757;
+    --warning:   #FFA502;
+    --neutral:   #95A5A6;
+    
+    /* Backgrounds */
+    --bg-light:  #F8FAFC;
+    --bg-card:   #FFFFFF;
+    --bg-dark:   #2C3E50;
+    
+    /* Gradients */
+    --gradient-dawn:  linear-gradient(135deg, #FFD93D 0%, #FF6B6B 100%);
+    --gradient-ocean: linear-gradient(135deg, #4A90E2 0%, #6BCF7F 100%);
+    --gradient-sunset: linear-gradient(135deg, #FF6B6B 0%, #B8A4E8 100%);
+    --gradient-sky: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+    
+    /* Typography Scale (responsive via clamp) */
+    --text-xs:   clamp(12px, 2vw, 14px);
+    --text-sm:   clamp(14px, 2.5vw, 16px);
+    --text-base: clamp(16px, 3vw, 18px);
+    --text-lg:   clamp(20px, 3.5vw, 24px);
+    --text-xl:   clamp(24px, 4vw, 32px);
+    --text-2xl:  clamp(32px, 5vw, 48px);
+    --text-3xl:  clamp(48px, 8vw, 72px);
+    --text-huge: clamp(80px, 15vw, 160px);
+    
+    /* Spacing Scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08), 0 16px 48px rgba(0, 0, 0, 0.16);
+    
+    /* Animation Durations */
+    --duration-fast: 0.2s;
+    --duration-base: 0.3s;
+    --duration-slow: 0.5s;
+    
+    /* Z-index Scale */
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-overlay: 200;
+    --z-modal: 300;
+    --z-toast: 400;
+}
+
+/* ── Typography Base ── */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+SC:wght@400;700&display=swap');
+
+body {
+    font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: var(--text-base);
+    color: var(--bg-dark);
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+}
+
+h1 { font-size: var(--text-3xl); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+h4 { font-size: var(--text-lg); }
+
+.text-chinese {
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+/* ── Component Base Classes ── */
+
+/* Buttons */
+.btn {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: var(--text-lg);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-xl);
+    border: none;
+    cursor: pointer;
+    transition: transform var(--duration-fast), box-shadow var(--duration-fast);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-height: 60px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn-primary {
+    background: var(--gradient-dawn);
+    color: white;
+    box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--sky-blue);
+    border: 3px solid var(--sky-blue);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+    box-shadow: 0 8px 24px rgba(0, 208, 132, 0.3);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--neutral);
+}
+
+/* Cards */
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--duration-base), box-shadow var(--duration-base);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-interactive {
+    cursor: pointer;
+}
+
+.card-interactive:active {
+    transform: translateY(-2px);
+}
+
+/* Progress Indicators */
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient-ocean);
+    border-radius: var(--radius-full);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.badge-primary {
+    background: var(--sky-blue);
+    color: white;
+}
+
+.badge-success {
+    background: var(--success);
+    color: white;
+}
+
+.badge-warning {
+    background: var(--warning);
+    color: white;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+
+/* Animation Utilities */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from { 
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to { 
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn var(--duration-base) ease-out;
+}
+
+.animate-slideUp {
+    animation: slideUp var(--duration-base) ease-out;
+}
+
+.animate-scaleIn {
+    animation: scaleIn var(--duration-base) ease-out;
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus Styles */
+*:focus-visible {
+    outline: 4px solid rgba(74, 144, 226, 0.5);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -16,6 +16,11 @@ class GameSession(Base):
     total_correct = Column(Integer, default=0)
     total_wrong = Column(Integer, default=0)
     points_earned = Column(Integer, default=0)
+    
+    # Combo tracking
+    current_combo = Column(Integer, default=0)
+    max_combo = Column(Integer, default=0)
+    combo_bonus = Column(Integer, default=0)
 
     user = relationship("User", back_populates="sessions")
     questions = relationship("SessionQuestion", back_populates="session", order_by="SessionQuestion.question_number")
@@ -37,6 +42,8 @@ class SessionQuestion(Base):
     is_correct = Column(Boolean, nullable=True)
     answered_at = Column(DateTime, nullable=True)
     started_at = Column(DateTime, nullable=True)  # for speed bonus tracking
+    first_try = Column(Boolean, default=True)  # False if hint was used
+    hint_shown = Column(Boolean, default=False)
 
     session = relationship("GameSession", back_populates="questions")
     character = relationship("Character")
