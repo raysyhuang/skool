@@ -1032,6 +1032,11 @@
     function finishRace() {
         /* Big celebration */
         spawnBigCelebration();
+        
+        /* Victory particles! */
+        if (particles) {
+            particles.celebrateVictory();
+        }
 
         /* Victory fanfare */
         if (root.SkoolMusic) root.SkoolMusic.playFinish();
