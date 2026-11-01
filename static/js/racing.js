@@ -1076,6 +1076,65 @@
         var btn = document.getElementById('musicToggle');
         if (btn) btn.classList.toggle('muted', muted);
     };
+    
+    /* ──────────────────────────────────────────────
+       Combo display
+       ────────────────────────────────────────────── */
+    
+    function updateComboDisplay() {
+        var comboMeter = document.getElementById('comboMeter');
+        var comboCount = document.getElementById('comboCount');
+        
+        if (!comboMeter || !comboCount) return;
+        
+        if (currentCombo >= 2) {
+            comboMeter.style.display = 'flex';
+            comboCount.textContent = currentCombo;
+            
+            if (root.Animations) {
+                root.Animations.safeAnimate(comboMeter, root.Animations.comboFlash);
+            }
+        } else {
+            comboMeter.style.display = 'none';
+        }
+    }
+    
+    /* ──────────────────────────────────────────────
+       Hint functionality
+       ────────────────────────────────────────────── */
+    
+    root.showHint = function() {
+        var q = questions[currentIndex];
+        if (!q || hintShown) return;
+        
+        hintShown = true;
+        
+        /* Hide hint button */
+        var hintBtn = document.getElementById('hintBtn');
+        if (hintBtn) {
+            hintBtn.style.display = 'none';
+        }
+        
+        /* Mark this question as hint-used (affects SM-2 scoring) */
+        root.SkoolAPI.apiFetch('/game/mark-hint-used/' + q.id, { method: 'POST' })
+            .catch(function() {});
+        
+        /* Highlight the correct answer subtly */
+        var allBtns = optionsRow.querySelectorAll('.option-btn');
+        for (var i = 0; i < allBtns.length; i++) {
+            var btn = allBtns[i];
+            var answer = btn.getAttribute('data-answer');
+            if (answer === q.correct_answer) {
+                btn.style.boxShadow = '0 0 0 4px #fdcb6e, 0 8px 24px rgba(253, 203, 110, 0.6)';
+                if (root.Animations) {
+                    root.Animations.safeAnimate(btn, root.Animations.pulse, 3);
+                }
+                break;
+            }
+        }
+        
+        showBonusText('\u{1F4A1} Hint: Look for the glowing answer!');
+    };
 
 
     /* ──────────────────────────────────────────────
