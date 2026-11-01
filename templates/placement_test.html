@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Placement Test - {{ subject|title }}{% endblock %}
+
+{% block theme_css %}
+<style>
+    body {
+        background: var(--gradient-sky);
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-6);
+    }
+
+    .test-container {
+        max-width: 800px;
+        width: 100%;
+    }
+
+    .test-header {
+        text-align: center;
+        color: white;
+        margin-bottom: var(--space-8);
+    }
+
+    .test-header h1 {
+        font-size: var(--text-3xl);
+        margin-bottom: var(--space-2);
+    }
+
+    .progress-display {
+        font-size: var(--text-lg);
+        opacity: 0.9;
+    }
+
+    .question-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: var(--space-8);
+        box-shadow: var(--shadow-lg);
+        margin-bottom: var(--space-6);
+    }
+
+    .question-prompt {
+        font-size: var(--text-2xl);
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: var(--space-6);
+        color: var(--bg-dark);
+    }
+
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--space-4);
+    }
+
+    .option-btn {
+        background: var(--bg-light);
+        border: 3px solid var(--neutral);
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        font-size: var(--text-xl);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--duration-base);
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .option-btn:hover {
+        border-color: var(--sky-blue);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .option-btn:active {
+        transform: translateY(-2px);
+    }
+
+    .results-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: var(--space-10);
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+    }
+
+    .results-icon {
+        font-size: 120px;
+        margin-bottom: var(--space-4);
+    }
+
+    .results-title {
+        font-size: var(--text-3xl);
+        font-weight: 700;
+        margin-bottom: var(--space-4);
+        color: var(--bg-dark);
+    }
+
+    .results-grade {
+        font-size: var(--text-2xl);
+        color: var(--sky-blue);
+        margin-bottom: var(--space-6);
+    }
+
+    .results-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--space-4);
+        margin-bottom: var(--space-8);
+    }
+
+    .stat-box {
+        background: var(--bg-light);
+        padding: var(--space-4);
+        border-radius: var(--radius-md);
+    }
+
+    .stat-value {
+        font-size: var(--text-2xl);
+        font-weight: 700;
+        color: var(--sky-blue);
+    }
+
+    .stat-label {
+        font-size: var(--text-sm);
+        color: var(--neutral);
+        margin-top: var(--space-1);
+    }
+
+    @media (max-width: 480px) {
+        .options-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="test-container">
+    <div class="test-header">
+        <h1>📊 Placement Test: {{ subject|title }}</h1>
+        <p class="progress-display">Question <span id="questionNum">1</span>/10</p>
+    </div>
+
+    <div id="questionArea" class="question-card" style="display: none;">
+        <div class="question-prompt" id="questionPrompt"></div>
+        <div class="options-grid" id="optionsGrid"></div>
+    </div>
+
+    <div id="resultsArea" class="results-card" style="display: none;">
+        <div class="results-icon">🎯</div>
+        <h2 class="results-title">Test Complete!</h2>
+        <div class="results-grade" id="recommendedGrade"></div>
+        <div class="results-stats">
+            <div class="stat-box">
+                <div class="stat-value" id="accuracyStat"></div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="abilityStat"></div>
+                <div class="stat-label">Ability Score</div>
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="window.location.href='/game/'">
+            Start Learning!
+        </button>
+    </div>
+</div>
+
+<canvas id="particleCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
+
+<script>
+let testId = null;
+let currentQuestion = 0;
+let particles = null;
+
+// Initialize particle system
+if (window.ParticleSystem) {
+    const canvas = document.getElementById('particleCanvas');
+    particles = new ParticleSystem(canvas);
+}
+
+// Start test
+fetch('/game/placement-test/{{ subject }}/start', { method: 'POST' })
+    .then(res => res.json())
+    .then(data => {
+        testId = data.test_id;
+        loadNextQuestion();
+    });
+
+function loadNextQuestion() {
+    fetch(`/game/placement-test/${testId}/next`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.complete) {
+                showResults(data);
+            } else {
+                showQuestion(data);
+            }
+        });
+}
+
+function showQuestion(data) {
+    currentQuestion = data.question_number;
+    document.getElementById('questionNum').textContent = currentQuestion;
+    document.getElementById('questionPrompt').textContent = data.question_data.prompt || data.question_data.expression;
+    
+    const grid = document.getElementById('optionsGrid');
+    grid.innerHTML = '';
+    
+    data.question_data.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => submitAnswer(data, opt);
+        grid.appendChild(btn);
+    });
+    
+    document.getElementById('questionArea').style.display = 'block';
+    document.getElementById('resultsArea').style.display = 'none';
+}
+
+function submitAnswer(questionData, answer) {
+    const startTime = Date.now();
+    
+    fetch(`/game/placement-test/${testId}/answer`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            question_data: questionData,
+            selected_answer: answer,
+            response_time_ms: Date.now() - startTime
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.correct && particles) {
+            particles.celebrateCorrect();
+        }
+        setTimeout(loadNextQuestion, 800);
+    });
+}
+
+function showResults(data) {
+    document.getElementById('questionArea').style.display = 'none';
+    document.getElementById('resultsArea').style.display = 'block';
+    document.getElementById('recommendedGrade').textContent = `Recommended Grade: ${data.recommended_grade}`;
+    document.getElementById('accuracyStat').textContent = `${Math.round(data.accuracy * 100)}%`;
+    document.getElementById('abilityStat').textContent = Math.round(data.estimated_ability);
+    
+    if (particles) {
+        particles.celebrateVictory();
+    }
+}
+</script>
+{% endblock %}
