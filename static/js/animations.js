@@ -166,3 +166,6 @@ const Animations = {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = Animations;
 }
+
+// Classic script: top-level const is not a window property, so expose it
+window.Animations = Animations;

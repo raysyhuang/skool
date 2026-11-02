@@ -152,7 +152,7 @@
 </script>
 
 {# ── Hanzi Writer for stroke order animation ── #}
-<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+<script src="{{ url_for('static', path='js/vendor/hanzi-writer.min.js') }}"></script>
 
 {# ── Load JS modules in order ── #}
 <script src="{{ url_for('static', path='js/common.js') }}"></script>

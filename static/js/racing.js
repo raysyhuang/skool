@@ -61,16 +61,25 @@
     function cleanTextForTTS(text, lang) {
         if (!text) return '';
         /* Strip emojis (surrogate pairs, variation selectors, ZWJ sequences) */
-        var cleaned = text.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '');
+        var cleaned = text.replace(/[\u{1F000}-\u{1FAFF}\u{2190}-\u{21FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE00}-\u{FE0F}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '');
         /* Strip underscores (fill-in-blank placeholders) */
         cleaned = cleaned.replace(/_+/g, '');
 
         /* Replace math operators with speakable words */
         var isChinese = (lang === 'zh');
+        if (!isChinese) {
+            /* Word parts, not arithmetic: "c-a-t" / "un + happy" -> short pauses */
+            cleaned = cleaned.replace(/([A-Za-z])\s*[+\-]\s*(?=[A-Za-z])/g, '$1, ');
+        }
         cleaned = cleaned.replace(/\s*\+\s*/g, isChinese ? ' \u52A0 ' : ' plus ');
         cleaned = cleaned.replace(/\s*[−\-\u2212]\s*/g, isChinese ? ' \u51CF ' : ' minus ');
-        cleaned = cleaned.replace(/\s*[×\*xX]\s*/g, isChinese ? ' \u4E58 ' : ' times ');
-        cleaned = cleaned.replace(/\s*[÷\/]\s*/g, isChinese ? ' \u9664\u4EE5 ' : ' divided by ');
+        /* x and / only count as operators between numbers ("3 x 4"), never in words ("fox") */
+        cleaned = cleaned.replace(/\s*[×\*]\s*|(\d)\s*[xX]\s*(?=\d)/g, function (m, d) {
+            return (d || '') + (isChinese ? ' \u4E58 ' : ' times ');
+        });
+        cleaned = cleaned.replace(/\s*÷\s*|(\d)\s*\/\s*(?=\d)/g, function (m, d) {
+            return (d || '') + (isChinese ? ' \u9664\u4EE5 ' : ' divided by ');
+        });
         cleaned = cleaned.replace(/\s*=\s*\?\s*/g, isChinese ? ' \u7B49\u4E8E\u591A\u5C11' : ' equals what');
         cleaned = cleaned.replace(/\s*=\s*/g, isChinese ? ' \u7B49\u4E8E ' : ' equals ');
         cleaned = cleaned.replace(/\?/g, '');
@@ -222,6 +231,14 @@
                     strokeAnimationSpeed: 1,
                     delayBetweenStrokes: 200,
                     showOutline: true,
+                    /* Stroke data comes through our server: the CSP only
+                       allows connect-src 'self', so the default CDN fetch fails */
+                    charDataLoader: function (ch, onComplete, onError) {
+                        fetch('/game/hanzi-data/' + encodeURIComponent(ch))
+                            .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+                            .then(onComplete)
+                            .catch(onError);
+                    },
                 });
                 writer.animateCharacter();
             } catch(e) { /* Hanzi Writer may not support all chars */ }
@@ -380,12 +397,15 @@
                     } else {
                         var span = document.createElement('span');
                         span.className = 'option-label';
-                        /* Bigger font for character picks and math/logic */
-                        if (isMathLogic || mode === 'image_to_char' || mode === 'meaning_to_char' ||
+                        /* Bigger font for character picks and math/logic answers
+                           (English answers are words/phrases and would overflow) */
+                        if ((isMathLogic && gameType !== 'english') ||
+                            mode === 'image_to_char' || mode === 'meaning_to_char' ||
                             mode === 'pinyin_to_char' || mode === 'fill_in_blank' ||
                             mode === 'audio_to_char') {
                             span.style.fontSize = 'clamp(32px, 6vw, 52px)';
                         }
+                        if (gameType === 'english') span.lang = 'en';  /* lets hyphens:auto work */
                         span.textContent = opt;
                         btn.appendChild(span);
                     }
@@ -404,9 +424,9 @@
                     speakText(q.character);
                 }
             }, 300);
-        } else if (gameType === 'english') {
-            setTimeout(function () { speakText(q.character); }, 300);
         }
+        /* English is never auto-read: the reader can read the word, and
+           narrating it every question was noise. The 🔊 button still works. */
     }
 
 

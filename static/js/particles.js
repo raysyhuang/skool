@@ -199,3 +199,6 @@ class ParticleSystem {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ParticleSystem;
 }
+
+// Classic script: top-level class/const are not window properties, so expose it
+window.ParticleSystem = ParticleSystem;

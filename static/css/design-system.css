@@ -77,7 +77,8 @@
 }
 
 /* ── Typography Base ── */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+SC:wght@400;700&display=swap');
+/* No web-font @import: the CSP (style-src 'self') blocks Google Fonts, so the
+   system-font fallbacks below are what actually renders. */
 
 body {
     font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;

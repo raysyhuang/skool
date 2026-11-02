@@ -1,7 +1,7 @@
 /* ================================================================
    Skool -- Text-to-Speech Wrapper
-   Uses Google Translate TTS for natural-sounding Chinese pronunciation.
-   Falls back to Web Speech API if Google TTS is unavailable.
+   Plays neural voices from our /game/tts endpoint (edge-tts).
+   Falls back to the Web Speech API only if the server audio fails.
    ================================================================ */
 
 (function (root) {
@@ -10,7 +10,7 @@
     /* ── Configuration ── */
     var DEFAULT_LANG = 'zh-CN';
 
-    /* ── Google Translate TTS (natural sounding) ── */
+    /* ── Server neural TTS ── */
     var _ttsAudio = null;
 
     /* ── Duck background music while speaking ── */
@@ -22,40 +22,78 @@
         if (root.SkoolMusic && root.SkoolMusic.unduck) root.SkoolMusic.unduck();
     }
 
-    function speakViaGoogle(text, lang, opts) {
+    /*
+     * One reusable <audio> element, unlocked on the first tap.
+     *
+     * iPad Safari only lets an audio element play outside a user gesture
+     * once that same element has played inside one. A fresh `new Audio()`
+     * per word is never unlocked, so every auto-read was rejected and fell
+     * back to the robotic Web Speech voice. We unlock one element on the
+     * first touch (with a silent clip) and swap its src for each word.
+     */
+    var SILENCE_URL = '/static/music/silence.mp3';
+    var _unlocked = false;
+
+    function _audioEl() {
+        if (!_ttsAudio) {
+            _ttsAudio = new Audio();
+            _ttsAudio.preload = 'auto';
+        }
+        return _ttsAudio;
+    }
+
+    function _unlock() {
+        if (_unlocked) return;
+        var el = _audioEl();
+        if (el.src && !el.paused) { _unlocked = true; return; }  /* already speaking from a tap */
+        el.onended = null;  /* the last word's handlers must not fire for the silence */
+        el.onerror = null;
+        el.src = SILENCE_URL;
+        var p = el.play();
+        if (p && p.then) {
+            p.then(function () { _unlocked = true; }).catch(function () {});
+        } else {
+            _unlocked = true;
+        }
+    }
+
+    ['touchend', 'pointerup', 'click', 'keydown'].forEach(function (evt) {
+        root.addEventListener(evt, _unlock, { capture: true, passive: true });
+    });
+
+    function speakViaServer(text, lang, opts) {
         opts = opts || {};
         lang = lang || DEFAULT_LANG;
 
-        /* Use our server-side proxy to Google Translate TTS */
-        var url = '/game/tts?text=' + encodeURIComponent(text) + '&lang=' + encodeURIComponent(lang);
+        var el = _audioEl();
+        el.pause();
+        el.src = '/game/tts?text=' + encodeURIComponent(text) + '&lang=' + encodeURIComponent(lang);
+        el.volume = 1.0;
 
-        /* Stop any previous playback */
-        if (_ttsAudio) {
-            _ttsAudio.pause();
-            _ttsAudio.removeAttribute('src');
-        }
-
-        _ttsAudio = new Audio(url);
-        _ttsAudio.volume = 1.0;
-
-        _ttsAudio.onended = function () {
+        el.onended = function () {
             _unduck();
             if (typeof opts.onEnd === 'function') opts.onEnd();
         };
 
-        _ttsAudio.onerror = function () {
-            /* Server TTS failed — fall back to Web Speech API */
+        el.onerror = function () {
+            /* Server/network failure: robotic voice beats silence here */
             console.warn('[Skool TTS] Server TTS failed, falling back to Web Speech API.');
             _unduck();
             speakViaWebSpeech(text, lang, opts);
         };
 
         _duck();
-        var p = _ttsAudio.play();
+        var p = el.play();
+        if (p && p.then) p.then(function () { _unlocked = true; }, function () {});
         if (p && p.catch) {
-            p.catch(function () {
-                /* Autoplay blocked — try Web Speech API as fallback */
+            p.catch(function (err) {
                 _unduck();
+                if (err && err.name === 'NotAllowedError') {
+                    /* Not unlocked yet (no tap so far). Stay quiet rather than
+                       switch to the robot voice; the 🔊 button works on tap. */
+                    return;
+                }
+                if (err && err.name === 'AbortError') return;  /* replaced by a newer word */
                 speakViaWebSpeech(text, lang, opts);
             });
         }
@@ -145,7 +183,7 @@
     /* ── Main API ── */
     function speak(text, lang, opts) {
         if (!text) return;
-        speakViaGoogle(text, lang, opts);
+        speakViaServer(text, lang, opts);
     }
 
     function speakChinese(text, opts) {

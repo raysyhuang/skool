@@ -520,6 +520,38 @@ def quest_map_page(request: Request, db: Session = Depends(get_db)):
     })
 
 
+_hanzi_cache: dict[str, bytes] = {}
+_HANZI_DATA_URL = "https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/{}.json"
+
+
+@router.get("/hanzi-data/{char}")
+async def hanzi_data(char: str):
+    """Proxy Hanzi Writer stroke data, which the CSP won't let the browser fetch."""
+    import httpx
+
+    if len(char) != 1 or not ("\u3400" <= char <= "\u9fff"):
+        return Response(status_code=404)
+    if char not in _hanzi_cache:
+        try:
+            async with httpx.AsyncClient(timeout=5) as client:
+                resp = await client.get(_HANZI_DATA_URL.format(char))
+        except httpx.HTTPError as e:
+            logger.warning("Hanzi data fetch failed for %s: %s", char, e)
+            return Response(status_code=503)
+        if resp.status_code != 200:
+            return Response(status_code=404)
+        if len(_hanzi_cache) < 3000:
+            _hanzi_cache[char] = resp.content
+        body = resp.content
+    else:
+        body = _hanzi_cache[char]
+    return Response(
+        content=body,
+        media_type="application/json",
+        headers={"Cache-Control": "public, max-age=604800"},
+    )
+
+
 _tts_cache: dict[str, bytes] = {}
 
 # Voice mapping: natural-sounding Microsoft Neural voices
@@ -535,16 +567,20 @@ def _clean_tts_text(text: str, lang: str = "zh-CN") -> str:
     """Strip emojis, underscores, and replace math operators with speakable words."""
     import re
     # Remove emojis and symbol blocks
-    cleaned = re.sub(r'[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE00-\uFE0F\u200D\u20E3\U000E0020-\U000E007F]', '', text)
+    cleaned = re.sub(r'[\U0001F000-\U0001FAFF\u2190-\u21FF\u2600-\u27BF\u2B00-\u2BFF\uFE00-\uFE0F\u200D\u20E3\U000E0020-\U000E007F]', '', text)
     # Remove underscores (fill-in-blank placeholders)
     cleaned = re.sub(r'_+', '', cleaned)
 
     # Replace math operators with speakable words
     is_zh = lang.startswith("zh")
+    if not is_zh:
+        # Word parts, not arithmetic: "c-a-t" / "un + happy" -> short pauses
+        cleaned = re.sub(r'([A-Za-z])\s*[+\-]\s*(?=[A-Za-z])', r'\1, ', cleaned)
     cleaned = re.sub(r'\s*\+\s*', ' 加 ' if is_zh else ' plus ', cleaned)
     cleaned = re.sub(r'\s*[−\-\u2212]\s*', ' 减 ' if is_zh else ' minus ', cleaned)
-    cleaned = re.sub(r'\s*[×*xX]\s*', ' 乘 ' if is_zh else ' times ', cleaned)
-    cleaned = re.sub(r'\s*[÷/]\s*', ' 除以 ' if is_zh else ' divided by ', cleaned)
+    # x and / only count as operators between numbers ("3 x 4"), never in words ("fox")
+    cleaned = re.sub(r'\s*×\s*|\s*\*\s*|(?<=\d)\s*[xX]\s*(?=\d)', ' 乘 ' if is_zh else ' times ', cleaned)
+    cleaned = re.sub(r'\s*÷\s*|(?<=\d)\s*/\s*(?=\d)', ' 除以 ' if is_zh else ' divided by ', cleaned)
     cleaned = re.sub(r'\s*=\s*\?\s*', ' 等于多少' if is_zh else ' equals what', cleaned)
     cleaned = re.sub(r'\s*=\s*', ' 等于 ' if is_zh else ' equals ', cleaned)
     cleaned = cleaned.replace('?', '')

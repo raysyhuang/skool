@@ -380,6 +380,10 @@ body.racing-theme {
     font-weight: 700;
     color: var(--dark);
     text-align: center;
+    /* A long word must wrap inside the card, never get clipped by it */
+    max-width: 100%;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 
