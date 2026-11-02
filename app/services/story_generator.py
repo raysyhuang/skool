@@ -88,7 +88,7 @@ STORIES = [
         "min_mastery": 1,
         "sentences": [
             {"zh": "\u4ECA\u5929\u5929\u6C14\u5F88\u597D\u3002", "pinyin": "j\u012Bnti\u0101n ti\u0101nq\u00EC h\u011Bn h\u01CEo", "en": "Today the weather is nice."},
-            {"zh": "\u6211\u4EEC\u53BB\u516C\u56ED\u3002", "pinyin": "w\u01D2men q\u00F9 g\u014Dngyuan", "en": "We go to the park."},
+            {"zh": "\u6211\u4EEC\u53BB\u516C\u56ED\u3002", "pinyin": "w\u01D2men q\u00F9 g\u014Dngyu\u00E1n", "en": "We go to the park."},
             {"zh": "\u6211\u770B\u5230\u82B1\u548C\u9E1F\u3002", "pinyin": "w\u01D2 k\u00E0n d\u00E0o hu\u0101 h\u00E9 ni\u01CEo", "en": "I see flowers and birds."},
             {"zh": "\u6211\u5F88\u5F00\u5FC3\u3002", "pinyin": "w\u01D2 h\u011Bn k\u0101ix\u012Bn", "en": "I am very happy."},
         ],
@@ -120,7 +120,7 @@ STORIES = [
         "min_mastery": 2,
         "sentences": [
             {"zh": "\u4E00\u4E8C\u4E09\u56DB\u4E94\u3002", "pinyin": "y\u012B \u00E8r s\u0101n s\u00EC w\u01D4", "en": "One two three four five."},
-            {"zh": "\u4E0A\u5C71\u6253\u8001\u864E\u3002", "pinyin": "sh\u00E0ng sh\u0101n d\u01CE l\u01CEoh\u01D4", "en": "Go up the mountain to find a tiger."},
+            {"zh": "\u4E0A\u5C71\u6253\u8001\u864E\u3002", "pinyin": "sh\u00E0ng sh\u0101n d\u01CE l\u01CEoh\u01D4", "en": "Go up the mountain to hunt a tiger."},
             {"zh": "\u8001\u864E\u4E0D\u5728\u5BB6\u3002", "pinyin": "l\u01CEoh\u01D4 b\u00FA z\u00E0i ji\u0101", "en": "The tiger is not home."},
             {"zh": "\u53EA\u770B\u5230\u5C0F\u677E\u9F20\u3002", "pinyin": "zh\u01D0 k\u00E0n d\u00E0o xi\u01CEo s\u014Dngsh\u01D4", "en": "Only see a little squirrel."},
         ],

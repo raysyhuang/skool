@@ -112,7 +112,7 @@ _SIZE_SETS = [
     (["🚌", "🚗", "🛵"], "🚌"),   # bus biggest
     (["🦁", "🐱", "🐭"], "🦁"),   # lion biggest
     (["✈️", "🚗", "🚲"], "✈️"),   # airplane biggest
-    (["🏔️", "⛰️", "🪨"], "🏔️"),  # mountain biggest
+    (["🏔️", "🏠", "🪨"], "🏔️"),  # mountain biggest
     (["☀️", "🌍", "🌙"], "☀️"),   # sun biggest
     (["🦕", "🐊", "🦎"], "🦕"),   # dinosaur biggest
     (["🚢", "🚤", "🛶"], "🚢"),   # ship biggest
@@ -137,17 +137,17 @@ def _gen_size_order() -> dict:
 
 
 _MATCHING_PAIRS = [
-    ("🧤", "🧣", ["🧣", "🎩", "👟"]),
+    ("🧤", "🧣", ["🧣", "🍦", "🎸"]),
     ("👟", "🧦", ["🧦", "🧤", "🎒"]),
     ("🍞", "🧈", ["🧈", "🖊️", "⚽"]),
-    ("☀️", "🕶️", ["🕶️", "🧤", "☂️"]),
+    ("☀️", "🕶️", ["🕶️", "🧤", "🎸"]),
     ("🌧️", "☂️", ["☂️", "🕶️", "🧣"]),
     ("✏️", "📄", ["📄", "🍎", "🎸"]),
     ("🔑", "🔒", ["🔒", "📱", "🎈"]),
     ("🖌️", "🎨", ["🎨", "🔑", "🧦"]),
-    ("🛏️", "🛌", ["🛌", "🚗", "🎸"]),
+    ("🥣", "🥄", ["🥄", "🚗", "🎸"]),
     ("🔨", "🪵", ["🪵", "🍎", "🧦"]),
-    ("🐶", "🦴", ["🦴", "🐟", "🎩"]),
+    ("🐶", "🦴", ["🦴", "🎸", "🎩"]),
     ("🔥", "💧", ["💧", "⭐", "🎈"]),
     ("🪥", "🦷", ["🦷", "📄", "🚌"]),
     ("🎣", "🐟", ["🐟", "🐶", "🔑"]),
@@ -244,13 +244,13 @@ def _gen_number_pattern() -> dict:
 
 _ANALOGIES = [
     ("Hot", "Cold", "Big", "Small", ["Small", "Fast", "Tall"]),
-    ("Day", "Night", "Sun", "Moon", ["Moon", "Star", "Cloud"]),
+    ("Day", "Night", "Sun", "Moon", ["Moon", "Rain", "Cloud"]),
     ("Up", "Down", "Left", "Right", ["Right", "Back", "Over"]),
-    ("Happy", "Sad", "Light", "Dark", ["Dark", "Bright", "Heavy"]),
+    ("Happy", "Sad", "Light", "Dark", ["Dark", "Bright", "Soft"]),
     ("Cat", "Kitten", "Dog", "Puppy", ["Puppy", "Bone", "Bark"]),
     ("Bird", "Fly", "Fish", "Swim", ["Swim", "Walk", "Run"]),
     ("Open", "Close", "On", "Off", ["Off", "Up", "In"]),
-    ("Hand", "Glove", "Foot", "Shoe", ["Shoe", "Hat", "Sock"]),
+    ("Hand", "Glove", "Foot", "Shoe", ["Shoe", "Hat", "Scarf"]),
 ]
 
 def _gen_analogy() -> dict:
@@ -346,16 +346,16 @@ def _gen_comparison() -> dict:
 
 
 _BEFORE_AFTER_SETS = [
-    ("What comes after Tuesday?", "Wednesday", ["Wednesday", "Monday", "Friday"]),
-    ("What comes before summer?", "Spring", ["Spring", "Winter", "Fall"]),
-    ("What comes after 3rd?", "4th", ["4th", "2nd", "5th"]),
-    ("What comes before Wednesday?", "Tuesday", ["Tuesday", "Thursday", "Friday"]),
-    ("What comes after Saturday?", "Sunday", ["Sunday", "Friday", "Monday"]),
-    ("What comes after winter?", "Spring", ["Spring", "Summer", "Fall"]),
-    ("What comes before 5th?", "4th", ["4th", "6th", "3rd"]),
-    ("What comes after March?", "April", ["April", "February", "May"]),
-    ("What comes before Friday?", "Thursday", ["Thursday", "Saturday", "Wednesday"]),
-    ("What comes after breakfast?", "Lunch", ["Lunch", "Dinner", "Snack"]),
+    ("What comes right after Tuesday?", "Wednesday", ["Wednesday", "Monday", "Friday"]),
+    ("What comes right before summer?", "Spring", ["Spring", "Winter", "Fall"]),
+    ("What comes right after 3rd?", "4th", ["4th", "2nd", "5th"]),
+    ("What comes right before Wednesday?", "Tuesday", ["Tuesday", "Thursday", "Friday"]),
+    ("What comes right after Saturday?", "Sunday", ["Sunday", "Friday", "Monday"]),
+    ("What comes right after winter?", "Spring", ["Spring", "Summer", "Fall"]),
+    ("What comes right before 5th?", "4th", ["4th", "6th", "3rd"]),
+    ("What comes right after March?", "April", ["April", "February", "May"]),
+    ("What comes right before Friday?", "Thursday", ["Thursday", "Saturday", "Wednesday"]),
+    ("Which meal comes right after breakfast?", "Lunch", ["Lunch", "Dinner", "Supper"]),
 ]
 
 def _gen_before_after() -> dict:
@@ -440,17 +440,17 @@ def _gen_number_pattern_hard() -> dict:
 
 _ANALOGIES_HARD = [
     ("Finger", "Hand", "Toe", "Foot", ["Foot", "Leg", "Arm"]),
-    ("Page", "Book", "Brick", "Wall", ["Wall", "House", "Floor"]),
+    ("Page", "Book", "Brick", "Wall", ["Wall", "Clay", "Window"]),
     ("Petal", "Flower", "Branch", "Tree", ["Tree", "Leaf", "Root"]),
-    ("Player", "Team", "Student", "Class", ["Class", "School", "Teacher"]),
-    ("Chapter", "Novel", "Scene", "Movie", ["Movie", "Act", "Script"]),
-    ("Spoke", "Wheel", "Key", "Piano", ["Piano", "Guitar", "Lock"]),
+    ("Player", "Team", "Student", "Class", ["Class", "Desk", "Teacher"]),
+    ("Chapter", "Novel", "Scene", "Movie", ["Movie", "Popcorn", "Ticket"]),
+    ("Spoke", "Wheel", "String", "Guitar", ["Guitar", "Drum", "Flute"]),
     ("Cub", "Bear", "Calf", "Cow", ["Cow", "Horse", "Sheep"]),
-    ("Carpenter", "Wood", "Sculptor", "Stone", ["Stone", "Clay", "Metal"]),
-    ("Author", "Book", "Director", "Film", ["Film", "Play", "Song"]),
+    ("Carpenter", "Wood", "Tailor", "Cloth", ["Cloth", "Stone", "Glass"]),
+    ("Author", "Book", "Director", "Film", ["Film", "Painting", "Song"]),
     ("Engine", "Car", "Heart", "Body", ["Body", "Brain", "Blood"]),
-    ("Feather", "Bird", "Scale", "Fish", ["Fish", "Snake", "Fur"]),
-    ("Oar", "Boat", "Pedal", "Bicycle", ["Bicycle", "Car", "Wheel"]),
+    ("Feather", "Bird", "Scale", "Fish", ["Fish", "Dog", "Fur"]),
+    ("Oar", "Boat", "Pedal", "Bicycle", ["Bicycle", "Kite", "Wheel"]),
 ]
 
 def _gen_analogy_hard() -> dict:
@@ -476,20 +476,20 @@ _LOGIC_DEDUCTIONS = [
      ["The ground is wet", "The ground is dry", "It is sunny"]),
     ("All squares are rectangles. This shape is a square.", "It is a rectangle",
      ["It is a rectangle", "It is a circle", "It is a triangle"]),
-    ("Taller people can reach higher. Tom is taller than Sam.", "Tom can reach higher",
-     ["Tom can reach higher", "Sam can reach higher", "They reach the same"]),
+    ("Tom is taller than Sam. Sam is taller than Ben.", "Tom is taller than Ben",
+     ["Tom is taller than Ben", "Ben is taller than Tom", "Ben is the tallest"]),
     ("Every bird has feathers. A penguin is a bird.", "A penguin has feathers",
      ["A penguin has feathers", "A penguin can fly", "A penguin has fur"]),
-    ("Older students are in higher grades. Mia is older than Zoe.", "Mia is in a higher grade",
-     ["Mia is in a higher grade", "Zoe is in a higher grade", "They're in the same grade"]),
+    ("Mia is older than Zoe. Zoe is older than Lily.", "Mia is older than Lily",
+     ["Mia is older than Lily", "Lily is older than Mia", "Lily is the oldest"]),
     ("All fish live in water. A goldfish is a fish.", "A goldfish lives in water",
      ["A goldfish lives in water", "A goldfish lives on land", "A goldfish can fly"]),
-    ("Heavier things sink. A rock is heavier than a feather.", "The rock sinks faster",
-     ["The rock sinks faster", "The feather sinks faster", "They sink the same"]),
-    ("If you study, you learn. Emma studied all week.", "Emma learned a lot",
-     ["Emma learned a lot", "Emma forgot everything", "Emma didn't study"]),
-    ("Colder temperatures make water freeze. It is -5°C.", "The water will freeze",
-     ["The water will freeze", "The water will boil", "The water stays the same"]),
+    ("Stones sink in water. This pebble is a stone.", "The pebble sinks",
+     ["The pebble sinks", "The pebble floats", "The pebble melts"]),
+    ("If you study, you learn. Emma studied all week.", "Emma learned something",
+     ["Emma learned something", "Emma forgot everything", "Emma didn't study"]),
+    ("Water freezes below 0°C. The puddle is at -5°C.", "The puddle will freeze",
+     ["The puddle will freeze", "The puddle will boil", "The puddle gets warmer"]),
 ]
 
 def _gen_logic_deduction() -> dict:
@@ -545,13 +545,13 @@ _WORD_ANALOGIES = [
     ("Bark is to dog as meow is to ___", "cat", ["cat", "bird", "fish"]),
     ("Pilot is to airplane as captain is to ___", "ship", ["ship", "car", "train"]),
     ("Eyes are to seeing as ears are to ___", "hearing", ["hearing", "smelling", "tasting"]),
-    ("Knife is to cut as pen is to ___", "write", ["write", "eat", "draw"]),
-    ("Night is to moon as day is to ___", "sun", ["sun", "stars", "clouds"]),
-    ("Library is to books as museum is to ___", "art", ["art", "food", "sports"]),
-    ("Chef is to kitchen as teacher is to ___", "classroom", ["classroom", "hospital", "office"]),
+    ("Knife is to cut as pen is to ___", "write", ["write", "eat", "sleep"]),
+    ("Night is to moon as day is to ___", "sun", ["sun", "stars", "dreams"]),
+    ("Library is to books as museum is to ___", "art", ["art", "food", "homework"]),
+    ("Chef is to kitchen as teacher is to ___", "classroom", ["classroom", "hospital", "garage"]),
     ("Brush is to paint as needle is to ___", "sew", ["sew", "write", "cook"]),
-    ("Winter is to cold as summer is to ___", "hot", ["hot", "rainy", "windy"]),
-    ("Milk is to cow as egg is to ___", "chicken", ["chicken", "pig", "duck"]),
+    ("Winter is to cold as summer is to ___", "hot", ["hot", "snowy", "frozen"]),
+    ("Milk is to cow as egg is to ___", "chicken", ["chicken", "pig", "horse"]),
     ("Keyboard is to type as microphone is to ___", "speak", ["speak", "read", "write"]),
 ]
 
@@ -617,14 +617,14 @@ def _gen_sequence_hard() -> dict:
 
 _ODD_ONE_OUT_HARD = [
     (["Mercury", "Venus", "Mars"], "Paris", "planets vs city"),
-    (["Triangle", "Square", "Circle"], "Blue", "shapes vs color"),
+    (["Triangle", "Square", "Pentagon"], "Blue", "shapes vs color"),
     (["Violin", "Cello", "Guitar"], "Drum", "string vs percussion"),
     (["Oxygen", "Nitrogen", "Helium"], "Water", "elements vs compound"),
     (["Shakespeare", "Dickens", "Austen"], "Einstein", "authors vs scientist"),
     (["Atlantic", "Pacific", "Indian"], "Nile", "oceans vs river"),
     (["Tulip", "Rose", "Daisy"], "Oak", "flowers vs tree"),
     (["Emerald", "Ruby", "Sapphire"], "Gold", "gems vs metal"),
-    (["Piano", "Organ", "Keyboard"], "Trumpet", "keys vs brass"),
+    (["Trumpet", "Trombone", "Tuba"], "Violin", "brass vs strings"),
     (["Simile", "Metaphor", "Alliteration"], "Addition", "literary vs math"),
     (["Hiking", "Swimming", "Cycling"], "Chess", "physical vs mental"),
     (["Jupiter", "Saturn", "Neptune"], "Moon", "planets vs satellite"),

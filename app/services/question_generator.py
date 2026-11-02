@@ -169,13 +169,27 @@ def pick_question_mode(is_prereader: bool, char: Character) -> str:
     return random.choice(candidates)
 
 
+def _meanings(char: Character) -> set[str]:
+    return {m.strip().lower() for m in (char.meaning or "").split("/") if m.strip()}
+
+
+def _distinct_from(correct_char: Character, chars: list[Character]) -> list[Character]:
+    """Drop characters that would also be a right answer: same meaning
+    (口 / 嘴巴 "mouth") or same pinyin (心 / 新 xīn)."""
+    meanings = _meanings(correct_char)
+    return [
+        c for c in chars
+        if c.pinyin != correct_char.pinyin and not (meanings & _meanings(c))
+    ]
+
+
 def generate_options(db: Session, correct_char: Character, count: int = 2) -> list[str]:
     """Generate distractor options + correct answer, shuffled. Returns list of meanings."""
-    all_chars = (
+    all_chars = _distinct_from(correct_char, (
         db.query(Character)
         .filter(Character.id != correct_char.id)
         .all()
-    )
+    ))
 
     # Pick distractors from different meanings
     distractors = random.sample(all_chars, min(count, len(all_chars)))
@@ -194,7 +208,7 @@ def generate_image_options(db: Session, correct_char: Character, count: int = 2)
     )
 
     # Exclude visually confusable icons from distractors
-    filtered = _exclude_confusable(correct_char, all_chars)
+    filtered = _exclude_confusable(correct_char, _distinct_from(correct_char, all_chars))
     # Fall back to unfiltered pool if not enough candidates remain
     pool = filtered if len(filtered) >= count else all_chars
     distractors = random.sample(pool, min(count, len(pool)))
@@ -210,11 +224,11 @@ def generate_image_options(db: Session, correct_char: Character, count: int = 2)
 
 def generate_character_options(db: Session, correct_char: Character, count: int = 2) -> list[str]:
     """Generate character-based distractor options (for reverse modes). Returns list of characters."""
-    all_chars = (
+    all_chars = _distinct_from(correct_char, (
         db.query(Character)
         .filter(Character.id != correct_char.id)
         .all()
-    )
+    ))
 
     distractors = random.sample(all_chars, min(count, len(all_chars)))
     options = [correct_char.character] + [d.character for d in distractors]

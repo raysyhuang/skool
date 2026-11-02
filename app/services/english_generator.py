@@ -1,5 +1,14 @@
 import json
 import random
+from pathlib import Path
+
+# Real words a random letter edit of a sight word can produce ("then" ->
+# "than", "on" -> "no"). Offered as a "wrong spelling" they'd be correct, or
+# worse. Rebuild with scripts/build_spelling_blocklist.py after editing the
+# sight-word lists.
+_REAL_WORDS = frozenset(
+    (Path(__file__).with_name("spelling_blocklist.txt")).read_text().split()
+)
 
 
 # ── Content pools ──
@@ -14,7 +23,7 @@ _LETTER_SOUNDS = {
     "F": ("fff", "🐟 fish"),
     "G": ("guh", "🍇 grapes"),
     "H": ("huh", "🏠 house"),
-    "I": ("ih", "🍦 ice cream"),
+    "I": ("ih", "🦎 iguana"),
     "J": ("juh", "🧃 juice"),
     "K": ("kuh", "🪁 kite"),
     "L": ("lll", "🦁 lion"),
@@ -58,7 +67,7 @@ _RHYME_GROUPS = [
 _IRREGULAR_PLURALS = [
     ("child", "children"), ("foot", "feet"), ("tooth", "teeth"),
     ("mouse", "mice"), ("goose", "geese"), ("man", "men"),
-    ("woman", "women"), ("person", "people"), ("leaf", "leaves"),
+    ("woman", "women"), ("leaf", "leaves"),
     ("knife", "knives"), ("wolf", "wolves"), ("shelf", "shelves"),
     ("baby", "babies"), ("city", "cities"), ("story", "stories"),
     ("box", "boxes"), ("bus", "buses"), ("dish", "dishes"),
@@ -84,7 +93,7 @@ _SYLLABLE_WORDS = [
 
 # Sight words by tier (Dolch + Fry common words)
 _SIGHT_WORDS_EASY = [
-    "the", "and", "a", "to", "is", "in", "it", "he", "she", "my",
+    "the", "and", "to", "is", "in", "it", "he", "she", "my",
     "we", "on", "at", "do", "no", "go", "so", "up", "am", "an",
     "me", "be", "us", "or", "by", "if",
 ]
@@ -101,7 +110,6 @@ _VOCABULARY = [
     ("enormous", "very very big"),
     ("tiny", "very very small"),
     ("brave", "not afraid"),
-    ("enormous", "very very big"),
     ("journey", "a long trip"),
     ("ancient", "very very old"),
     ("discover", "to find something new"),
@@ -111,12 +119,11 @@ _VOCABULARY = [
     ("curious", "wanting to know more"),
     ("generous", "likes to share and give"),
     ("delicious", "tastes very good"),
-    ("enormous", "very very big"),
     ("exhausted", "very very tired"),
     ("terrified", "very scared"),
     ("complicated", "hard to understand"),
     ("magnificent", "very beautiful or grand"),
-    ("mysterious", "strange or unknown"),
+    ("mysterious", "full of secrets"),
     ("ordinary", "normal, not special"),
     ("peculiar", "strange or unusual"),
     ("valuable", "worth a lot"),
@@ -127,10 +134,14 @@ _ANTONYMS = [
     ("hot", "cold"), ("big", "small"), ("fast", "slow"),
     ("happy", "sad"), ("light", "dark"), ("up", "down"),
     ("loud", "quiet"), ("hard", "soft"), ("old", "new"),
-    ("tall", "short"), ("wet", "dry"), ("open", "close"),
+    ("tall", "short"), ("wet", "dry"), ("open", "shut"),
     ("empty", "full"), ("early", "late"), ("near", "far"),
     ("rich", "poor"), ("strong", "weak"), ("thick", "thin"),
 ]
+
+# Words from other pairs that are also a fair opposite of the key word, so
+# they can't be offered as wrong answers for it
+_ALSO_OPPOSITE = {"loud": {"soft"}, "soft": {"loud"}}
 
 # Prefix/suffix patterns (age 8+)
 _PREFIX_SUFFIX = [
@@ -144,7 +155,7 @@ _PREFIX_SUFFIX = [
     ("dis + agree", "disagree", "not agree"),
     ("mis + spell", "misspell", "spell wrong"),
     ("re + play", "replay", "play again"),
-    ("un + lock", "unlock", "not locked"),
+    ("un + lock", "unlock", "open the lock"),
     ("dis + like", "dislike", "not like"),
 ]
 
@@ -198,8 +209,11 @@ def _gen_letter_sound(age: int) -> dict:
     letter, (sound, example) = random.choice(list(_LETTER_SOUNDS.items()))
     correct = f"{sound}  ({example})"
 
-    # Distractors: sounds from other letters
-    others = [v for k, v in _LETTER_SOUNDS.items() if k != letter]
+    # Distractors: sounds from other letters. Skip any that share a sound
+    # with the answer (C and K are both "kuh"), or both would be right.
+    sounds = set(sound.split("/"))
+    others = [v for k, v in _LETTER_SOUNDS.items()
+              if k != letter and not sounds & set(v[0].split("/"))]
     random.shuffle(others)
     distractors = [f"{s}  ({ex})" for s, ex in others[:2]]
 
@@ -357,6 +371,7 @@ def _gen_antonym_match(age: int) -> dict:
         all_words.add(b)
     all_words.discard(correct)
     all_words.discard(shown)
+    all_words -= _ALSO_OPPOSITE.get(shown, set())
     distractors = random.sample(list(all_words), min(2, len(all_words)))
 
     options = [correct] + distractors
@@ -522,13 +537,13 @@ _CONTEXT_CLUES = [
     ("The ___ puppy wagged its tail and licked everyone's face.", "friendly",
      ["friendly", "fierce", "sleepy"]),
     ("After the storm, the streets were ___ with fallen branches.", "littered",
-     ["littered", "empty", "shiny"]),
+     ["littered", "sleepy", "hungry"]),
     ("The instructions were ___, so everyone understood what to do.", "clear",
      ["clear", "confusing", "missing"]),
     ("She showed great ___ by standing up to the bully.", "courage",
      ["courage", "cowardice", "laziness"]),
     ("The library was so ___ you could hear a pin drop.", "quiet",
-     ["quiet", "noisy", "crowded"]),
+     ["quiet", "noisy", "loud"]),
     ("His ___ answer showed he had studied hard for the test.", "correct",
      ["correct", "wrong", "funny"]),
 ]
@@ -651,7 +666,7 @@ def _gen_prefix_suffix_hard(age: int) -> dict:
 
 
 _SENTENCE_COMPLETE = [
-    ("The cat sat ___ the mat.", "on", ["on", "under", "into"]),
+    ("The cat sat ___ the mat.", "on", ["on", "of", "into"]),
     ("She is ___ than her brother.", "taller", ["taller", "tallest", "tall"]),
     ("We ___ to the park yesterday.", "went", ["went", "go", "going"]),
     ("This is the ___ movie I've ever seen!", "best", ["best", "better", "good"]),
@@ -659,10 +674,10 @@ _SENTENCE_COMPLETE = [
     ("The children were ___ in the garden.", "playing", ["playing", "played", "plays"]),
     ("I have ___ seen that movie before.", "never", ["never", "ever", "always"]),
     ("She sings ___ beautifully than anyone.", "more", ["more", "most", "much"]),
-    ("They ___ been waiting for an hour.", "have", ["have", "has", "had"]),
-    ("The book ___ written by a famous author.", "was", ["was", "were", "is"]),
-    ("We need to leave ___ we'll be late.", "or", ["or", "and", "but"]),
-    ("She ran fast, ___ she still missed the bus.", "but", ["but", "and", "so"]),
+    ("They ___ been waiting for an hour.", "have", ["have", "has", "having"]),
+    ("The book ___ written by a famous author.", "was", ["was", "were", "be"]),
+    ("We need to leave ___ we'll be late.", "or", ["or", "because", "if"]),
+    ("She ran fast, ___ she still missed the bus.", "but", ["but", "because", "so"]),
 ]
 
 def _gen_sentence_complete(age: int) -> dict:
@@ -685,7 +700,7 @@ def _make_misspellings(word: str, count: int) -> list[str]:
     """Generate plausible misspellings of a word."""
     misspellings = set()
     attempts = 0
-    while len(misspellings) < count and attempts < 20:
+    while len(misspellings) < count and attempts < 100:  # short words hit real ones often
         attempts += 1
         w = list(word)
         if len(w) < 2:
@@ -712,11 +727,14 @@ def _make_misspellings(word: str, count: int) -> list[str]:
                 i = random.randint(1, len(w) - 1)
                 w.pop(i)
             mis = "".join(w)
-        if mis != word and mis not in misspellings:
+        if mis != word and mis not in misspellings and mis not in _REAL_WORDS:
             misspellings.add(mis)
     # Fallback if we can't generate enough
-    while len(misspellings) < count:
-        misspellings.add(word + random.choice("es"))
+    for suffix in ("e", "s", "ee", "ss", word[-1]):
+        if len(misspellings) >= count:
+            break
+        if word + suffix not in _REAL_WORDS:
+            misspellings.add(word + suffix)
     return list(misspellings)[:count]
 
 

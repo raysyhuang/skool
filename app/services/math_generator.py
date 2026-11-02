@@ -257,9 +257,10 @@ def _gen_fractions_compare() -> dict:
     else:
         correct = name2
 
-    # Third option: pick another fraction
-    others = [n for n, v in _FRACTION_POOL if n != name1 and n != name2]
-    third = random.choice(others) if others else "1/6"
+    # Third option: another fraction smaller than both, so the question's
+    # answer stays the biggest of everything on screen
+    others = [n for n, v in _FRACTION_POOL if v < min(val1, val2) - 0.001]
+    third = random.choice(others) if others else "0"
 
     options = [name1, name2, third]
     random.shuffle(options)
@@ -343,7 +344,7 @@ def _gen_rounding() -> dict:
     number = random.randint(120, 989)
     while number % to == 0:                     # an exact multiple teaches nothing
         number = random.randint(120, 989)
-    ans = int(round(number / to)) * to
+    ans = (number + to // 2) // to * to         # round half up; round() goes to even
 
     down, up = (number // to) * to, ((number // to) + 1) * to
     other = up if ans == down else down
