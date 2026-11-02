@@ -67,6 +67,9 @@ def _exclude_confusable(correct_char: Character, candidates: list[Character]) ->
     return [c for c in candidates if c.meaning not in group]
 
 
+MAX_NEW_PER_SESSION = 2
+
+
 def select_characters(
     db: Session,
     user_id: int,
@@ -125,10 +128,16 @@ def select_characters(
 
         weighted.append((char, max(weight, 1)))
 
-    # Weighted random selection without replacement
+    # Weighted random selection without replacement. New characters are
+    # capped while there are reviewed ones to fill with: a session of five
+    # unknowns is all teaching and no recall. (A brand-new child has nothing
+    # to review yet, so their first sessions are all new.)
     selected = []
     pool = list(weighted)
+    new_picked = 0
     for _ in range(min(count, len(pool))):
+        if new_picked >= MAX_NEW_PER_SESSION and any(c.id in progress_map for c, _ in pool):
+            pool = [(c, w) for c, w in pool if c.id in progress_map]
         total = sum(w for _, w in pool)
         r = random.uniform(0, total)
         cumulative = 0
@@ -136,6 +145,8 @@ def select_characters(
             cumulative += w
             if r <= cumulative:
                 selected.append(char)
+                if char.id not in progress_map:
+                    new_picked += 1
                 pool.pop(i)
                 break
 

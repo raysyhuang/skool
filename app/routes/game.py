@@ -116,6 +116,7 @@ def _build_generic_questions_json(questions) -> list[dict]:
             "expression": pd.get("expression", ""),
             "prompt_text": pd.get("prompt_text", ""),
             "prompt_image": pd.get("prompt_image"),
+            "hint": pd.get("hint"),
         }
         result.append(entry)
     return result
@@ -305,6 +306,12 @@ def game_page(request: Request, db: Session = Depends(get_db)):
             "sessions_needed": settings.quest_sessions_per_stage,
         }
 
+    # Today's daily quests (progress bar) and what's equipped in the garage
+    from app.services.daily_quests import get_daily_quests_for_user
+    from app.routes.game_new_features import get_equipped_display
+    daily_quests = get_daily_quests_for_user(db, user.id)
+    equipped = get_equipped_display(db, user)
+
     return templates.TemplateResponse(request, "game_selector.html", {
         "user": user,
         "remaining_sessions": remaining,
@@ -319,6 +326,9 @@ def game_page(request: Request, db: Session = Depends(get_db)):
         "car_tiers": tiers,
         "has_pending_drill": bool(user.pending_drill_char_ids or user.pending_drill_topic_ids),
         "is_prereader": (user.age or 5) <= 5,
+        "daily_quests": daily_quests,
+        "quests_to_claim": sum(1 for q in daily_quests if q["completed"] and not q["claimed"]),
+        "equipped": equipped,
     })
 
 
@@ -414,6 +424,9 @@ def session_complete_page(
     is_perfect = session.total_correct == total_questions
     stars_mod = user.stars % settings.coins_per_stars
     stars_progress_pct = round(stars_mod / settings.coins_per_stars * 100)
+    # complete_session already bumped today's quests; show where they stand
+    from app.services.daily_quests import get_daily_quests_for_user
+    daily_quests = get_daily_quests_for_user(db, user.id)
     return templates.TemplateResponse(request, resolve_theme_template(user.theme, "session_complete.html"), {
         "user": user,
         "session": session,
@@ -425,6 +438,8 @@ def session_complete_page(
         "stars_to_next_coin": settings.coins_per_stars - stars_mod,
         "car_info": _car_info(user),
         "theme_cfg": get_theme(user),
+        "daily_quests": daily_quests,
+        "quests_to_claim": sum(1 for q in daily_quests if q["completed"] and not q["claimed"]),
     })
 
 
@@ -456,6 +471,25 @@ def start_question(question_id: int, request: Request, db: Session = Depends(get
     if q and not q.started_at:
         q.started_at = datetime.now(timezone.utc)
         db.commit()
+    return JSONResponse({"ok": True})
+
+
+@router.post("/mark-hint-used/{question_id}")
+def mark_hint_used(question_id: int, request: Request, db: Session = Depends(get_db)):
+    """Record that the hint was opened, for the parent dashboard."""
+    user = get_current_user(request, db)
+    if not user:
+        return JSONResponse({"error": "Not logged in"}, status_code=401)
+    q = (
+        db.query(SessionQuestion).join(GameSession)
+        .filter(SessionQuestion.id == question_id, GameSession.user_id == user.id)
+        .first()
+    )
+    if q is None:
+        return JSONResponse({"error": "Question not found"}, status_code=404)
+    q.hint_shown = True
+    q.first_try = False
+    db.commit()
     return JSONResponse({"ok": True})
 
 

@@ -96,6 +96,7 @@ def _gen_odd_one_out() -> dict:
     random.shuffle(options)
     return _build(
         mode="odd_one_out",
+        hint=f"Three of these are {category}. Which one isn't?",
         expression=expression,
         prompt_text="Which one is different?",
         prompt_image=expression,
@@ -639,6 +640,7 @@ def _gen_odd_one_out_hard() -> dict:
     random.shuffle(options)
     return _build(
         mode="odd_one_out_hard",
+        hint=f"Three of these are {category.split(' vs ')[0]}. Which one isn't?",
         expression=expression,
         prompt_text="Which one doesn't belong?",
         prompt_image=None,
@@ -648,13 +650,16 @@ def _gen_odd_one_out_hard() -> dict:
 
 
 def _build(mode: str, expression: str, prompt_text: str, prompt_image: str | None,
-           correct_answer: str, options: list[str]) -> dict:
+           correct_answer: str, options: list[str], hint: str | None = None) -> dict:
+    """`hint` is the worked first step shown after a miss; it must not give
+    the answer away, since the question comes back later in the session."""
     prompt_data = json.dumps({
         "mode": mode,
         "expression": expression,
         "prompt_text": prompt_text,
         "prompt_image": prompt_image,
         "correct_answer": correct_answer,
+        "hint": hint,
     })
     return {
         "mode": mode,

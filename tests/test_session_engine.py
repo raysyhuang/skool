@@ -104,7 +104,7 @@ def test_daily_bonus_applies_to_first_completed_session_even_if_multiple_started
     assert result["points_earned"] == expected
 
 
-def test_retry_after_wrong_answer_awards_points_when_corrected(db, sample_user, sample_characters):
+def test_retry_earns_partial_credit_but_not_a_correct_answer(db, sample_user, sample_characters):
     settings = get_settings()
     session = create_session(db, sample_user)
     q = session.questions[0]
@@ -116,7 +116,39 @@ def test_retry_after_wrong_answer_awards_points_when_corrected(db, sample_user, 
 
     assert first_try["is_correct"] is False
     assert retry["is_correct"] is True
-    assert retry["points_earned"] == settings.points_correct
+    assert retry["points_earned"] == settings.points_retry
+    assert session.total_correct == 0
+    assert q.first_attempt_correct is False
+    assert q.first_selected_answer == wrong  # kept for the dashboard after the retry
+
+
+def test_session_with_a_retried_miss_is_not_perfect(db, sample_user, sample_characters):
+    session = create_session(db, sample_user)
+    for i, q in enumerate(session.questions):
+        if i == 0:
+            wrong = [o for o in json.loads(q.options) if o != q.correct_answer][0]
+            submit_answer(db, sample_user, q.id, wrong)
+        submit_answer(db, sample_user, q.id, q.correct_answer)
+
+    result = complete_session(db, sample_user, session.id)
+    assert result["is_perfect"] is False
+    assert result["total_correct"] == len(session.questions) - 1
+    assert sample_user.perfect_sessions == 0
+
+
+def test_retry_does_not_advance_the_review_schedule(db, sample_user, sample_characters):
+    from app.models.progress import UserCharacterProgress
+
+    session = create_session(db, sample_user)
+    q = session.questions[0]
+    wrong = [o for o in json.loads(q.options) if o != q.correct_answer][0]
+    submit_answer(db, sample_user, q.id, wrong)
+    submit_answer(db, sample_user, q.id, q.correct_answer)
+
+    prog = db.query(UserCharacterProgress).filter_by(
+        user_id=sample_user.id, character_id=q.character_id).one()
+    assert prog.sm2_repetitions == 0
+    assert prog.next_review_date == date.today()
 
 
 def test_streak_increments_once_per_day(db, sample_user, sample_characters):

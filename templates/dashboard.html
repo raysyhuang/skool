@@ -407,6 +407,73 @@
     .mastery-dot.m4 { background: #55efc4; }
     .mastery-dot.m5 { background: #00b894; }
 
+    /* ── Question insights ── */
+    .insight-note {
+        font-size: 12px;
+        color: #636e72;
+        margin: -4px 0 12px;
+    }
+    .confuse-list, .wrong-list, .report-list { margin-bottom: 20px; }
+    .confuse-row, .wrong-row, .report-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #f5f6fa;
+        border-radius: 12px;
+        padding: 10px 14px;
+        margin-bottom: 8px;
+    }
+    .confuse-main, .wrong-main, .report-main {
+        flex: 1;
+        min-width: 0;
+        font-size: 14px;
+        color: #2d3436;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+    .confuse-meta {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #636e72;
+    }
+    .ans-ok { color: #00b894; font-weight: 700; }
+    .ans-bad { color: #d63031; font-weight: 700; }
+    .ans-img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        vertical-align: middle;
+        background: #fff;
+        border-radius: 8px;
+        margin-right: 4px;
+    }
+    .row-btn {
+        flex: none;
+        min-width: 60px;
+        min-height: 60px;
+        padding: 0 14px;
+        border: none;
+        border-radius: 12px;
+        background: #6c5ce7;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+    .row-btn.secondary { background: #dfe6e9; color: #2d3436; }
+    .row-btn:disabled { opacity: 0.6; cursor: default; }
+    .reports-section {
+        background: #fff;
+        border-radius: 24px;
+        padding: clamp(16px, 3vw, 32px);
+        margin: 0 auto 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        max-width: 800px;
+        border-left: 6px solid #fdcb6e;
+    }
+
     .back-link {
         position: fixed;
         bottom: clamp(16px, 3vh, 32px);
@@ -439,6 +506,26 @@
         Math and English topics are missing. Run <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">python -m app.seed.seed_taxonomy</code> to import them.
         "Ask at Dinner" prompts will be empty until topics are loaded.
     </p>
+</div>
+{% endif %}
+
+{% if open_reports %}
+<div class="reports-section" id="open-reports">
+    <div class="section-title">&#128681; Reported Questions ({{ open_reports|length }})</div>
+    <div class="report-list">
+        {% for r in open_reports %}
+        <div class="report-row">
+            <div class="report-main">
+                <div class="confuse-meta">{{ r.child_name }} &middot; {{ r.mode }} &middot; {{ r.date }}</div>
+                {% if r.prompt %}<div>{{ r.prompt }}</div>{% endif %}
+                <div>Expected <span class="ans-ok">{{ r.correct }}</span>
+                    {% if r.selected and r.selected != r.correct %}&middot; picked <span class="ans-bad">{{ r.selected }}</span>{% endif %}</div>
+                {% if r.note %}<div class="insight-note">{{ r.note }}</div>{% endif %}
+            </div>
+            <button class="row-btn secondary" data-report-id="{{ r.id }}" onclick="toggleResolved(this)">Resolved</button>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endif %}
 
@@ -528,6 +615,74 @@
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
+
+    {# ── Question insights (14 days) ── #}
+    {% set ins = child.insights %}
+    <div class="section-title">Question Detail (last {{ ins.days }} days)</div>
+    {% if ins.answered %}
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="val">{{ ins.first_try_pct }}%</div>
+            <div class="lbl">First-Try Right</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">{{ ins.eventual_pct }}%</div>
+            <div class="lbl">Right Eventually</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">{{ ins.hint_pct }}%</div>
+            <div class="lbl">Used a Hint</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">{{ ins.answered }}</div>
+            <div class="lbl">Questions</div>
+        </div>
+    </div>
+
+    {% macro answer(a, cls) -%}
+        <span class="{{ cls }}">{% if a.image %}<img class="ans-img" src="{{ a.image }}" alt="">{% endif %}{{ a.text }}</span>
+    {%- endmacro %}
+
+    {% if ins.confusions %}
+    <div class="section-title">Often Confuses</div>
+    <div class="confuse-list">
+        {% for c in ins.confusions %}
+        <div class="confuse-row">
+            <div class="confuse-main">
+                <div class="confuse-meta">{{ c.game_type }} &middot; {{ c.count }}&times;{% if c.prompt %} &middot; {{ c.prompt }}{% endif %}</div>
+                {{ answer(c.correct, "ans-ok") }} &rarr; picked {{ answer(c.selected, "ans-bad") }}
+            </div>
+            {% if c.char_id %}
+            <button class="row-btn" onclick="drillItem(this, '/dashboard/drill/{{ child.user.id }}?char_id={{ c.char_id }}')">&#9889; Drill</button>
+            {% elif c.topic_id %}
+            <button class="row-btn" onclick="drillItem(this, '/dashboard/drill-topics/{{ child.user.id }}/{{ c.game_type }}?topic_id={{ c.topic_id }}')">&#9889; Drill</button>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if ins.recent_wrong %}
+    <div class="section-title">Recent Wrong Answers</div>
+    <div class="wrong-list">
+        {% for w in ins.recent_wrong %}
+        <div class="wrong-row">
+            <div class="wrong-main">
+                <div class="confuse-meta">{{ w.game_type }} &middot; {{ w.mode }}{% if w.prompt %} &middot; {{ w.prompt }}{% endif %}</div>
+                {{ answer(w.correct, "ans-ok") }} &rarr; picked {{ answer(w.selected, "ans-bad") }}
+            </div>
+            {% if w.id in reported_ids %}
+            <button class="row-btn secondary" disabled>Reported</button>
+            {% else %}
+            <button class="row-btn secondary" onclick="reportQuestion(this, {{ w.id }})">Looks wrong?</button>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="topic-empty">No questions answered in the last {{ ins.days }} days.</div>
     {% endif %}
 
     {# ── Review Schedule (SM-2) ── #}
@@ -748,6 +903,66 @@ function cancelTopicDrill(childId, gameType) {
         var status = document.getElementById('tdrill-status-' + childId + '-' + gameType);
         if (btn) { btn.style.display = ''; }
         if (status) { status.style.display = 'none'; }
+    });
+}
+
+function postJson(url, body) {
+    return fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) { return r.json(); });
+}
+
+function drillItem(btn, url) {
+    btn.disabled = true;
+    postJson(url)
+    .then(function (data) {
+        if (data.error) {
+            alert(data.error);
+            btn.disabled = false;
+        } else {
+            btn.textContent = 'Queued';
+        }
+    })
+    .catch(function () {
+        alert('Something went wrong. Try again.');
+        btn.disabled = false;
+    });
+}
+
+function reportQuestion(btn, questionId) {
+    var note = prompt('What looks wrong? (optional)');
+    if (note === null) { return; }
+    btn.disabled = true;
+    postJson('/dashboard/report/' + questionId, { note: note })
+    .then(function (data) {
+        if (data.error) {
+            alert(data.error);
+            btn.disabled = false;
+        } else {
+            btn.textContent = 'Reported';
+        }
+    })
+    .catch(function () {
+        alert('Something went wrong. Try again.');
+        btn.disabled = false;
+    });
+}
+
+function toggleResolved(btn) {
+    btn.disabled = true;
+    postJson('/dashboard/report/' + btn.getAttribute('data-report-id') + '/resolve')
+    .then(function (data) {
+        btn.disabled = false;
+        if (data.error) { alert(data.error); return; }
+        btn.textContent = data.resolved ? 'Reopen' : 'Resolved';
+        btn.closest('.report-row').style.opacity = data.resolved ? '0.5' : '';
+    })
+    .catch(function () {
+        alert('Something went wrong. Try again.');
+        btn.disabled = false;
     });
 }
 

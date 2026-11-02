@@ -65,6 +65,8 @@ _MIGRATIONS = [
     ("game_sessions", "combo_bonus", "INTEGER", "0"),
     ("session_questions", "first_try", "BOOLEAN", "TRUE"),
     ("session_questions", "hint_shown", "BOOLEAN", "FALSE"),
+    ("session_questions", "first_attempt_correct", "BOOLEAN", None),
+    ("session_questions", "first_selected_answer", "VARCHAR", None),
 ]
 
 
@@ -151,6 +153,9 @@ def _init_schema(engine_instance) -> None:
             # workers could both insert them (quest_type has no unique index)
             with Session(bind=engine_instance) as db:
                 ensure_daily_quests(db)
+                # Garage items (idempotent upsert keyed by item_key)
+                from app.seed.seed_collectibles import seed_collectibles
+                seed_collectibles(db)
         finally:
             if is_pg:
                 lock_conn.execute(text("SELECT pg_advisory_unlock(:k)"), {"k": _SCHEMA_LOCK_KEY})

@@ -7,7 +7,10 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from sqlalchemy import func
+
 from app.models import User, DailyQuest, UserDailyQuestProgress, CollectibleItem, UserCollectible
+from app.models.session import GameSession
 from app.services.daily_quests import get_daily_quests_for_user, claim_quest_reward, ensure_daily_quests
 
 router = APIRouter(prefix="/game")
@@ -19,6 +22,109 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User | 
     if not user_id:
         return None
     return db.query(User).filter_by(id=user_id).first()
+
+
+# Icons for garage unlock requirements: kids see "🔥 12/30", not a sentence
+_REQUIREMENT_ICONS = {
+    "streak": "🔥",
+    "sessions": "🏁",
+    "perfect_sessions": "🏆",
+    "accuracy": "🎯",
+}
+# Overall accuracy only counts once there's enough play behind it, so one
+# lucky 5/5 session can't unlock a legendary item
+ACCURACY_MIN_SESSIONS = 10
+
+
+def _overall_accuracy(db: Session, user_id: int) -> tuple[int, int]:
+    """(accuracy %, completed sessions) across all of a user's sessions."""
+    correct, wrong, count = db.query(
+        func.coalesce(func.sum(GameSession.total_correct), 0),
+        func.coalesce(func.sum(GameSession.total_wrong), 0),
+        func.count(GameSession.id),
+    ).filter(
+        GameSession.user_id == user_id, GameSession.completed_at.isnot(None)
+    ).one()
+    total = correct + wrong
+    return (round(correct / total * 100) if total else 0), count
+
+
+def requirement_status(db: Session, user: User, raw: str | None, _cache: dict | None = None) -> dict | None:
+    """Evaluate an item's unlock requirement for a user.
+
+    ``raw`` is CollectibleItem.unlock_requirement: JSON like
+    {"type": "streak", "value": 30}. Returns None when there's no
+    requirement, else {"met", "label", "current", "target"}. Anything
+    unparseable stays locked rather than silently unlocking.
+    """
+    if not raw:
+        return None
+    try:
+        req = json.loads(raw)
+        kind, target = req["type"], int(req["value"])
+    except (ValueError, TypeError, KeyError):
+        return {"met": False, "label": f"🔒 {raw}", "current": 0, "target": 0}
+
+    if kind == "streak":
+        current = max(user.best_streak or 0, user.streak or 0)
+    elif kind == "sessions":
+        current = user.total_sessions_completed or 0
+    elif kind == "perfect_sessions":
+        current = user.perfect_sessions or 0
+    elif kind == "accuracy":
+        cache = _cache if _cache is not None else {}
+        if "accuracy" not in cache:
+            cache["accuracy"] = _overall_accuracy(db, user.id)
+        current, sessions = cache["accuracy"]
+        if sessions < ACCURACY_MIN_SESSIONS:
+            current = min(current, target - 1)
+    else:
+        return {"met": False, "label": f"🔒 {raw}", "current": 0, "target": target}
+
+    icon = _REQUIREMENT_ICONS[kind]
+    unit = "%" if kind == "accuracy" else ""
+    return {
+        "met": current >= target,
+        "label": f"{icon} {min(current, target)}{unit}/{target}{unit}",
+        "current": current,
+        "target": target,
+    }
+
+
+def get_equipped_display(db: Session, user: User) -> dict:
+    """Emoji for what the user has equipped, for the home screen.
+
+    Car: the garage car if one is equipped, else the store car skin.
+    Pet / trail: the garage item ("No Pet" / "No Trail" show nothing),
+    the trail falling back to the store trail effect.
+    """
+    from app.models.store import StoreItem
+
+    rows = (
+        db.query(CollectibleItem)
+        .join(UserCollectible, UserCollectible.item_id == CollectibleItem.id)
+        .filter(UserCollectible.user_id == user.id, UserCollectible.equipped.is_(True))
+        .all()
+    )
+    garage = {
+        item.item_type: item for item in rows
+        if item.item_key not in ("no_pet", "no_trail", "default")
+    }
+
+    def store_emoji(key: str | None) -> str | None:
+        if not key:
+            return None
+        item = db.query(StoreItem).filter_by(key=key).first()
+        return item.emoji if item else None
+
+    car = garage.get("car")
+    trail = garage.get("trail")
+    pet = garage.get("pet")
+    return {
+        "car": car.emoji if car else store_emoji(user.equipped_car_skin),
+        "pet": pet.emoji if pet else None,
+        "trail": trail.emoji if trail else store_emoji(user.equipped_trail),
+    }
 
 
 @router.get("/daily-quests")
@@ -61,13 +167,15 @@ def garage_page(request: Request, db: Session = Depends(get_db)):
         return RedirectResponse(url="/login", status_code=303)
     
     # Get all collectibles with ownership status
-    items = db.query(CollectibleItem).all()
+    items = db.query(CollectibleItem).order_by(CollectibleItem.price_coins, CollectibleItem.id).all()
     user_collectibles = db.query(UserCollectible).filter_by(user_id=user.id).all()
     owned_ids = {uc.item_id for uc in user_collectibles}
     equipped_ids = {uc.item_id for uc in user_collectibles if uc.equipped}
     
+    cache: dict = {}
     collectibles = []
     for item in items:
+        req = requirement_status(db, user, item.unlock_requirement, cache)
         collectibles.append({
             "id": item.id,
             "item_type": item.item_type,
@@ -75,7 +183,8 @@ def garage_page(request: Request, db: Session = Depends(get_db)):
             "emoji": item.emoji,
             "rarity": item.rarity,
             "price_coins": item.price_coins,
-            "unlock_requirement": item.unlock_requirement,
+            "requirement": req,
+            "locked": bool(req and not req["met"]),
             "owned": item.id in owned_ids,
             "equipped": item.id in equipped_ids
         })
@@ -96,7 +205,15 @@ def buy_collectible(item_id: int, request: Request, db: Session = Depends(get_db
     item = db.query(CollectibleItem).filter_by(id=item_id).first()
     if not item:
         return JSONResponse({"success": False, "error": "Item not found"}, status_code=404)
-    
+
+    # Lock the user before checking coins/ownership: two taps on two gunicorn
+    # workers could otherwise both pass and spend the same coins twice
+    user = db.query(User).filter_by(id=user.id).with_for_update().populate_existing().one()
+
+    req = requirement_status(db, user, item.unlock_requirement)
+    if req and not req["met"]:
+        return JSONResponse({"success": False, "error": "Locked", "requirement": req["label"]}, status_code=403)
+
     if user.coins < item.price_coins:
         return JSONResponse({"success": False, "error": "Not enough coins"}, status_code=400)
     
@@ -129,6 +246,10 @@ def equip_collectible(item_id: int, request: Request, db: Session = Depends(get_
     user_item = db.query(UserCollectible).filter_by(user_id=user.id, item_id=item_id).first()
     if not user_item:
         return JSONResponse({"success": False, "error": "Not owned"}, status_code=403)
+
+    req = requirement_status(db, user, item.unlock_requirement)
+    if req and not req["met"]:
+        return JSONResponse({"success": False, "error": "Locked", "requirement": req["label"]}, status_code=403)
 
     # Unequip others of same type
     db.query(UserCollectible).filter(

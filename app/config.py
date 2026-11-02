@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     # Scoring
     points_correct: int = 2
     points_wrong: int = 0
+    points_retry: int = 1  # right on a later attempt: some credit, no "correct" count
     daily_bonus: int = 5
     streak_bonus_multiplier: int = 1  # extra points per streak day
 

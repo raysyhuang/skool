@@ -11,6 +11,7 @@ from app.models.user import User
 from app.models.character import Character
 from app.models import *  # noqa: ensure all models are registered
 from app.seed.seed_taxonomy import import_taxonomy
+from app.seed.seed_collectibles import seed_collectibles
 
 
 def _load_chars_data():
@@ -57,6 +58,11 @@ def seed():
 
     db = SessionLocal()
     try:
+        # Garage items are idempotent, so they're seeded even on an
+        # already-seeded database
+        added = seed_collectibles(db)
+        print(f"Seeded {added} new collectible items.")
+
         # Check if already seeded
         if db.query(User).first():
             print("Database already seeded. Skipping.")

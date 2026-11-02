@@ -9,6 +9,7 @@ from app.models.quest import QuestProgress
 from app.models.daily_quest import DailyQuest, UserDailyQuestProgress
 from app.models.placement import PlacementTest, PlacementResponse, SkillAbility
 from app.models.collectibles import CollectibleItem, UserCollectible, JourneyNode, UserJourneyProgress
+from app.models.content_report import ContentReport
 from app.models.topic import (
     LearningTopic,
     TopicPrerequisite,
@@ -38,4 +39,5 @@ __all__ = [
     "LearningTopic",
     "TopicPrerequisite",
     "UserTopicProgress",
+    "ContentReport",
 ]

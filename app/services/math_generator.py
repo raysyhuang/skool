@@ -61,6 +61,7 @@ def _gen_addition_simple() -> dict:
     options = _make_number_distractors(ans, 1, 10)
     return _build(
         mode="addition_simple",
+        hint=f"Hold up {a} fingers, then {b} more. Count them all!",
         expression=expression,
         prompt_text=f"What is {a} + {b}?",
         prompt_image=None,
@@ -77,6 +78,7 @@ def _gen_subtraction_simple() -> dict:
     options = _make_number_distractors(ans, 0, 10)
     return _build(
         mode="subtraction_simple",
+        hint=f"Hold up {a} fingers. Put {b} down. How many are left?",
         expression=expression,
         prompt_text=f"What is {a} - {b}?",
         prompt_image=None,
@@ -94,6 +96,7 @@ def _gen_addition_easy() -> dict:
     options = _make_number_distractors(ans, max(0, ans - 10), ans + 10)
     return _build(
         mode="addition_easy",
+        hint=f"Add the tens first: {a // 10 * 10} + {b // 10 * 10}. Then the ones: {a % 10} + {b % 10}.",
         expression=expression,
         prompt_text=f"What is {a} + {b}?",
         prompt_image=None,
@@ -111,6 +114,7 @@ def _gen_subtraction_easy() -> dict:
     options = _make_number_distractors(ans, max(0, ans - 10), ans + 10)
     return _build(
         mode="subtraction_easy",
+        hint=_take_away_in_steps(a, b),
         expression=expression,
         prompt_text=f"What is {a} - {b}?",
         prompt_image=None,
@@ -128,6 +132,7 @@ def _gen_multiplication_easy() -> dict:
     options = _make_number_distractors(ans, max(1, ans - 5), ans + 5)
     return _build(
         mode="multiplication_easy",
+        hint=f"{a} groups of {b}: " + " + ".join([str(b)] * a),
         expression=expression,
         prompt_text=f"What is {a} x {b}?",
         prompt_image=None,
@@ -154,6 +159,7 @@ def _gen_missing_number_easy() -> dict:
     options = _make_number_distractors(ans, max(1, ans - 5), ans + 5)
     return _build(
         mode="missing_number_easy",
+        hint=_think_backwards(op, b, result),
         expression=expression,
         prompt_text=prompt_text,
         prompt_image=None,
@@ -173,6 +179,9 @@ def _gen_addition_medium() -> dict:
     options = _make_number_distractors(ans, max(0, ans - 20), ans + 20)
     return _build(
         mode="addition_medium",
+        hint=(f"Hundreds: {a // 100 * 100} + {b // 100 * 100}. "
+              f"Tens: {a // 10 % 10 * 10} + {b // 10 % 10 * 10}. "
+              f"Ones: {a % 10} + {b % 10}. Now add the three parts!"),
         expression=expression,
         prompt_text=f"What is {a} + {b}?",
         prompt_image=None,
@@ -190,6 +199,7 @@ def _gen_subtraction_medium() -> dict:
     options = _make_number_distractors(ans, max(0, ans - 20), ans + 20)
     return _build(
         mode="subtraction_medium",
+        hint=_take_away_in_steps(a, b),
         expression=expression,
         prompt_text=f"What is {a} - {b}?",
         prompt_image=None,
@@ -207,6 +217,7 @@ def _gen_multiplication_medium() -> dict:
     options = _make_number_distractors(ans, max(1, ans - 8), ans + 8)
     return _build(
         mode="multiplication_medium",
+        hint=f"Skip-count by {b}, {a} times: {b}, {2 * b}, …" if a > 2 else f"Double {b}.",
         expression=expression,
         prompt_text=f"What is {a} x {b}?",
         prompt_image=None,
@@ -225,6 +236,7 @@ def _gen_division_basic() -> dict:
     options = _make_number_distractors(ans, max(1, ans - 3), ans + 3)
     return _build(
         mode="division_basic",
+        hint=f"How many {divisor}s make {dividend}? Skip-count: {divisor}, {2 * divisor}, {3 * divisor}, …",
         expression=expression,
         prompt_text=f"What is {dividend} ÷ {divisor}?",
         prompt_image=None,
@@ -267,6 +279,7 @@ def _gen_fractions_compare() -> dict:
 
     return _build(
         mode="fractions_compare",
+        hint=_same_bottom_hint(name1, name2),
         expression=f"{name1}  or  {name2} ?",
         prompt_text="Which fraction is BIGGER?",
         prompt_image=None,
@@ -299,6 +312,7 @@ def _gen_missing_number_medium() -> dict:
     options = _make_number_distractors(ans, max(1, ans - 5), ans + 5)
     return _build(
         mode="missing_number_medium",
+        hint=_think_backwards(op, b, result),
         expression=expression,
         prompt_text=prompt_text,
         prompt_image=None,
@@ -330,6 +344,7 @@ def _gen_place_value() -> dict:
 
     return _build(
         mode="place_value",
+        hint=f"From the right: ones, tens, hundreds, thousands. Which place is the {digit} in?",
         expression=str(number),
         prompt_text=f"In {number}, what is the {digit} worth?",
         prompt_image=None,
@@ -353,6 +368,8 @@ def _gen_rounding() -> dict:
 
     return _build(
         mode="rounding",
+        hint=(f"Look at the {'ones' if to == 10 else 'tens'} digit: {number // (to // 10) % 10}. "
+              "5 or more rounds up; less than 5 rounds down."),
         expression=f"{number} \u2192 nearest {to}",
         prompt_text=f"Round {number} to the nearest {to}",
         prompt_image=None,
@@ -382,6 +399,7 @@ def _gen_fraction_of_amount() -> dict:
 
     return _build(
         mode="fraction_of_amount",
+        hint=f"Split {whole} into {denominator} equal groups, then take {numerator} of them.",
         expression=f"{numerator}/{denominator} of {whole}",
         prompt_text=f"What is {numerator}/{denominator} of {whole}?",
         prompt_image=None,
@@ -411,6 +429,7 @@ def _gen_equivalent_fractions() -> dict:
 
     return _build(
         mode="equivalent_fractions",
+        hint="Multiply the top AND the bottom by the same number — try 2, 3 or 4.",
         expression=f"{base_n}/{base_d} = ?",
         prompt_text=f"Which fraction is the SAME as {base_n}/{base_d}?",
         prompt_image=None,
@@ -442,12 +461,36 @@ def _gen_factors_multiples() -> dict:
 
     return _build(
         mode="factors_multiples",
+        hint=(f"A factor goes into {number} with nothing left over." if "FACTOR" in prompt
+              else f"A multiple of {base} is in the {base} times table: {base} x 1, {base} x 2, …"),
         expression=expression,
         prompt_text=prompt,
         prompt_image=None,
         correct_answer=str(ans),
         options=options,
     )
+
+
+def _take_away_in_steps(a: int, b: int) -> str:
+    """Subtract by place value: 245 - 132 is 245 - 100 - 30 - 2."""
+    steps = [str(part) for part in (b // 100 * 100, b // 10 % 10 * 10, b % 10) if part]
+    if len(steps) == 1:
+        return f"Count back {b} from {a}."
+    return f"Take {b} away from {a} in steps: " + ", then ".join(steps) + "."
+
+
+def _think_backwards(op: str, b: int, result: int) -> str:
+    undo = {"+": "-", "-": "+", "x": "\u00F7"}[op]
+    return f"Think backwards: {result} {undo} {b} = ?"
+
+
+def _same_bottom_hint(name1: str, name2: str) -> str:
+    """Rewrite both fractions over a common denominator."""
+    from math import lcm
+    (n1, d1), (n2, d2) = (map(int, n.split("/")) for n in (name1, name2))
+    common = lcm(d1, d2)
+    return (f"Make the bottoms match: {name1} = {n1 * common // d1}/{common}, "
+            f"{name2} = {n2 * common // d2}/{common}. Which top is bigger?")
 
 
 def _make_number_distractors(correct: int, low: int, high: int) -> list[str]:
@@ -471,13 +514,16 @@ def _make_number_distractors(correct: int, low: int, high: int) -> list[str]:
 
 
 def _build(mode: str, expression: str, prompt_text: str, prompt_image: str | None,
-           correct_answer: str, options: list[str]) -> dict:
+           correct_answer: str, options: list[str], hint: str | None = None) -> dict:
+    """`hint` is the worked first step shown after a miss; it must not give
+    the answer away, since the question comes back later in the session."""
     prompt_data = json.dumps({
         "mode": mode,
         "expression": expression,
         "prompt_text": prompt_text,
         "prompt_image": prompt_image,
         "correct_answer": correct_answer,
+        "hint": hint,
     })
     return {
         "mode": mode,

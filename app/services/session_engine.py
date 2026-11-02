@@ -208,6 +208,8 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
 
     if not was_answered:
         question.is_correct = is_correct
+        question.first_attempt_correct = is_correct
+        question.first_selected_answer = selected_answer
 
         # Combo tracking
         if is_correct:
@@ -260,17 +262,14 @@ def submit_answer(db: Session, user: User, question_id: int, selected_answer: st
         else:
             session.total_wrong += 1
     else:
-        # Retry path: only state transition from wrong -> correct changes score.
+        # Retry path. The miss already reset the item's review schedule, and a
+        # retry right after being taught measures copying, not recall — so it
+        # earns a little credit but doesn't count as correct or advance SM-2.
         if is_correct:
             question.is_correct = True
-            points = settings.points_correct
-            session.total_correct += 1
-            if question.character_id is not None:
-                update_mastery(db, user.id, question.character_id, True, is_first_attempt=False)
-            if question.topic_id is not None:
-                update_topic_mastery(db, user.id, question.topic_id, True, is_first_attempt=False)
+            points = settings.points_retry
             session.points_earned += points
-            award_points(db, user, points, "correct_answer")
+            award_points(db, user, points, "retry_correct")
         else:
             question.is_correct = False
 

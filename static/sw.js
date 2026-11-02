@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skool-v9';
+const CACHE_NAME = 'skool-v10';
 
 // Only precache essential assets — SVG images are cached on first use
 // via the /static/ cache-first strategy (much faster install)

@@ -284,6 +284,50 @@
         animation: badgeDrop 0.8s ease-out;
     }
 
+    /* ── Daily quests ── */
+    .quests-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+    .quest-chip {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        min-width: 60px;
+        min-height: 60px;
+        padding: 8px 10px;
+        border-radius: 16px;
+        background: rgba(45,52,54,0.08);
+        color: var(--dark);
+        font-weight: 800;
+        font-size: clamp(14px, 2.2vw, 16px);
+    }
+    .quest-chip .quest-icon { font-size: clamp(24px, 4vw, 32px); }
+    .quest-chip.done {
+        background: linear-gradient(135deg, #55efc4, var(--green));
+        color: #fff;
+    }
+    .quest-claim {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 60px;
+        padding: 0 24px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #ffeaa7, var(--gold));
+        color: var(--dark);
+        font-size: clamp(18px, 3vw, 22px);
+        font-weight: 800;
+        text-decoration: none;
+        box-shadow: 0 4px 16px rgba(253,203,110,0.4);
+        animation: badgeDrop 0.6s ease-out;
+    }
+
     /* Action button */
     .action-btn {
         min-width: clamp(200px, 36vw, 300px);
@@ -425,6 +469,23 @@
 
     {# ── New badges ── #}
     <div class="new-badges" id="newBadges"></div>
+
+    {# ── Daily quests: today's progress, claim link for finished ones ── #}
+    {% if daily_quests %}
+    <a class="quests-row" href="/game/daily-quests" aria-label="Daily Quests">
+        {% for q in daily_quests %}
+        <span class="quest-chip {% if q.completed %}done{% endif %}">
+            <span class="quest-icon">{{ q.icon }}</span>
+            <span>{% if q.claimed %}&#9989;{% elif q.completed %}&#127873;{% else %}{{ q.current_value }}/{{ q.target_value }}{% endif %}</span>
+        </span>
+        {% endfor %}
+    </a>
+    {% if quests_to_claim %}
+    <a class="quest-claim" href="/game/daily-quests" id="questClaim">
+        &#127873; &times;{{ quests_to_claim }} &rarr;
+    </a>
+    {% endif %}
+    {% endif %}
 
     {# ── Car level up ── #}
     <div id="carLevelUp" style="display:none;"></div>

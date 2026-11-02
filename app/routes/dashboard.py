@@ -1,21 +1,24 @@
 import json
-from datetime import date, timedelta
-from collections import defaultdict
+from datetime import date, datetime, timedelta, timezone
+from collections import Counter, defaultdict
 
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from pydantic import BaseModel, Field
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 
+from app.config import get_settings
 from app.database import get_db
 from app.models.user import User
 from app.models.session import GameSession, SessionQuestion
 from app.models.progress import UserCharacterProgress
 from app.models.character import Character
 from app.models.topic import LearningTopic
+from app.models.content_report import ContentReport
 from app.services.topic_selection import (
     SUBJECT_BY_GAME_TYPE,
     conversation_prompts,
@@ -36,6 +39,140 @@ def _get_current_user(request: Request, db: Session) -> User | None:
     return db.query(User).filter_by(id=user_id).first()
 
 
+INSIGHT_DAYS = 14
+
+# Which kind of value each Chinese mode stores in correct/selected_answer.
+_CHINESE_ANSWER_KIND = {
+    "char_to_image": "image",
+    "char_to_meaning": "meaning",
+}
+
+
+def _first_attempt_correct(q: SessionQuestion) -> bool:
+    """First-attempt correctness; older rows predate the column, so fall back."""
+    val = getattr(q, "first_attempt_correct", None)
+    return bool(q.is_correct) if val is None else bool(val)
+
+
+class _CharLookup:
+    """Resolves stored Chinese answers (character / meaning / image_url) to chars."""
+
+    def __init__(self, db: Session):
+        chars = db.query(Character).all()
+        self.by_char = {c.character: c for c in chars}
+        self.by_meaning = {c.meaning: c for c in chars}
+        self.by_image = {c.image_url: c for c in chars if c.image_url}
+
+    def readable(self, value: str | None, mode: str | None) -> dict:
+        if value is None:
+            return {"text": "—", "image": None}
+        kind = _CHINESE_ANSWER_KIND.get(mode or "", "character")
+        if kind == "image" or value.startswith("/static/"):
+            char = self.by_image.get(value) or self.by_meaning.get(value)
+            if value.startswith("/static/"):
+                label = char.meaning if char else value.rsplit("/", 1)[-1].rsplit(".", 1)[0]
+                return {"text": label, "image": value}
+            return {"text": value, "image": None}
+        if kind == "meaning":
+            char = self.by_meaning.get(value)
+            return {"text": f"{value} ({char.character})" if char else value, "image": None}
+        char = self.by_char.get(value)
+        return {"text": f"{value} ({char.meaning})" if char else value, "image": None}
+
+
+def _readable(value: str | None, game_type: str, mode: str | None, chars: _CharLookup) -> dict:
+    if game_type == "chinese":
+        return chars.readable(value, mode)
+    return {"text": value if value is not None else "—", "image": None}
+
+
+def _prompt_text(q: SessionQuestion, game_type: str) -> str:
+    if game_type == "chinese":
+        if q.character is not None:
+            return f"{q.character.character} ({q.character.meaning})"
+        return ""
+    try:
+        pd = json.loads(q.prompt_data) if q.prompt_data else {}
+    except (ValueError, TypeError):
+        pd = {}
+    return pd.get("expression") or pd.get("prompt_text") or ""
+
+
+def _first_pick(q: SessionQuestion) -> str | None:
+    return q.first_selected_answer or q.selected_answer
+
+
+def question_insights(db: Session, child: User, chars: _CharLookup) -> dict:
+    """First-try vs eventual accuracy, hint rate and common confusions (14 days)."""
+    since = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=INSIGHT_DAYS)
+    rows = (
+        db.query(SessionQuestion, GameSession.game_type)
+        .join(GameSession, SessionQuestion.session_id == GameSession.id)
+        .filter(GameSession.user_id == child.id)
+        .filter(SessionQuestion.selected_answer.isnot(None))
+        .filter(GameSession.started_at >= since)
+        .order_by(SessionQuestion.answered_at.desc(), SessionQuestion.id.desc())
+        .all()
+    )
+    answered = len(rows)
+    first_ok = sum(1 for q, _ in rows if _first_attempt_correct(q))
+    eventual_ok = sum(1 for q, _ in rows if q.is_correct)
+    hinted = sum(1 for q, _ in rows if q.hint_shown)
+
+    def pct(n: int) -> int | None:
+        return round(n / answered * 100) if answered else None
+
+    # The first pick is what was confused; a successful retry overwrites
+    # selected_answer, so rows from before first_selected_answer existed
+    # only show misses that stayed wrong.
+    wrong = [
+        (q, gt or "chinese") for q, gt in rows
+        if _first_pick(q) != q.correct_answer
+    ]
+
+    counts: Counter = Counter()
+    sample: dict[tuple, tuple[SessionQuestion, str]] = {}
+    for q, gt in wrong:
+        key = (gt, q.correct_answer, _first_pick(q))
+        counts[key] += 1
+        sample.setdefault(key, (q, gt))
+
+    confusions = []
+    for key, n in counts.most_common(5):
+        q, gt = sample[key]
+        confusions.append({
+            "game_type": gt,
+            "count": n,
+            "prompt": _prompt_text(q, gt),
+            "correct": _readable(q.correct_answer, gt, q.question_mode, chars),
+            "selected": _readable(_first_pick(q), gt, q.question_mode, chars),
+            "char_id": q.character_id if gt == "chinese" else None,
+            "topic_id": q.topic_id if gt in SUBJECT_BY_GAME_TYPE else None,
+        })
+
+    recent_wrong = [
+        {
+            "id": q.id,
+            "game_type": gt,
+            "mode": q.question_mode,
+            "prompt": _prompt_text(q, gt),
+            "correct": _readable(q.correct_answer, gt, q.question_mode, chars),
+            "selected": _readable(_first_pick(q), gt, q.question_mode, chars),
+        }
+        for q, gt in wrong[:8]
+    ]
+
+    return {
+        "days": INSIGHT_DAYS,
+        "answered": answered,
+        "first_try_pct": pct(first_ok),
+        "eventual_pct": pct(eventual_ok),
+        "hint_pct": pct(hinted),
+        "confusions": confusions,
+        "recent_wrong": recent_wrong,
+    }
+
+
 @router.get("/")
 def dashboard(request: Request, db: Session = Depends(get_db)):
     user = _get_current_user(request, db)
@@ -50,6 +187,28 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
     # Get all child users
     children = db.query(User).filter_by(role="child").all()
     today = date.today()
+    chars = _CharLookup(db)
+    reported_ids = {
+        row[0] for row in db.query(ContentReport.session_question_id)
+        .filter(ContentReport.resolved.is_(False)).all()
+    }
+    child_names = {c.id: c.name for c in children}
+    open_reports = [
+        {
+            "id": r.id,
+            "child_name": child_names.get(r.user_id, "?"),
+            "mode": r.mode,
+            "prompt": r.prompt,
+            "correct": r.correct_answer,
+            "selected": r.selected_answer,
+            "note": r.note,
+            "date": r.created_at.strftime("%b %d") if r.created_at else "—",
+        }
+        for r in db.query(ContentReport)
+        .filter(ContentReport.resolved.is_(False))
+        .order_by(ContentReport.created_at.desc())
+        .all()
+    ]
 
     child_data = []
     for child in children:
@@ -228,19 +387,27 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
             "review_schedule": review_schedule,
             "topics": topics,
             "talk_prompts": talk_prompts,
+            "insights": question_insights(db, child, chars),
         })
 
     return templates.TemplateResponse(request, "dashboard.html", {
         "user": user,
         "children": child_data,
         "taxonomy_missing": taxonomy_missing,
+        "open_reports": open_reports,
+        "reported_ids": reported_ids,
     })
 
 
 @router.post("/drill/{child_id}")
 @limiter.limit("20/minute")
-def start_drill(child_id: int, request: Request, db: Session = Depends(get_db)):
-    """Start a drill session targeting the child's weakest/overdue characters."""
+def start_drill(child_id: int, request: Request, char_id: int | None = None,
+                db: Session = Depends(get_db)):
+    """Start a drill session targeting the child's weakest/overdue characters.
+
+    With ``char_id`` (an "Often confuses" row), that character leads the drill
+    and the rest is topped up to one session's worth, so it is guaranteed a slot.
+    """
     user = _get_current_user(request, db)
     if not user or user.role != "parent":
         return JSONResponse({"error": "Not authorized"}, status_code=403)
@@ -250,6 +417,12 @@ def start_drill(child_id: int, request: Request, db: Session = Depends(get_db)):
         return JSONResponse({"error": "Child not found"}, status_code=404)
 
     today = date.today()
+
+    focus: list[int] = []
+    if char_id is not None:
+        if db.query(Character.id).filter_by(id=char_id).first() is None:
+            return JSONResponse({"error": "Character not found"}, status_code=404)
+        focus = [char_id]
 
     # Get overdue character IDs first, then weakest
     overdue = (
@@ -273,6 +446,12 @@ def start_drill(child_id: int, request: Request, db: Session = Depends(get_db)):
             .all()
         )
         char_ids.extend(row[0] for row in weak)
+
+    if focus:
+        # select_characters samples min(count, pool); a pool of exactly one
+        # session keeps the focus character in it.
+        per_session = get_settings().questions_per_session
+        char_ids = focus + [c for c in char_ids if c != char_id][:per_session - 1]
 
     if not char_ids:
         return JSONResponse(
@@ -311,8 +490,13 @@ def cancel_drill(child_id: int, request: Request, db: Session = Depends(get_db))
 
 @router.post("/drill-topics/{child_id}/{game_type}")
 @limiter.limit("20/minute")
-def start_topic_drill(child_id: int, game_type: str, request: Request, db: Session = Depends(get_db)):
-    """Queue a math or English drill on the topics this child is weakest at."""
+def start_topic_drill(child_id: int, game_type: str, request: Request,
+                      topic_id: int | None = None, db: Session = Depends(get_db)):
+    """Queue a math or English drill on the topics this child is weakest at.
+
+    With ``topic_id`` the drill is that one topic (drills cycle topics to fill
+    the session, so it gets every question).
+    """
     user = _get_current_user(request, db)
     if not user or user.role != "parent":
         return JSONResponse({"error": "Not authorized"}, status_code=403)
@@ -324,7 +508,18 @@ def start_topic_drill(child_id: int, game_type: str, request: Request, db: Sessi
     if not child:
         return JSONResponse({"error": "Child not found"}, status_code=404)
 
-    topics = weakest_topics(db, child, game_type, limit=5)
+    if topic_id is not None:
+        topic = (
+            db.query(LearningTopic)
+            .filter_by(id=topic_id, subject=SUBJECT_BY_GAME_TYPE[game_type])
+            .filter(LearningTopic.question_mode.isnot(None))
+            .first()
+        )
+        if topic is None:
+            return JSONResponse({"error": "Topic not found"}, status_code=404)
+        topics = [topic]
+    else:
+        topics = weakest_topics(db, child, game_type, limit=5)
     if not topics:
         return JSONResponse(
             {"error": f"{child.name} hasn't practised any {game_type} topics yet — "
@@ -380,3 +575,60 @@ def cancel_topic_drill(child_id: int, game_type: str, request: Request, db: Sess
     child.pending_drill_topic_ids = json.dumps(keep) if keep else None
     db.commit()
     return JSONResponse({"cancelled": True})
+
+
+
+class ReportIn(BaseModel):
+    note: str | None = Field(default=None, max_length=500)
+
+
+@router.post("/report/{question_id}")
+def report_question(question_id: int, request: Request, body: ReportIn | None = None,
+                    db: Session = Depends(get_db)):
+    """Flag an asked question as looking wrong, snapshotting what was shown."""
+    user = _get_current_user(request, db)
+    if not user or user.role != "parent":
+        return JSONResponse({"error": "Not authorized"}, status_code=403)
+
+    q = db.query(SessionQuestion).filter_by(id=question_id).first()
+    if not q:
+        return JSONResponse({"error": "Question not found"}, status_code=404)
+
+    existing = (
+        db.query(ContentReport)
+        .filter_by(session_question_id=q.id, resolved=False)
+        .first()
+    )
+    if existing:
+        return JSONResponse({"reported": True, "id": existing.id})
+
+    game_type = q.session.game_type or "chinese"
+    note = (body.note or "").strip() if body else ""
+    report = ContentReport(
+        user_id=q.session.user_id,
+        session_question_id=q.id,
+        mode=q.question_mode,
+        prompt=_prompt_text(q, game_type) or None,
+        correct_answer=q.correct_answer,
+        selected_answer=_first_pick(q),
+        note=note or None,
+    )
+    db.add(report)
+    db.commit()
+    return JSONResponse({"reported": True, "id": report.id})
+
+
+@router.post("/report/{report_id}/resolve")
+def toggle_report_resolved(report_id: int, request: Request, db: Session = Depends(get_db)):
+    """Flip a content report between open and resolved."""
+    user = _get_current_user(request, db)
+    if not user or user.role != "parent":
+        return JSONResponse({"error": "Not authorized"}, status_code=403)
+
+    report = db.query(ContentReport).filter_by(id=report_id).first()
+    if not report:
+        return JSONResponse({"error": "Report not found"}, status_code=404)
+
+    report.resolved = not report.resolved
+    db.commit()
+    return JSONResponse({"id": report.id, "resolved": report.resolved})

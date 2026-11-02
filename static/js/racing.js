@@ -48,6 +48,11 @@
        ────────────────────────────────────────────── */
 
     var currentIndex = 0;       /* index into questions[] */
+    /* Questions still to answer, in order. A missed one goes to the back so
+       it's asked again after the others: recall later, not copying now. */
+    var queue = questions.map(function (_, i) { return i; });
+    var solved = 0;             /* answered correctly so far = car stop */
+    var missed = {};            /* question index -> true once missed */
     var answering    = false;   /* lock to prevent double-tap */
     var carLevel     = root.carLevel || 0;
     var currentCombo = 0;       /* streak of correct answers */
@@ -163,10 +168,10 @@
         var mode = q.mode || 'char_to_image';
         answering = false;
         hintShown = false;  /* Reset hint flag for new question */
-        
-        /* Hide hint button */
+
+        /* The hint is offered on a missed question's second go */
         var hintBtn = document.getElementById('hintBtn');
-        if (hintBtn) hintBtn.style.display = 'none';
+        if (hintBtn) hintBtn.style.display = missed[idx] ? 'block' : 'none';
 
         /* Record question start time for speed bonus */
         root.SkoolAPI.apiFetch('/game/start-question/' + q.id, { method: 'POST' }).catch(function() {});
@@ -201,11 +206,24 @@
 
         if (header) header.textContent = 'Let\'s learn! \uD83D\uDCDA';
 
+        /* Picture modes are for pre-readers: show the character next to
+           its picture (and say it) instead of an English meaning they
+           can't read. */
+        var pictureFirst = q.mode === 'char_to_image' && q.image_url;
         if (tChar) tChar.textContent = q.character;
         if (tPinyin) tPinyin.textContent = q.pinyin;
-        if (tMeaning) tMeaning.textContent = q.meaning;
-        if (tImage) tImage.style.display = 'none';
-        if (tArrow) tArrow.style.display = 'none';
+        if (tMeaning) tMeaning.textContent = pictureFirst ? '' : q.meaning;
+        if (tImage) {
+            tImage.innerHTML = '';
+            if (pictureFirst) {
+                var pic = document.createElement('img');
+                pic.src = q.image_url;
+                pic.alt = '';
+                tImage.appendChild(pic);
+            }
+            tImage.style.display = pictureFirst ? '' : 'none';
+        }
+        if (tArrow) tArrow.style.display = pictureFirst ? '' : 'none';
         if (tBtn) tBtn.textContent = '\u25B6 Ready!';
 
         /* Auto-speak */
@@ -252,9 +270,9 @@
             tBtn.removeEventListener('click', onReady);
             tBtn.removeEventListener('touchend', onReady);
             if (header) header.textContent = 'Hmm, not quite! \uD83E\uDD14';
-            if (tBtn) tBtn.textContent = '\uD83D\uDCAA Try again!';
+            if (tBtn) tBtn.textContent = '\uD83D\uDC4D Got it!';
             hanziContainer.style.display = 'none';
-            if (tImage) tImage.style.display = '';
+            if (tImage) { tImage.innerHTML = ''; tImage.style.display = ''; }
             if (tArrow) tArrow.style.display = '';
             onDone();
         }
@@ -360,12 +378,12 @@
 
         /* -- Progress bar -- */
         if (progressBarFill) {
-            var pct = (idx / totalQuestions) * 100;
+            var pct = (solved / totalQuestions) * 100;
             progressBarFill.style.width = pct + '%';
         }
 
         /* -- Stop flags -- */
-        paintFlags(idx);
+        paintFlags(solved);
 
         /* -- Build option buttons -- */
         if (optionsRow) {
@@ -538,8 +556,9 @@
                         }, 250);
                     }
 
-                    /* Update combo */
-                    currentCombo++;
+                    /* Update combo (a comeback answer doesn't count, same
+                       as on the server) */
+                    if (!missed[currentIndex]) currentCombo++;
                     updateComboDisplay();
                     
                     /* Celebrate with particles */
@@ -575,7 +594,8 @@
 
                     /* Move car forward one checkpoint, and light that
                        checkpoint only once the car has actually pulled in. */
-                    var reachedStop = currentIndex + 1;
+                    solved++;
+                    var reachedStop = solved;
                     moveCarToStop(reachedStop);
                     setTimeout(function () {
                         markStopReached(reachedStop);
@@ -583,14 +603,15 @@
 
                     /* Update progress bar */
                     if (progressBarFill) {
-                        var pct = ((currentIndex + 1) / totalQuestions) * 100;
+                        var pct = (solved / totalQuestions) * 100;
                         progressBarFill.style.width = pct + '%';
                     }
 
                     /* Advance to next question */
                     setTimeout(function () {
-                        currentIndex++;
-                        if (currentIndex < totalQuestions) {
+                        queue.shift();
+                        if (queue.length) {
+                            currentIndex = queue[0];
                             renderQuestion(currentIndex);
                         } else {
                             finishRace();
@@ -610,21 +631,9 @@
                     triggerCarShake();
                     showScreenFlash('wrong');
 
-                    /* Show hint panel (don't reveal the answer) */
+                    /* Teach (without revealing the answer); the question
+                       comes back after the others */
                     showTeachingPanel(q);
-                    
-                    /* Show hint button after teaching panel */
-                    setTimeout(function() {
-                        var hintBtn = document.getElementById('hintBtn');
-                        if (hintBtn && !hintShown) {
-                            hintBtn.style.display = 'block';
-                            if (root.Animations) {
-                                root.Animations.safeAnimate(hintBtn, root.Animations.pulse, 2);
-                            }
-                        }
-                    }, 1800);
-
-                    /* After teaching panel is dismissed, let them retry */
                 }
             })
             .catch(function (err) {
@@ -687,6 +696,7 @@
             } else if (mode === 'fractions_compare') {
                 mathHint = 'Think about slicing a pizza!';
             }
+            if (q.hint) mathHint = q.hint;
             if (tPinyin) tPinyin.textContent = mathHint;
             if (tMeaning) tMeaning.textContent = '';
 
@@ -727,6 +737,7 @@
             } else if (mode === 'odd_one_out_hard') {
                 logicHint = 'What category do three of them share?';
             }
+            if (q.hint) logicHint = q.hint;
             if (tPinyin) tPinyin.textContent = logicHint;
             if (tMeaning) tMeaning.textContent = '';
 
@@ -761,6 +772,7 @@
             } else if (mode === 'sentence_complete') {
                 engHint = 'Read the sentence out loud \u2014 which sounds right?';
             }
+            if (q.hint) engHint = q.hint;
             if (tPinyin) tPinyin.textContent = engHint;
             if (tMeaning) tMeaning.textContent = '';
 
@@ -823,7 +835,7 @@
         /* Show panel */
         panel.classList.add('active');
 
-        /* "Try again!" button → re-render question for retry */
+        /* "Got it!" → move on; the missed question goes to the back */
         function onGotIt(e) {
             e.preventDefault();
             panel.classList.remove('active');
@@ -834,7 +846,12 @@
             if (tImage) tImage.style.display = '';
             if (tArrow) tArrow.style.display = '';
 
-            /* Re-render the same question for retry */
+            missed[currentIndex] = true;
+            if (queue.length > 1) {
+                queue.push(queue.shift());
+                showBonusText('\uD83D\uDD01 We\u2019ll come back to this one!');
+            }
+            currentIndex = queue[0];
             renderQuestion(currentIndex);
         }
 
@@ -1140,25 +1157,25 @@
             hintBtn.style.display = 'none';
         }
         
-        /* Mark this question as hint-used (affects SM-2 scoring) */
+        /* Recorded for the parent dashboard */
         root.SkoolAPI.apiFetch('/game/mark-hint-used/' + q.id, { method: 'POST' })
             .catch(function() {});
-        
-        /* Highlight the correct answer subtly */
+
+        /* Rule out one wrong answer: still their choice, with less to juggle.
+           (Lighting up the right one made the second go a copying exercise.) */
+        var wrongBtns = [];
         var allBtns = optionsRow.querySelectorAll('.option-btn');
         for (var i = 0; i < allBtns.length; i++) {
-            var btn = allBtns[i];
-            var answer = btn.getAttribute('data-answer');
-            if (answer === q.correct_answer) {
-                btn.style.boxShadow = '0 0 0 4px #fdcb6e, 0 8px 24px rgba(253, 203, 110, 0.6)';
-                if (root.Animations) {
-                    root.Animations.safeAnimate(btn, root.Animations.pulse, 3);
-                }
-                break;
-            }
+            if (allBtns[i].getAttribute('data-answer') !== q.correct_answer) wrongBtns.push(allBtns[i]);
         }
-        
-        showBonusText('\u{1F4A1} Hint: Look for the glowing answer!');
+        if (wrongBtns.length > 1) {
+            var out = wrongBtns[Math.floor(Math.random() * wrongBtns.length)];
+            out.classList.add('disabled');
+            out.style.opacity = '0.25';
+            out.style.pointerEvents = 'none';
+        }
+
+        showBonusText('\u{1F4A1} One wrong answer is gone!');
     };
 
 

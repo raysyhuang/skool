@@ -43,6 +43,10 @@ class SessionQuestion(Base):
     answered_at = Column(DateTime, nullable=True)
     started_at = Column(DateTime, nullable=True)  # for speed bonus tracking
     first_try = Column(Boolean, default=True)  # False if hint was used
+    # Right on the first attempt. is_correct flips to True after a retry, so
+    # scoring and the parent dashboard read this instead.
+    first_attempt_correct = Column(Boolean, nullable=True)
+    first_selected_answer = Column(String, nullable=True)  # selected_answer is overwritten by a retry
     hint_shown = Column(Boolean, default=False)
 
     session = relationship("GameSession", back_populates="questions")
