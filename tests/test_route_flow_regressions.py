@@ -50,7 +50,7 @@ def _build_client(
             session.close()
 
     app.dependency_overrides[get_db] = override_get_db
-    client = TestClient(app, raise_server_exceptions=False)
+    client = TestClient(app, raise_server_exceptions=False, base_url="https://testserver")
     return client, SessionLocal, user_id
 
 

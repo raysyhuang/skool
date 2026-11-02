@@ -57,6 +57,12 @@ _MIGRATIONS = [
     # them, but these two land on tables a deployed database already has.
     ("users", "pending_drill_topic_ids", "VARCHAR", None),
     ("session_questions", "topic_id", "INTEGER", None),
+    # Combo streaks and hints
+    ("game_sessions", "current_combo", "INTEGER", "0"),
+    ("game_sessions", "max_combo", "INTEGER", "0"),
+    ("game_sessions", "combo_bonus", "INTEGER", "0"),
+    ("session_questions", "first_try", "BOOLEAN", "TRUE"),
+    ("session_questions", "hint_shown", "BOOLEAN", "FALSE"),
 ]
 
 

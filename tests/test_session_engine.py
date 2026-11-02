@@ -97,6 +97,7 @@ def test_daily_bonus_applies_to_first_completed_session_even_if_multiple_started
 
     result = complete_session(db, sample_user, first.id)
     base = len(first.questions) * settings.points_correct
+    base += first.combo_bonus  # 3-in-a-row combo, doubled by the perfect bonus
     perfect_bonus = base * (settings.perfect_bonus_multiplier - 1)  # 2x perfect session
     streak_bonus = sample_user.streak * settings.streak_bonus_multiplier  # first play starts streak at 1
     expected = base + perfect_bonus + settings.daily_bonus + streak_bonus
@@ -246,12 +247,15 @@ def test_summary_points_include_lucky_star_bonus(db, sample_user, sample_charact
 
     for q in session.questions:
         result = submit_answer(db, sample_user, q.id, q.correct_answer)
-        assert result["bonus"] == "lucky_star"
+        # The 3rd straight correct answer is labelled as a combo instead
+        expected_bonus = "combo_x3" if q.question_number == 3 else "lucky_star"
+        assert result["bonus"] == expected_bonus
         assert result["points_earned"] == settings.points_correct * settings.lucky_star_multiplier
 
     summary = complete_session(db, sample_user, session.id)
 
     base = len(session.questions) * settings.points_correct * settings.lucky_star_multiplier
+    base += session.combo_bonus
     perfect_bonus = base * (settings.perfect_bonus_multiplier - 1)
     streak_bonus = sample_user.streak * settings.streak_bonus_multiplier
     expected = base + perfect_bonus + settings.daily_bonus + streak_bonus

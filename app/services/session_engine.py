@@ -418,7 +418,10 @@ def complete_session(db: Session, user: User, session_id: int) -> dict:
 
     # Build XP breakdown
     xp_breakdown = []
-    xp_breakdown.append({"label": "Correct answers", "value": base_points})
+    combo_bonus = session.combo_bonus or 0
+    xp_breakdown.append({"label": "Correct answers", "value": base_points - combo_bonus})
+    if combo_bonus > 0:
+        xp_breakdown.append({"label": "Combo bonus", "value": combo_bonus})
     if perfect_bonus > 0:
         xp_breakdown.append({"label": "Perfect bonus", "value": perfect_bonus})
     if daily_bonus > 0:

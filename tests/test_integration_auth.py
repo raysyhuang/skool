@@ -20,7 +20,7 @@ def client(db):
             pass
     
     app.dependency_overrides[get_db] = override_get_db
-    return TestClient(app)
+    return TestClient(app, base_url="https://testserver")  # cookies are https_only
 
 
 @pytest.fixture
@@ -166,7 +166,7 @@ def test_unauthenticated_users_cannot_access_protected_routes(client):
         "/game/chinese",
         "/game/math",
         "/dashboard/",
-        "/store/",
+        "/game/store/",
     ]
     
     for route in protected_routes:

@@ -39,7 +39,9 @@ def _get_current_user(request: Request, db: Session) -> User | None:
 @router.get("/")
 def dashboard(request: Request, db: Session = Depends(get_db)):
     user = _get_current_user(request, db)
-    if not user or user.role != "parent":
+    if not user:
+        return RedirectResponse(url="/login", status_code=303)
+    if user.role != "parent":
         return RedirectResponse(url="/game/", status_code=303)
 
     # Check if taxonomy is loaded

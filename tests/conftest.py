@@ -3,6 +3,7 @@ import random
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.models import *  # noqa: register all models
@@ -32,7 +33,13 @@ from app.main import create_app
 
 @pytest.fixture
 def db_engine():
-    engine = create_engine("sqlite:///:memory:")
+    # StaticPool + check_same_thread=False: TestClient runs the app in another
+    # thread, which must see the same in-memory database
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     Base.metadata.create_all(bind=engine)
     yield engine
     Base.metadata.drop_all(bind=engine)
