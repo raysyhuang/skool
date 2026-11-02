@@ -127,6 +127,30 @@ def _run_migrations(engine_instance):
             pass
 
 
+# Arbitrary app-wide key for pg_advisory_lock
+_SCHEMA_LOCK_KEY = 7_160_001
+
+
+def _init_schema(engine_instance) -> None:
+    """Create tables and apply _MIGRATIONS, one gunicorn worker at a time.
+
+    Every worker runs startup concurrently; without the lock two of them race
+    to CREATE the same new table and Postgres rejects the loser, killing boot.
+    """
+    with engine_instance.connect() as lock_conn:
+        is_pg = engine_instance.dialect.name == "postgresql"
+        if is_pg:
+            lock_conn.execute(text("SELECT pg_advisory_lock(:k)"), {"k": _SCHEMA_LOCK_KEY})
+            lock_conn.commit()
+        try:
+            Base.metadata.create_all(bind=engine_instance, checkfirst=True)
+            _run_migrations(engine_instance)
+        finally:
+            if is_pg:
+                lock_conn.execute(text("SELECT pg_advisory_unlock(:k)"), {"k": _SCHEMA_LOCK_KEY})
+                lock_conn.commit()
+
+
 def create_app() -> FastAPI:
     settings = get_settings()
 
@@ -139,8 +163,7 @@ def create_app() -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        Base.metadata.create_all(bind=engine, checkfirst=True)
-        _run_migrations(engine)
+        _init_schema(engine)
         yield
 
     app = FastAPI(title="Skool - Chinese Character Learning", lifespan=lifespan)
