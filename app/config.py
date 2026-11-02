@@ -1,22 +1,21 @@
-import os
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
 
-def _resolve_db_url() -> str:
-    """Get database URL from environment, fixing Heroku's postgres:// prefix."""
-    url = os.environ.get("DATABASE_URL", "sqlite:///./skool.db")
-    # Heroku uses postgres://; SQLAlchemy needs a dialect name, and 2.1 made
-    # psycopg (v3) the default driver, so name psycopg2 (what we ship) explicitly
-    for prefix in ("postgres://", "postgresql://"):
-        if url.startswith(prefix):
-            url = "postgresql+psycopg2://" + url[len(prefix):]
-    return url
-
-
 class Settings(BaseSettings):
     # Database
-    database_url: str = _resolve_db_url()
+    database_url: str = "sqlite:///./skool.db"
+
+    @field_validator("database_url")
+    @classmethod
+    def _normalise_postgres_url(cls, url: str) -> str:
+        # Heroku sets postgres://, which SQLAlchemy rejects; and SQLAlchemy 2.1
+        # made psycopg (v3) the default driver, so name psycopg2 (what we ship)
+        for prefix in ("postgres://", "postgresql://"):
+            if url.startswith(prefix):
+                return "postgresql+psycopg2://" + url[len(prefix):]
+        return url
 
     # Session
     secret_key: str = "change-me-in-production"
