@@ -164,13 +164,30 @@ def _topic_question(
     )
 
 
+def _lock_for_scoring(db: Session, user: User, *session_filters) -> GameSession | None:
+    """Row-lock the user and the session before checking-then-awarding points.
+
+    Two gunicorn workers can otherwise both pass "not answered yet" /
+    "not completed yet" and award the same points twice. Locks are taken
+    user-first so concurrent requests can't deadlock (SQLite ignores them).
+    """
+    db.query(User).filter_by(id=user.id).with_for_update().populate_existing().one()
+    return (
+        db.query(GameSession).filter(*session_filters)
+        .with_for_update().populate_existing().first()
+    )
+
+
 def submit_answer(db: Session, user: User, question_id: int, selected_answer: str) -> dict:
     """Submit an answer for a question. Returns result dict."""
     question = db.query(SessionQuestion).filter_by(id=question_id).first()
     if not question:
         raise ValueError("Question not found")
 
-    session = db.query(GameSession).filter_by(id=question.session_id).first()
+    session = _lock_for_scoring(db, user, GameSession.id == question.session_id)
+    if session is None:
+        raise ValueError("Question not found")
+    db.refresh(question)  # re-read under the lock: a concurrent tap may have answered it
     if session.user_id != user.id:
         raise ValueError("This question doesn't belong to you")
     if session.completed_at:
@@ -327,7 +344,7 @@ def _advance_quest(db: Session, user: User, settings) -> dict | None:
 
 def complete_session(db: Session, user: User, session_id: int) -> dict:
     """Complete a session and award bonuses."""
-    session = db.query(GameSession).filter_by(id=session_id, user_id=user.id).first()
+    session = _lock_for_scoring(db, user, GameSession.id == session_id, GameSession.user_id == user.id)
     if not session:
         raise ValueError("Session not found")
 

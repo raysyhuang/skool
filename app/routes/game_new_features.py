@@ -2,14 +2,13 @@
 
 import json
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import JSONResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import User, DailyQuest, UserDailyQuestProgress, CollectibleItem, UserCollectible
 from app.services.daily_quests import get_daily_quests_for_user, claim_quest_reward, ensure_daily_quests
-from app.services.placement import start_placement_test, get_next_placement_question, submit_placement_response, complete_placement_test
 
 router = APIRouter(prefix="/game")
 templates = Jinja2Templates(directory="templates")
@@ -27,13 +26,12 @@ def daily_quests_page(request: Request, db: Session = Depends(get_db)):
     """Daily quests UI."""
     user = get_current_user(request, db)
     if not user:
-        return templates.TemplateResponse("login.html", {"request": request, "users": []})
+        return RedirectResponse(url="/login", status_code=303)
     
     ensure_daily_quests(db)
     quests = get_daily_quests_for_user(db, user.id)
     
-    return templates.TemplateResponse("daily_quests.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "daily_quests.html", {
         "user": user,
         "quests": quests
     })
@@ -50,70 +48,9 @@ def claim_quest(progress_id: int, request: Request, db: Session = Depends(get_db
     return JSONResponse({"success": success})
 
 
-@router.get("/placement-test/{subject}")
-def placement_test_page(subject: str, request: Request, db: Session = Depends(get_db)):
-    """Placement test UI."""
-    user = get_current_user(request, db)
-    if not user:
-        return templates.TemplateResponse("login.html", {"request": request, "users": []})
-    
-    return templates.TemplateResponse("placement_test.html", {
-        "request": request,
-        "user": user,
-        "subject": subject
-    })
-
-
-@router.post("/placement-test/{subject}/start")
-def start_test(subject: str, request: Request, db: Session = Depends(get_db)):
-    """Start placement test."""
-    user = get_current_user(request, db)
-    if not user:
-        return JSONResponse({"error": "Not logged in"}, status_code=401)
-    
-    test = start_placement_test(db, user, subject)
-    return JSONResponse({"test_id": test.id})
-
-
-@router.get("/placement-test/{test_id}/next")
-def next_question(test_id: int, db: Session = Depends(get_db)):
-    """Get next placement test question."""
-    from app.models import PlacementTest
-    test = db.query(PlacementTest).filter_by(id=test_id).first()
-    if not test:
-        return JSONResponse({"error": "Test not found"}, status_code=404)
-    
-    question = get_next_placement_question(db, test)
-    
-    if not question:
-        # Test complete
-        results = complete_placement_test(db, test)
-        return JSONResponse({"complete": True, **results})
-    
-    return JSONResponse(question)
-
-
-@router.post("/placement-test/{test_id}/answer")
-def submit_test_answer(test_id: int, request: Request, db: Session = Depends(get_db)):
-    """Submit placement test answer."""
-    from app.models import PlacementTest
-    import asyncio
-    
-    body = asyncio.run(request.json())
-    
-    test = db.query(PlacementTest).filter_by(id=test_id).first()
-    if not test:
-        return JSONResponse({"error": "Test not found"}, status_code=404)
-    
-    result = submit_placement_response(
-        db,
-        test,
-        body["question_data"],
-        body["selected_answer"],
-        body.get("response_time_ms", 0)
-    )
-    
-    return JSONResponse(result)
+# Placement test routes removed: app/services/placement.py is a placeholder
+# (one hard-coded "2 + 2" question, fixed grade-3 result) and its writes don't
+# match the placement models. Re-add routes once there's a real test behind them.
 
 
 @router.get("/garage")
@@ -121,7 +58,7 @@ def garage_page(request: Request, db: Session = Depends(get_db)):
     """Garage collectibles UI."""
     user = get_current_user(request, db)
     if not user:
-        return templates.TemplateResponse("login.html", {"request": request, "users": []})
+        return RedirectResponse(url="/login", status_code=303)
     
     # Get all collectibles with ownership status
     items = db.query(CollectibleItem).all()
@@ -143,8 +80,7 @@ def garage_page(request: Request, db: Session = Depends(get_db)):
             "equipped": item.id in equipped_ids
         })
     
-    return templates.TemplateResponse("garage.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "garage.html", {
         "user": user,
         "collectibles": collectibles
     })
@@ -189,6 +125,11 @@ def equip_collectible(item_id: int, request: Request, db: Session = Depends(get_
     if not item:
         return JSONResponse({"success": False}, status_code=404)
     
+    # Check ownership before touching anything already equipped
+    user_item = db.query(UserCollectible).filter_by(user_id=user.id, item_id=item_id).first()
+    if not user_item:
+        return JSONResponse({"success": False, "error": "Not owned"}, status_code=403)
+
     # Unequip others of same type
     db.query(UserCollectible).filter(
         UserCollectible.user_id == user.id,
@@ -197,10 +138,7 @@ def equip_collectible(item_id: int, request: Request, db: Session = Depends(get_
         )
     ).update({"equipped": False}, synchronize_session=False)
     
-    # Equip this one
-    user_item = db.query(UserCollectible).filter_by(user_id=user.id, item_id=item_id).first()
-    if user_item:
-        user_item.equipped = True
+    user_item.equipped = True
     
     db.commit()
     return JSONResponse({"success": True})
@@ -211,7 +149,7 @@ def journey_map_page(request: Request, db: Session = Depends(get_db)):
     """Learning journey map UI."""
     user = get_current_user(request, db)
     if not user:
-        return templates.TemplateResponse("login.html", {"request": request, "users": []})
+        return RedirectResponse(url="/login", status_code=303)
     
     from app.models import JourneyNode, UserJourneyProgress
     
@@ -246,8 +184,7 @@ def journey_map_page(request: Request, db: Session = Depends(get_db)):
     
     db.commit()
     
-    return templates.TemplateResponse("journey_map.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "journey_map.html", {
         "user": user,
         "nodes": journey_data
     })
@@ -258,7 +195,7 @@ def enhanced_dashboard(request: Request, db: Session = Depends(get_db)):
     """Enhanced parent dashboard with ability graphs."""
     user = get_current_user(request, db)
     if not user or user.role != "parent":
-        return templates.TemplateResponse("login.html", {"request": request, "users": []})
+        return RedirectResponse(url="/login", status_code=303)
     
     from app.models import SkillAbility, UserTopicProgress, GameSession
     from datetime import datetime, timedelta
@@ -316,8 +253,7 @@ def enhanced_dashboard(request: Request, db: Session = Depends(get_db)):
             "logic_acc": 90
         })
     
-    return templates.TemplateResponse("dashboard_enhanced.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "dashboard_enhanced.html", {
         "user": user,
         "students": students_data,
         "students_json": json.dumps(students_data)

@@ -3,7 +3,8 @@
 from datetime import date
 from sqlalchemy.orm import Session
 from app.models import DailyQuest, UserDailyQuestProgress, User
-# Reward logic inline
+from app.models.rewards import PointsLedger
+from app.services.rewards import award_points
 
 # Quest definitions (can later be loaded from DB or config)
 DAILY_QUEST_POOL = [
@@ -29,7 +30,7 @@ DAILY_QUEST_POOL = [
         "quest_type": "combo_master",
         "title": "Combo Master",
         "description": "Reach a 3+ answer combo",
-        "target_value": 3,
+        "target_value": 1,  # bumped once per session that reaches the combo
         "reward_type": "stars",
         "reward_amount": 8,
         "icon": "🔥"
@@ -38,7 +39,7 @@ DAILY_QUEST_POOL = [
         "quest_type": "streak_keeper",
         "title": "Streak Keeper",
         "description": "Maintain a 3+ day streak",
-        "target_value": 3,
+        "target_value": 1,  # bumped once per session played on a 3+ day streak
         "reward_type": "coins",
         "reward_amount": 1,
         "icon": "📅"
@@ -54,8 +55,11 @@ def ensure_daily_quests(db: Session) -> None:
         ).first()
         
         if not existing:
-            quest = DailyQuest(**quest_data)
-            db.add(quest)
+            db.add(DailyQuest(**quest_data))
+        else:
+            # Keep already-seeded rows in step with the pool (e.g. target fixes)
+            for key, value in quest_data.items():
+                setattr(existing, key, value)
     
     db.commit()
 
@@ -121,7 +125,12 @@ def update_quest_progress(
     ).first()
     
     if not quest:
-        return None
+        # Definitions used to be created only when the quest page was opened,
+        # so sessions played before that never counted
+        ensure_daily_quests(db)
+        quest = db.query(DailyQuest).filter(DailyQuest.quest_type == quest_type).first()
+        if not quest:
+            return None
     
     progress = db.query(UserDailyQuestProgress).filter(
         UserDailyQuestProgress.user_id == user_id,
@@ -165,10 +174,15 @@ def update_quest_progress(
 
 def claim_quest_reward(db: Session, user_id: int, progress_id: int) -> bool:
     """Claim reward for a completed quest."""
+    # Lock the user before the progress row (same order as session scoring) so
+    # a session finishing at the same moment can't have its points overwritten
+    user = db.query(User).filter(User.id == user_id).with_for_update().populate_existing().first()
+    if not user:
+        return False
     progress = db.query(UserDailyQuestProgress).filter(
         UserDailyQuestProgress.id == progress_id,
         UserDailyQuestProgress.user_id == user_id
-    ).first()
+    ).with_for_update().first()  # lock so a double tap can't claim twice
     
     if not progress or not progress.completed or progress.claimed:
         return False
@@ -181,14 +195,20 @@ def claim_quest_reward(db: Session, user_id: int, progress_id: int) -> bool:
         return False
     
     # Award the reward
-    user = db.query(User).filter(User.id == user_id).first()
-    award_currency(
-        db=db,
-        user=user,
-        reward_type=quest.reward_type,
-        amount=quest.reward_amount,
-        reason=f"Daily quest: {quest.title}"
-    )
+    reason = f"daily_quest_{quest.quest_type}"
+    if quest.reward_type == "coins":
+        user.coins += quest.reward_amount
+        user.lifetime_coins = (user.lifetime_coins or 0) + quest.reward_amount
+        db.add(PointsLedger(
+            user_id=user.id,
+            change=0,
+            coins_change=quest.reward_amount,
+            reason=reason,
+            balance_after=user.points,
+        ))
+    else:
+        # Stars come from points 1:1 (and auto-convert to coins)
+        award_points(db, user, quest.reward_amount, reason)
     
     progress.claimed = True
     db.commit()

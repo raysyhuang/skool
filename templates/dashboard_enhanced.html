@@ -3,7 +3,6 @@
 {% block title %}Parent Dashboard{% endblock %}
 
 {% block theme_css %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.css">
 <style>
     body {
         background: var(--bg-light);
@@ -197,21 +196,17 @@
 
         <div class="actions-section">
             <h3 class="actions-title">Quick Actions</h3>
-            <button class="btn btn-primary action-btn" onclick="window.location.href='/game/placement-test-setup/{{ student.id }}'">
-                📊 Run Placement Test
-            </button>
-            <button class="btn btn-secondary action-btn" onclick="openDrillModal({{ student.id }})">
+            {# Drills are queued from the main dashboard (/dashboard/drill*);
+               placement and per-child journey views don't exist yet #}
+            <a class="btn btn-secondary action-btn" href="/dashboard/">
                 🎯 Queue Practice Drill
-            </button>
-            <button class="btn btn-secondary action-btn" onclick="window.location.href='/game/journey/{{ student.id }}'">
-                🗺️ View Learning Journey
-            </button>
+            </a>
         </div>
     </div>
     {% endfor %}
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="/static/js/vendor/chart.umd.min.js"></script>
 <script>
 const studentData = {{ students_json | safe }};
 

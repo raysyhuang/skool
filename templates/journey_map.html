@@ -171,7 +171,7 @@
                     </div>
                     <div class="progress-bar">
                         {% set pct = ((node.progress.sessions_completed / (node.completion_requirement.sessions or 5)) * 100) | round %}
-                        <div class="progress-fill" style="width: {{ min(pct, 100) }}%;"></div>
+                        <div class="progress-fill" style="width: {{ [pct, 100]|min }}%;"></div>
                     </div>
                 </div>
                 {% endif %}

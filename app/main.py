@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -16,7 +17,8 @@ from slowapi.errors import RateLimitExceeded
 
 from app.config import get_settings
 from app.database import engine, Base
-from app.routes import auth, game
+from app.routes import auth, game, game_new_features
+from app.services.daily_quests import ensure_daily_quests
 from app.routes import dashboard as dashboard_routes
 from app.routes import store as store_routes
 from app.routes import story as story_routes
@@ -145,6 +147,10 @@ def _init_schema(engine_instance) -> None:
         try:
             Base.metadata.create_all(bind=engine_instance, checkfirst=True)
             _run_migrations(engine_instance)
+            # Seed quest definitions here, under the lock: done lazily, two
+            # workers could both insert them (quest_type has no unique index)
+            with Session(bind=engine_instance) as db:
+                ensure_daily_quests(db)
         finally:
             if is_pg:
                 lock_conn.execute(text("SELECT pg_advisory_unlock(:k)"), {"k": _SCHEMA_LOCK_KEY})
@@ -205,6 +211,8 @@ def create_app() -> FastAPI:
 
     # Routes
     app.include_router(auth.router)
+    # Before game.router: its GET /game/{game_type} would swallow /game/garage etc.
+    app.include_router(game_new_features.router)
     app.include_router(game.router)
     app.include_router(dashboard_routes.router)
     app.include_router(store_routes.router)
@@ -270,7 +278,3 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-
-# Import new feature routes
-from app.routes.game_new_features import router as game_new_router
-app.include_router(game_new_router)
