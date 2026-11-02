@@ -6,9 +6,11 @@ from functools import lru_cache
 def _resolve_db_url() -> str:
     """Get database URL from environment, fixing Heroku's postgres:// prefix."""
     url = os.environ.get("DATABASE_URL", "sqlite:///./skool.db")
-    # Heroku uses postgres:// but SQLAlchemy 2.0 requires postgresql://
-    if url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
+    # Heroku uses postgres://; SQLAlchemy needs a dialect name, and 2.1 made
+    # psycopg (v3) the default driver, so name psycopg2 (what we ship) explicitly
+    for prefix in ("postgres://", "postgresql://"):
+        if url.startswith(prefix):
+            url = "postgresql+psycopg2://" + url[len(prefix):]
     return url
 
 

@@ -5,10 +5,8 @@ from app.config import get_settings
 
 settings = get_settings()
 
-# Heroku uses postgres:// but SQLAlchemy 2.0 requires postgresql://
+# Already normalised for Heroku and the psycopg2 driver in app.config
 db_url = settings.database_url
-if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 connect_args = {}
 if db_url.startswith("sqlite"):
